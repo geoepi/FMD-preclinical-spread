@@ -1,20 +1,31 @@
 project:
   type: website
   output-dir: docs
-
-website:
-  title: "FMD-preclinical-spread"
+  
+website: 
+  title: "FMD Preclinical Spread"
   navbar:
     left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+      - href: duration.qmd
+        text: Outbreak Duration
+      - href: Re.qmd
+        text: Effective Reproduction (Re)
+      - href: velocity.qmd
+        text: Epidemic Velocity
+      - href: spread.qmd
+        text: Geographic Extent
+    right:
+      - href: https://geoepi.github.io/
+        text: GeoEpi
+      - icon: github
+        href: https://github.com/geoepi/fmd-preclinical-spread
+  page-footer:
+    right: "Built with [Quarto](https://quarto.org/)"
 
 format:
   html:
-    theme: cosmo
-    css: styles.css
+    theme: lux
     toc: true
-
-editor: visual
+    
+editor: source
 

@@ -1,15 +1,41 @@
 ---
-title: "FMD-preclinical-spread"
+title: "Overview"
+description: "Analyses of ISP outputs from FMDV preclinical transmission model in U.S. cattle"
+format:
+  html: 
+    df-print: kable
+    code-fold: show
+    code-summary: "Hide code"
+    code-overflow: wrap
+    toc-title: Page Contents
+    toc: true
+    toc-depth: 2
+    toc-location: right
+    number-sections: false
+    html-math-method: katex
+    smooth-scroll: true
+editor: source
+editor_options: 
+  chunk_output_type: console
 ---
+```{=html}
+<style type="text/css">
 
-This is a Quarto website.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
-
-preclinical_spread
-
-outputs
-
-```{r}
-1 + 1
+body, td {
+   font-size: 13pt;
+}
+code.r{
+  font-size: 9pt;
+}
+pre {
+  font-size: 11pt
+}
+</style>
 ```
+
+::: {.callout-important icon=true}
+#### Under Active Development  
+
+This site includes exploratory analyses that have not been verified or validated and are subject to change.  
+  
+::: 
