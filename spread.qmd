@@ -1,6 +1,6 @@
 ---
-title: "Overview"
-description: "Analyses of ISP outputs from a FMDV preclinical transmission model in U.S. cattle"
+title: "Spread"
+description: "Calculate epidemic velocity, effective reproduction (Re), and cumulative spread of simulated outbreaks"
 format:
   html: 
     df-print: kable

@@ -1,6 +1,6 @@
 ---
-title: "Overview"
-description: "Analyses of ISP outputs from a FMDV preclinical transmission model in U.S. cattle"
+title: "Epidemic Duration"
+description: "Summarize the epidemic duration of simulated outbreaks"
 format:
   html: 
     df-print: kable

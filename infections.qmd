@@ -1,6 +1,6 @@
 ---
-title: "Overview"
-description: "Analyses of ISP outputs from a FMDV preclinical transmission model in U.S. cattle"
+title: "Outbreak Magnitude"
+description: "Summarize the number of farms and total cattle infected in simulated outbreaks"
 format:
   html: 
     df-print: kable

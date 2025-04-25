@@ -6,14 +6,10 @@ website:
   title: "FMD Preclinical Spread"
   navbar:
     left:
+      - href: infections.qmd
+        text: Outbreak Magnitude
       - href: duration.qmd
-        text: Outbreak Duration
-      - href: Re.qmd
-        text: Effective Reproduction (Re)
-      - href: velocity.qmd
-        text: Epidemic Velocity
-      - href: spread.qmd
-        text: Geographic Extent
+        text: Epidemic Duration
     right:
       - href: https://geoepi.github.io/
         text: GeoEpi
