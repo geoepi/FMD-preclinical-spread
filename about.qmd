@@ -1,9 +1,13 @@
 ---
 title: "About"
+description: "This site provides a demonstrative workflow for analyses of ISP outputs"
 ---
 
-About this site
+::: {.callout-important icon=true}
+#### Under Active Development  
 
-```{r}
-1 + 1
-```
+This site includes exploratory analyses that have not been verified or validated and are subject to change. 
+  
+:::
+
+

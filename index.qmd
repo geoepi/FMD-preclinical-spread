@@ -38,4 +38,26 @@ pre {
 
 This site includes exploratory analyses that have not been verified or validated and are subject to change. 
   
-::: 
+:::
+  
+  
+### Navigation  
+The menu at right can be used to navigate through major sections on a webpage.  Links across the top of the page will direct to specific analyses.
+
+## Load Libraries  
+Load needed R-packages to execute code.
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(usefun)
+library(ggplot2)
+library(here)
+
+select <- dplyr::select
+```
+
+## Custom Functions  
+Custom functions to process ISP outputs and generate figure plots.  These are available from the linked repository at the top of the script.  
+```{r message=FALSE, warning=FALSE}
+source(here("./R/utilities.R"))
+source_dir("./R")
+```
