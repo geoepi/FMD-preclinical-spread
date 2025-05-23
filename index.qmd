@@ -61,3 +61,8 @@ Custom functions to process ISP outputs and generate figure plots.  These are av
 source(here("./R/utilities.R"))
 source_dir("./R")
 ```
+
+## Assign File Path
+```{r}
+generic_path <- "./script-inputs/isp-outputs"
+```
