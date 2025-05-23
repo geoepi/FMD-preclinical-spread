@@ -6,6 +6,8 @@ website:
   title: "FMD Preclinical Spread"
   navbar:
     left:
+      - href: data_preparation.qmd
+        text: Data Preparation
       - href: infections.qmd
         text: Outbreak Magnitude
       - href: duration.qmd

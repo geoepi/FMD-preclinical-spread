@@ -1,0 +1,73 @@
+---
+title: "Data Preparation"
+description: "Load and format modeling data for analysis"
+format:
+  html: 
+    df-print: kable
+    code-fold: show
+    code-summary: "Hide code"
+    code-overflow: wrap
+    toc-title: Page Contents
+    toc: true
+    toc-depth: 2
+    toc-location: right
+    number-sections: false
+    html-math-method: katex
+    smooth-scroll: true
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+```{=html}
+<style type="text/css">
+
+body, td {
+   font-size: 13pt;
+}
+code.r{
+  font-size: 9pt;
+}
+pre {
+  font-size: 11pt
+}
+</style>
+```
+
+## Load Libraries  
+Load needed R-packages to execute code.
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(usefun)
+library(ggplot2)
+library(here)
+
+select <- dplyr::select
+```
+
+## Custom Functions  
+Custom functions to process ISP outputs and generate figure plots.  These are available from the linked repository at the top of the script.  
+```{r message=FALSE, warning=FALSE}
+source(here("./R/utilities.R"))
+source_dir("./R")
+```
+
+## Import Data
+The `import_infection_data` function reads a `.txt` file containing infection events (`Outputs_Infection.txt`) for a specified region assigned to `regional_scenario`.
+
+### Assign File Path
+```{r}
+generic_path <- "./script-inputs/isp-outputs"
+
+## Assign regional scenario
+regional_scenario <- "eastern"
+
+regional_path <- sprintf("%s/outputs_%s", generic_path, regional_scenario)
+```
+
+
+### Import infection data
+```{r}
+infection <- import_infection_data(regional_path)
+
+dim(infection)
+```
