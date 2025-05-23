@@ -33,16 +33,26 @@ pre {
 }
 </style>
 ```
-::: {.callout-important icon="true"}
-#### Under Active Development
 
-This site includes exploratory analyses that have not been verified or validated and are subject to change.
-:::
 
-## Import Infection Data
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)
+options(dplyr.summarise.inform = FALSE)
 
+library(usefun)
+library(ggplot2)
+library(here)
+
+## Custom Functions
+source(here("./R/utilities.R"))
+source_dir("./R")
+
+## Assign file path 
+generic_path <- "./script-inputs/isp-outputs"
+```
+
+## Import Data
 The `import_infection_data` function reads a `.txt` file containing infection events (`Outputs_Infection.txt`) for a specified region assigned to `regional_scenario`.
-
 ```{r}
 ## Assign regional scenario
 regional_scenario <- "eastern"
@@ -53,48 +63,46 @@ regional_path <- sprintf("%s/outputs_%s", generic_path, regional_scenario)
 infection <- import_infection_data(regional_path)
 ```
 
-## Summarize Infection Data
-
+## Infection Summary
 Generate Infection Summary for all Durations of Incubation Phase Transmission and all Response Types
-
 ```{r}
-## Call functions
 infect_summary <- summarize_infections(infection)
+
+head(infect_summary, 3)
 
 infect_config_summary <- generate_infect_statistics(infect_summary)
 
-## Filter summary to number of infected farms
+## Summarize number of infected farms
 farms_inf_summary <- infect_config_summary %>%    
   filter(summary == "farms_infected")
 
-## Filter summary to number of infected cattle
+farms_inf_summary
+
+## Summary number of cattle on infected farms
 cattle_inf_summary <- infect_config_summary %>%    
   filter(summary == "cattle_infected")
+
+cattle_inf_summary
 ```
 
 ## Significance Test
-
 Significance testing performed on optimal and suboptimal detection scenarios
-
 ```{r}
 ## Filter out low virulence scenarios
 no_low_virulence <- infection %>%
   filter(response != "low-virulence")
 
-## Call summarize_infections function
 no_low_virulence_summary <- summarize_infections(no_low_virulence)
 
-## Prepare for significance test
 range(no_low_virulence_summary$cattle_infected) # high values
 plot(density(no_low_virulence_summary$cattle_infected)) #long tail
 
-## Need to normalize
+## Log scale to normalize data
 range(log(no_low_virulence_summary$cattle_infected))
 plot(density(log(no_low_virulence_summary$cattle_infected)))
 ```
 
 ### Linear Model
-
 ```{r}
 model_inf_cattle <- lm(log(cattle_infected) ~ preclinical_days * response, 
                        data = no_low_virulence_summary)
@@ -103,17 +111,13 @@ summary(model_inf_cattle)
 ```
 
 ### Analysis of Variance (ANOVA)
-
 ```{r}
 anova(model_inf_cattle)
 ```
 
-## Plot Infected Cattle Across Detection Scenarios
-
+## Plot Cattle Numbers
 Prepare to plot the median number of infected cattle by scenario
-
 ```{r}
-## Order
 cattle_inf_summary$response <- ordered(factor(cattle_inf_summary$response), c("optimal", "suboptimal", "low-virulence"))
 
 ## Assign response colors
@@ -121,12 +125,7 @@ response_colors <- c("#74add1", "orange2", "red4")
 ```
 
 ### Generate Plot Using Patchwork Package
-
 The `plot_infected_cattle` function plots infected cattle by scenario, with the duration of incubation phase transmission on the x-axis and the median number of infected cattle on the y-axis.
-
 ```{r}
-## Call function
 infect_cattle_plot <- plot_infected_cattle(cattle_inf_summary, regional_scenario)
-
-infect_cattle_plot
 ```
