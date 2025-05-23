@@ -33,9 +33,84 @@ pre {
 </style>
 ```
 
-::: {.callout-important icon=true}
-#### Under Active Development  
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)
+options(dplyr.summarise.inform = FALSE)
 
-This site includes exploratory analyses that have not been verified or validated and are subject to change. 
-  
-::: 
+library(usefun)
+library(ggplot2)
+library(here)
+
+## Custom Functions
+source(here("./R/utilities.R"))
+source_dir("./R")
+
+## Assign file path 
+generic_path <- "./script-inputs/isp-outputs"
+
+## Assign regional scenario
+regional_scenario <- "eastern"
+
+regional_path <- sprintf("%s/outputs_%s", generic_path, regional_scenario)
+
+## Import detection data
+detection <- import_detection_data(regional_path)
+```
+
+## Detection Summary
+The `summarize_detections` function generates a data frame summarizing detection events by iteration. The `generate_detect_statistics` generates a data frame of summary statistics grouped by preclinical infectious duration and response type.
+```{r}
+detect_summary <- summarize_detections(detection)
+
+head(detect_summary, 3)
+
+detect_config_summary <- generate_detect_statistics(detect_summary)
+
+## Epidemic duration summary
+duration_summary <- detect_config_summary %>%                                   
+  filter(summary == "duration")
+
+dim(duration_summary)
+
+head(duration_summary, 3)
+```
+
+## Plot Epidemic Duration
+Prepare to plot the calculated median epidemic duration (days)
+```{r}
+duration_summary$response <- ordered(factor(duration_summary$response), c("optimal", "suboptimal", "low-virulence"))
+
+response_colors <- c("#74add1", "orange2", "red4") 
+```
+
+### Generate Plot Using Patchwork Package
+The `plot_epidemic_duration` function plots epidemic duration by scenario, with epidemic duration (days) on the x-axis and the duration of incubation phase transmission on the y-axis.
+```{r}
+duration_plot <- plot_epidemic_duration(duration_summary, regional_scenario)
+```
+
+## Significance Test
+Significance testing performed on optimal and suboptimal detection scenarios
+```{r}
+## Filter out low virulence scenarios
+no_low_virulence <- detection %>%
+  filter(response != "low-virulence")
+
+no_low_virulence_summary <- summarize_detections(no_low_virulence)
+
+range(no_low_virulence_summary$duration)
+plot(density(no_low_virulence_summary$duration))
+```
+
+### Linear Model
+```{r}
+model_duration <- lm(duration ~ preclinical_days * response, 
+                       data = no_low_virulence_summary)
+
+summary(model_duration)
+```
+
+### Analysis of Variance (ANOVA)
+```{r}
+anova(model_duration)
+```
