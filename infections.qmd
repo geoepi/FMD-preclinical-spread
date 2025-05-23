@@ -123,8 +123,7 @@ model_inf_cattle <- lm(log(cattle_infected) ~ preclinical_days * response,
 summary(model_inf_cattle)
 ```
 
-### ANOVA
-Analysis of Variance
+### Analysis of Variance (ANOVA)
 ```{r}
 anova(model_inf_cattle)
 ```
