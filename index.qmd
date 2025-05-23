@@ -1,6 +1,6 @@
 ---
 title: "Overview"
-description: "Analyses of ISP outputs from a FMDV preclinical transmission model in U.S. cattle"
+description: ""
 format:
   html: 
     df-print: kable
