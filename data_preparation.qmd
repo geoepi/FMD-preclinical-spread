@@ -64,10 +64,16 @@ regional_scenario <- "eastern"
 regional_path <- sprintf("%s/outputs_%s", generic_path, regional_scenario)
 ```
 
-
 ### Import infection data
 ```{r}
 infection <- import_infection_data(regional_path)
 
 dim(infection)
+```
+
+### Import detection data
+```{r}
+detection <- import_detection_data(regional_path)
+
+dim(detection)
 ```
