@@ -66,27 +66,18 @@ head(detect_summary, 3)
 
 detect_config_summary <- generate_detect_statistics(detect_summary)
 
-## Epidemic duration summary
-duration_summary <- detect_config_summary %>%                                   
+head(detect_config_summary, 3)
+```
+
+## Epidemic Duration
+```{r}
+duration_summary <- detect_config_summary %>%         
   filter(summary == "duration")
 
 dim(duration_summary)
 
-head(duration_summary, 3)
-```
-
-## Plot Epidemic Duration
-Prepare to plot the calculated median epidemic duration (days)
-```{r}
-duration_summary$response <- ordered(factor(duration_summary$response), c("optimal", "suboptimal", "low-virulence"))
-
-response_colors <- c("#74add1", "orange2", "red4") 
-```
-
-### Generate Plot Using Patchwork Package
-The `plot_epidemic_duration` function plots epidemic duration by scenario, with epidemic duration (days) on the x-axis and the duration of incubation phase transmission on the y-axis.
-```{r}
-duration_plot <- plot_epidemic_duration(duration_summary, regional_scenario)
+## Print summary of Epidemic Duration (days)
+duration_summary
 ```
 
 ## Significance Test
@@ -113,4 +104,22 @@ summary(model_duration)
 ### Analysis of Variance (ANOVA)
 ```{r}
 anova(model_duration)
+```
+
+## Plot Duration
+Prepare to plot the calculated median epidemic duration (days)
+```{r}
+duration_summary$response <- ordered(factor(duration_summary$response), c("optimal", "suboptimal", "low-virulence"))
+
+response_colors <- c("#74add1", "orange2", "red4") 
+```
+
+### Generate Plot Using Patchwork Package
+The `plot_epidemic_duration` function plots epidemic duration by scenario, with epidemic duration (days) on the x-axis and the duration of incubation phase transmission on the y-axis.
+```{r, message = FALSE, warning = FALSE}
+duration_plot <- plot_epidemic_duration(duration_summary, regional_scenario)
+```
+
+```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
+duration_plot
 ```
