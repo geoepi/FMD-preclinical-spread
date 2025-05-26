@@ -40,6 +40,8 @@ library(tidyverse)
 library(usefun)
 library(ggplot2)
 library(here)
+library(patchwork)
+library(scales)
 
 select <- dplyr::select
 ```
@@ -51,10 +53,7 @@ source(here("./R/utilities.R"))
 source_dir("./R")
 ```
 
-## Import Data
-The `import_infection_data` function reads a `.txt` file containing infection events (`Outputs_Infection.txt`) for a specified region assigned to `regional_scenario`.
-
-### Assign File Path
+## Assign File Path
 ```{r}
 generic_path <- "./script-inputs/isp-outputs"
 
@@ -64,14 +63,18 @@ regional_scenario <- "eastern"
 regional_path <- sprintf("%s/outputs_%s", generic_path, regional_scenario)
 ```
 
-### Import infection data
+## Import Data
+
+### Import Infection Data
+The `import_infection_data` function reads a `.txt` file containing infection events (`Outputs_Infection.txt`) for a specified region.
 ```{r}
 infection <- import_infection_data(regional_path)
 
 dim(infection)
 ```
 
-### Import detection data
+### Import Detection Data
+The `import_detection_data` function reads a `.txt` file containing detection events (`Outputs_Detection.txt`) for a specified region.
 ```{r}
 detection <- import_detection_data(regional_path)
 
