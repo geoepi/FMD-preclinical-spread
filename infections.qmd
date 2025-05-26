@@ -62,40 +62,31 @@ infection <- import_infection_data(regional_path)
 ## Infection Summary
 The `summarize_infections` function generates a data frame summarizing infection events by iteration. The `generate_infect_statistics` generates a data frame of summary statistics grouped by preclinical infectious duration and response type.
 ```{r}
+## Summarize infection metrics for each iteration
 infect_summary <- summarize_infections(infection)
 
 head(infect_summary, 3)
 
+## Generate summary statistics
 infect_config_summary <- generate_infect_statistics(infect_summary)
 
-head(infect_config_summary, 3)
+dim(infect_config_summary)
+```
 
-## Summarize number of infected farms
+## Summarize Farms
+```{r}
 farms_inf_summary <- infect_config_summary %>%    
   filter(summary == "farms_infected")
 
-dim(farms_inf_summary)
+farms_inf_summary
+```
 
-## Summary number of cattle on infected farms
+## Summarize Cattle
+```{r}
 cattle_inf_summary <- infect_config_summary %>%    
   filter(summary == "cattle_infected")
 
-dim(cattle_inf_summary)
-```
-
-## Plot Cattle Numbers
-Prepare to plot the median number of infected cattle by scenario
-```{r}
-cattle_inf_summary$response <- ordered(factor(cattle_inf_summary$response), c("optimal", "suboptimal", "low-virulence"))
-
-## Assign response colors
-response_colors <- c("#74add1", "orange2", "red4") 
-```
-
-### Generate Plot Using Patchwork Package
-The `plot_infected_cattle` function plots infected cattle by scenario, with the duration of incubation phase transmission on the x-axis and the median number of infected cattle on the y-axis.
-```{r}
-infect_cattle_plot <- plot_infected_cattle(cattle_inf_summary, regional_scenario)
+cattle_inf_summary
 ```
 
 ## Significance Test
@@ -126,4 +117,23 @@ summary(model_inf_cattle)
 ### Analysis of Variance (ANOVA)
 ```{r}
 anova(model_inf_cattle)
+```
+
+## Plot Cattle Numbers
+Prepare to plot the median number of infected cattle by scenario
+```{r}
+cattle_inf_summary$response <- ordered(factor(cattle_inf_summary$response), c("optimal", "suboptimal", "low-virulence"))
+
+## Assign response colors
+response_colors <- c("#74add1", "orange2", "red4") 
+```
+
+### Generate Plot Using Patchwork Package
+The `plot_infected_cattle` function plots infected cattle by scenario, with the duration of incubation phase transmission on the x-axis and the median number of infected cattle on the y-axis.
+```{r, message = FALSE, warning = FALSE}
+infect_cattle_plot <- plot_infected_cattle(cattle_inf_summary, regional_scenario)
+```
+
+```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
+infect_cattle_plot
 ```
