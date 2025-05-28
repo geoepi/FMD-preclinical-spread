@@ -42,6 +42,12 @@ library(ggplot2)
 library(here)
 library(patchwork)
 library(scales)
+library(geosphere)
+library(terra)
+library(raster)
+library(sf)
+library(viridis)
+library(pals)
 
 select <- dplyr::select
 ```
@@ -79,4 +85,31 @@ The `import_detection_data` function reads a `.txt` file containing detection ev
 detection <- import_detection_data(regional_path)
 
 dim(detection)
+```
+
+## Read Farm Reference File
+The FMD Farm Reference File used for this project contains geographic coordinates for theoretical farm locations. Premises data were generated using the Farm Location and Agricultural Production Simulator (FLAPS, see Burdett et al. 2015) and do not reflect true farm locations. Farm demographics are based upon National Agricultural Statistical Service (NASS) Census of Agriculture data.
+```{r}
+reference <- read.csv2(here("script-inputs/reference-files/FMD_Reference_File.csv"), header=TRUE, sep=",")
+
+colnames(reference) <- c(
+                      "premises",
+                      "class",
+                      "cattle",
+                      "weight",
+                      "x",
+                      "y",
+                      "state",
+                      "longitude",
+                      "latitude",
+                      "geo_region"
+                      )
+
+## Select columns needed for spread analyses
+reference <- reference %>%
+  mutate(longitude = as.numeric(longitude),
+         latitude = as.numeric(latitude)) %>%
+  select(-c(weight, cattle, x, y, geo_region))
+
+dim(reference)
 ```
