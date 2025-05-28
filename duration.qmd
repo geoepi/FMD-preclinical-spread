@@ -40,6 +40,8 @@ options(dplyr.summarise.inform = FALSE)
 library(usefun)
 library(ggplot2)
 library(here)
+library(patchwork)
+library(scales)
 
 ## Custom Functions
 source(here("./R/utilities.R"))
@@ -70,6 +72,7 @@ head(detect_config_summary, 3)
 ```
 
 ## Epidemic Duration
+The *epidemic duration* is calculated as the number of days between the first detection and last detection of disease in a single outbreak.
 ```{r}
 duration_summary <- detect_config_summary %>%         
   filter(summary == "duration")

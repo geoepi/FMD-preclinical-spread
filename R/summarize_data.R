@@ -51,6 +51,7 @@ summarize_detections <- function(detection) {
   detect_summary <- detection %>% 
     group_by(response, preclinical_days, iteration) %>% 
     summarize(
+      farms_detected = n(),
       first_detect = min(detect_day, na.rm = TRUE),
       last_detect = max(detect_day, na.rm = TRUE),
       duration = last_detect - first_detect
@@ -64,13 +65,13 @@ summarize_detections <- function(detection) {
 generate_detect_statistics <- function(summary) {
   
   config_long <-pivot_longer(summary,
-                             cols = first_detect:duration,
+                             cols = farms_detected:duration,
                              names_to = "summary",
                              values_to = "n")
   
   config_long <- config_long %>% 
     ungroup() %>% 
-    mutate(summary=factor(summary, levels=c("first_detect", "last_detect", "duration")))
+    mutate(summary=factor(summary, levels=c("farms_detected", "first_detect", "last_detect", "duration")))
   
   detect_summary_statistics <- config_long %>% 
     group_by(summary, response, preclinical_days) %>% 

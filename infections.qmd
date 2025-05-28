@@ -42,6 +42,8 @@ options(dplyr.summarise.inform = FALSE)
 library(usefun)
 library(ggplot2)
 library(here)
+library(patchwork)
+library(scales)
 
 ## Custom Functions
 source(here("./R/utilities.R"))
