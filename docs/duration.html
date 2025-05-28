@@ -182,8 +182,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul class="collapse">
   <li><a href="#detection-summary" id="toc-detection-summary" class="nav-link active" data-scroll-target="#detection-summary">Detection Summary</a></li>
-  <li><a href="#plot-epidemic-duration" id="toc-plot-epidemic-duration" class="nav-link" data-scroll-target="#plot-epidemic-duration">Plot Epidemic Duration</a></li>
+  <li><a href="#epidemic-duration" id="toc-epidemic-duration" class="nav-link" data-scroll-target="#epidemic-duration">Epidemic Duration</a></li>
   <li><a href="#significance-test" id="toc-significance-test" class="nav-link" data-scroll-target="#significance-test">Significance Test</a></li>
+  <li><a href="#plot-duration" id="toc-plot-duration" class="nav-link" data-scroll-target="#plot-duration">Plot Duration</a></li>
   </ul>
 </nav>
     </div>
@@ -291,34 +292,118 @@ pre {
 <summary>Hide code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>detect_config_summary <span class="ot">&lt;-</span> <span class="fu">generate_detect_statistics</span>(detect_summary)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Epidemic duration summary</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>duration_summary <span class="ot">&lt;-</span> detect_config_summary <span class="sc">%&gt;%</span>                                   </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(summary <span class="sc">==</span> <span class="st">"duration"</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(duration_summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(detect_config_summary, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 13%">
+<col style="width: 21%">
+<col style="width: 13%">
+<col style="width: 6%">
+<col style="width: 3%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 4%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">summary</th>
+<th style="text-align: left;">response</th>
+<th style="text-align: left;">preclinical_days</th>
+<th style="text-align: right;">iterations</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">q05</th>
+<th style="text-align: right;">q25</th>
+<th style="text-align: right;">q50</th>
+<th style="text-align: right;">q75</th>
+<th style="text-align: right;">q95</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">first_detect</td>
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">first_detect</td>
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">first_detect</td>
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="epidemic-duration" class="level2">
+<h2 class="anchored" data-anchor-id="epidemic-duration">Epidemic Duration</h2>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>duration_summary <span class="ot">&lt;-</span> detect_config_summary <span class="sc">%&gt;%</span>         </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(summary <span class="sc">==</span> <span class="st">"duration"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(duration_summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  9 11</code></pre>
 </div>
 <details open="">
 <summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(duration_summary, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Print summary of Epidemic Duration (days)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>duration_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="table table-sm table-striped">
 <colgroup>
-<col style="width: 9%">
-<col style="width: 11%">
-<col style="width: 18%">
-<col style="width: 11%">
+<col style="width: 8%">
+<col style="width: 13%">
+<col style="width: 16%">
+<col style="width: 10%">
 <col style="width: 7%">
-<col style="width: 9%">
+<col style="width: 8%">
+<col style="width: 5%">
 <col style="width: 6%">
-<col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 7%">
-<col style="width: 7%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 6%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -344,8 +429,8 @@ pre {
 <td style="text-align: right;">47.752</td>
 <td style="text-align: right;">34.86393</td>
 <td style="text-align: right;">9.00</td>
-<td style="text-align: right;">23</td>
-<td style="text-align: right;">38</td>
+<td style="text-align: right;">23.00</td>
+<td style="text-align: right;">38.0</td>
 <td style="text-align: right;">63.25</td>
 <td style="text-align: right;">118.05</td>
 </tr>
@@ -357,8 +442,8 @@ pre {
 <td style="text-align: right;">62.646</td>
 <td style="text-align: right;">45.47743</td>
 <td style="text-align: right;">11.95</td>
-<td style="text-align: right;">28</td>
-<td style="text-align: right;">53</td>
+<td style="text-align: right;">28.00</td>
+<td style="text-align: right;">53.0</td>
 <td style="text-align: right;">80.00</td>
 <td style="text-align: right;">157.10</td>
 </tr>
@@ -370,10 +455,88 @@ pre {
 <td style="text-align: right;">81.336</td>
 <td style="text-align: right;">61.12757</td>
 <td style="text-align: right;">13.95</td>
-<td style="text-align: right;">35</td>
-<td style="text-align: right;">64</td>
+<td style="text-align: right;">35.00</td>
+<td style="text-align: right;">64.0</td>
 <td style="text-align: right;">110.25</td>
 <td style="text-align: right;">205.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">duration</td>
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">107.550</td>
+<td style="text-align: right;">72.39352</td>
+<td style="text-align: right;">17.95</td>
+<td style="text-align: right;">47.00</td>
+<td style="text-align: right;">95.0</td>
+<td style="text-align: right;">152.25</td>
+<td style="text-align: right;">250.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">duration</td>
+<td style="text-align: left;">optimal</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">17.258</td>
+<td style="text-align: right;">15.70875</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">15.0</td>
+<td style="text-align: right;">25.00</td>
+<td style="text-align: right;">50.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">duration</td>
+<td style="text-align: left;">optimal</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">23.564</td>
+<td style="text-align: right;">21.14465</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">9.75</td>
+<td style="text-align: right;">19.0</td>
+<td style="text-align: right;">31.00</td>
+<td style="text-align: right;">68.10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">duration</td>
+<td style="text-align: left;">optimal</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">32.520</td>
+<td style="text-align: right;">30.70712</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">14.00</td>
+<td style="text-align: right;">24.0</td>
+<td style="text-align: right;">41.00</td>
+<td style="text-align: right;">94.05</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">duration</td>
+<td style="text-align: left;">optimal</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">39.916</td>
+<td style="text-align: right;">32.17738</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">16.00</td>
+<td style="text-align: right;">29.5</td>
+<td style="text-align: right;">56.25</td>
+<td style="text-align: right;">104.10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">duration</td>
+<td style="text-align: left;">low-virulence</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">284.674</td>
+<td style="text-align: right;">79.92990</td>
+<td style="text-align: right;">76.95</td>
+<td style="text-align: right;">259.75</td>
+<td style="text-align: right;">318.5</td>
+<td style="text-align: right;">341.00</td>
+<td style="text-align: right;">341.00</td>
 </tr>
 </tbody>
 </table>
@@ -381,71 +544,29 @@ pre {
 </div>
 </div>
 </section>
-<section id="plot-epidemic-duration" class="level2">
-<h2 class="anchored" data-anchor-id="plot-epidemic-duration">Plot Epidemic Duration</h2>
-<p>Prepare to plot the calculated median epidemic duration (days)</p>
-<div class="cell">
-<details open="">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>duration_summary<span class="sc">$</span>response <span class="ot">&lt;-</span> <span class="fu">ordered</span>(<span class="fu">factor</span>(duration_summary<span class="sc">$</span>response), <span class="fu">c</span>(<span class="st">"optimal"</span>, <span class="st">"suboptimal"</span>, <span class="st">"low-virulence"</span>))</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>response_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#74add1"</span>, <span class="st">"orange2"</span>, <span class="st">"red4"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<section id="generate-plot-using-patchwork-package" class="level3">
-<h3 class="anchored" data-anchor-id="generate-plot-using-patchwork-package">Generate Plot Using Patchwork Package</h3>
-<p>The <code>plot_epidemic_duration</code> function plots epidemic duration by scenario, with epidemic duration (days) on the x-axis and the duration of incubation phase transmission on the y-axis.</p>
-<div class="cell">
-<details open="">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>duration_plot <span class="ot">&lt;-</span> <span class="fu">plot_epidemic_duration</span>(duration_summary, regional_scenario)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: scales</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'scales'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:purrr':
-
-    discard</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:readr':
-
-    col_factor</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: patchwork</code></pre>
-</div>
-</div>
-</section>
-</section>
 <section id="significance-test" class="level2">
 <h2 class="anchored" data-anchor-id="significance-test">Significance Test</h2>
 <p>Significance testing performed on optimal and suboptimal detection scenarios</p>
 <div class="cell">
 <details open="">
 <summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter out low virulence scenarios</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>no_low_virulence <span class="ot">&lt;-</span> detection <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(response <span class="sc">!=</span> <span class="st">"low-virulence"</span>)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>no_low_virulence_summary <span class="ot">&lt;-</span> <span class="fu">summarize_detections</span>(no_low_virulence)</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(no_low_virulence_summary<span class="sc">$</span>duration)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter out low virulence scenarios</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>no_low_virulence <span class="ot">&lt;-</span> detection <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(response <span class="sc">!=</span> <span class="st">"low-virulence"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>no_low_virulence_summary <span class="ot">&lt;-</span> <span class="fu">summarize_detections</span>(no_low_virulence)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(no_low_virulence_summary<span class="sc">$</span>duration)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]   2 343</code></pre>
 </div>
 <details open="">
 <summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(no_low_virulence_summary<span class="sc">$</span>duration))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(no_low_virulence_summary<span class="sc">$</span>duration))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="duration_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="duration_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <section id="linear-model" class="level3">
@@ -453,10 +574,10 @@ Attaching package: 'scales'</code></pre>
 <div class="cell">
 <details open="">
 <summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model_duration <span class="ot">&lt;-</span> <span class="fu">lm</span>(duration <span class="sc">~</span> preclinical_days <span class="sc">*</span> response, </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> no_low_virulence_summary)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_duration)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>model_duration <span class="ot">&lt;-</span> <span class="fu">lm</span>(duration <span class="sc">~</span> preclinical_days <span class="sc">*</span> response, </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> no_low_virulence_summary)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_duration)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -491,7 +612,7 @@ F-statistic: 253.2 on 7 and 3992 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <details open="">
 <summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_duration)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_duration)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -550,6 +671,37 @@ F-statistic: 253.2 on 7 and 3992 DF,  p-value: &lt; 2.2e-16</code></pre>
 </tbody>
 </table>
 </div>
+</div>
+</div>
+</section>
+</section>
+<section id="plot-duration" class="level2">
+<h2 class="anchored" data-anchor-id="plot-duration">Plot Duration</h2>
+<p>Prepare to plot the calculated median epidemic duration (days)</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>duration_summary<span class="sc">$</span>response <span class="ot">&lt;-</span> <span class="fu">ordered</span>(<span class="fu">factor</span>(duration_summary<span class="sc">$</span>response), <span class="fu">c</span>(<span class="st">"optimal"</span>, <span class="st">"suboptimal"</span>, <span class="st">"low-virulence"</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>response_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#74add1"</span>, <span class="st">"orange2"</span>, <span class="st">"red4"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="generate-plot-using-patchwork-package" class="level3">
+<h3 class="anchored" data-anchor-id="generate-plot-using-patchwork-package">Generate Plot Using Patchwork Package</h3>
+<p>The <code>plot_epidemic_duration</code> function plots epidemic duration by scenario, with epidemic duration (days) on the x-axis and the duration of incubation phase transmission on the y-axis.</p>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>duration_plot <span class="ot">&lt;-</span> <span class="fu">plot_epidemic_duration</span>(duration_summary, regional_scenario)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details open="">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>duration_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="duration_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="1152"></p>
 </div>
 </div>
 

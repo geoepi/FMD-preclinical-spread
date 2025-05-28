@@ -183,6 +183,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul class="collapse">
   <li><a href="#load-libraries" id="toc-load-libraries" class="nav-link active" data-scroll-target="#load-libraries">Load Libraries</a></li>
   <li><a href="#custom-functions" id="toc-custom-functions" class="nav-link" data-scroll-target="#custom-functions">Custom Functions</a></li>
+  <li><a href="#assign-file-path" id="toc-assign-file-path" class="nav-link" data-scroll-target="#assign-file-path">Assign File Path</a></li>
   <li><a href="#import-data" id="toc-import-data" class="nav-link" data-scroll-target="#import-data">Import Data</a></li>
   </ul>
 </nav>
@@ -234,8 +235,10 @@ pre {
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(usefun)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>select <span class="ot">&lt;-</span> dplyr<span class="sc">::</span>select</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>select <span class="ot">&lt;-</span> dplyr<span class="sc">::</span>select</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -250,11 +253,8 @@ pre {
 </details>
 </div>
 </section>
-<section id="import-data" class="level2">
-<h2 class="anchored" data-anchor-id="import-data">Import Data</h2>
-<p>The <code>import_infection_data</code> function reads a <code>.txt</code> file containing infection events (<code>Outputs_Infection.txt</code>) for a specified region assigned to <code>regional_scenario</code>.</p>
-<section id="assign-file-path" class="level3">
-<h3 class="anchored" data-anchor-id="assign-file-path">Assign File Path</h3>
+<section id="assign-file-path" class="level2">
+<h2 class="anchored" data-anchor-id="assign-file-path">Assign File Path</h2>
 <div class="cell">
 <details open="">
 <summary>Hide code</summary>
@@ -267,8 +267,11 @@ pre {
 </details>
 </div>
 </section>
+<section id="import-data" class="level2">
+<h2 class="anchored" data-anchor-id="import-data">Import Data</h2>
 <section id="import-infection-data" class="level3">
-<h3 class="anchored" data-anchor-id="import-infection-data">Import infection data</h3>
+<h3 class="anchored" data-anchor-id="import-infection-data">Import Infection Data</h3>
+<p>The <code>import_infection_data</code> function reads a <code>.txt</code> file containing infection events (<code>Outputs_Infection.txt</code>) for a specified region.</p>
 <div class="cell">
 <details open="">
 <summary>Hide code</summary>
@@ -282,7 +285,8 @@ pre {
 </div>
 </section>
 <section id="import-detection-data" class="level3">
-<h3 class="anchored" data-anchor-id="import-detection-data">Import detection data</h3>
+<h3 class="anchored" data-anchor-id="import-detection-data">Import Detection Data</h3>
+<p>The <code>import_detection_data</code> function reads a <code>.txt</code> file containing detection events (<code>Outputs_Detection.txt</code>) for a specified region.</p>
 <div class="cell">
 <details open="">
 <summary>Hide code</summary>
