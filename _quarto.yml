@@ -12,8 +12,8 @@ website:
         text: Outbreak Magnitude
       - href: duration.qmd
         text: Epidemic Duration
-      - href: velocity.qmd
-        text: Wave Velocity
+      - href: spread.qmd
+        text: Transmission Metrics
     right:
       - href: https://geoepi.github.io/
         text: GeoEpi
