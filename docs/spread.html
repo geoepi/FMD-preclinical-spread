@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Calculate epidemic velocity, effective reproduction (Re), and cumulative spread of simulated outbreaks">
+<meta name="description" content="Calculate transmission metrics to estimate epidemic potential, velocity, and spread">
 
-<title>Spread – FMD Preclinical Spread</title>
+<title>Transmission Metrics – FMD Preclinical Spread</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -136,8 +136,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Epidemic Duration</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./velocity.html"> 
-<span class="menu-text">Wave Velocity</span></a>
+    <a class="nav-link active" href="./spread.html" aria-current="page"> 
+<span class="menu-text">Transmission Metrics</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -166,8 +166,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Page Contents</h2>
    
   <ul class="collapse">
-  <li><a href="#regional-scenarios" id="toc-regional-scenarios" class="nav-link active" data-scroll-target="#regional-scenarios">Regional Scenarios</a></li>
-  <li><a href="#daily-distances" id="toc-daily-distances" class="nav-link" data-scroll-target="#daily-distances">Daily Distances</a></li>
+  <li><a href="#effective-reproduction" id="toc-effective-reproduction" class="nav-link active" data-scroll-target="#effective-reproduction">Effective Reproduction</a></li>
+  <li><a href="#epidemic-velocity" id="toc-epidemic-velocity" class="nav-link" data-scroll-target="#epidemic-velocity">Epidemic Velocity</a></li>
+  <li><a href="#iteration-metrics" id="toc-iteration-metrics" class="nav-link" data-scroll-target="#iteration-metrics">Iteration Metrics</a></li>
+  <li><a href="#cumulative-spread" id="toc-cumulative-spread" class="nav-link" data-scroll-target="#cumulative-spread">Cumulative Spread</a></li>
+  <li><a href="#peak-spread" id="toc-peak-spread" class="nav-link" data-scroll-target="#peak-spread">Peak Spread</a></li>
   </ul>
 </nav>
     </div>
@@ -176,12 +179,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Spread</h1>
+<h1 class="title">Transmission Metrics</h1>
 </div>
 
 <div>
   <div class="description">
-    Calculate epidemic velocity, effective reproduction (Re), and cumulative spread of simulated outbreaks
+    Calculate transmission metrics to estimate epidemic potential, velocity, and spread
   </div>
 </div>
 
@@ -210,51 +213,603 @@ pre {
   font-size: 11pt
 }
 </style>
-<section id="regional-scenarios" class="level2">
-<h2 class="anchored" data-anchor-id="regional-scenarios">Regional Scenarios</h2>
+<section id="effective-reproduction" class="level2">
+<h2 class="anchored" data-anchor-id="effective-reproduction">Effective Reproduction</h2>
+<p>The Effective Reproduction Number (Re) is the average number of secondary premises infected by a source per day. Re is used to estimate epidemic potential. The <code>calculate_daily_Re()</code> calculates the daily Re by simulation day (<code>combined_daily_Re</code>) and by iteration (<code>iteration_Re</code>).</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>region_paths <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="fu">here</span>(regional_path),</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">recursive =</span> T, <span class="at">pattern=</span> <span class="st">"Outputs_Infection"</span>, <span class="at">full.names=</span><span class="cn">TRUE</span>) </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(region_paths)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Re_tab <span class="ot">&lt;-</span> <span class="fu">calculate_daily_Re</span>(region_paths, reference)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Split scenario names</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>daily_Re <span class="ot">&lt;-</span> Re_tab<span class="sc">$</span>combined_daily_Re <span class="sc">%&gt;%</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">scenario_type =</span> <span class="fu">str_to_title</span>(<span class="fu">word</span>(scenario, <span class="dv">1</span>, <span class="at">sep =</span> <span class="st">"/"</span>)),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">preclinical_delay =</span> <span class="fu">word</span>(scenario, <span class="dv">2</span>, <span class="at">sep =</span> <span class="st">"/"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_replace_all</span>(<span class="st">"-days?-preclinical"</span>, <span class="st">""</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_trim</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste</span>(<span class="st">"Days Preclinical"</span>, .) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_to_title</span>()</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 9</code></pre>
+</div>
+<section id="plot-effective-reproduction" class="level3">
+<h3 class="anchored" data-anchor-id="plot-effective-reproduction">Plot Effective Reproduction</h3>
+<p>The dashed line is at Re = 1</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>daily_Re <span class="ot">&lt;-</span> daily_Re <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">preclinical_delay =</span> <span class="fu">recode</span>(preclinical_delay,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Days Preclinical 0"</span> <span class="ot">=</span> <span class="st">"None"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Days Preclinical 1"</span> <span class="ot">=</span> <span class="st">"1 Day"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Days Preclinical 2"</span> <span class="ot">=</span> <span class="st">"2 Days"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Days Preclinical 3"</span> <span class="ot">=</span> <span class="st">"3 Days"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Days Preclinical 6"</span> <span class="ot">=</span> <span class="st">"6 Days"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>daily_Re<span class="sc">$</span>scenario_type <span class="ot">&lt;-</span> <span class="fu">ordered</span>(<span class="fu">factor</span>(daily_Re<span class="sc">$</span>scenario_type), </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                                      <span class="fu">c</span>(<span class="st">"Optimal"</span>, <span class="st">"Suboptimal"</span>, <span class="st">"Low-Virulence"</span>))</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>daily_Re<span class="sc">$</span>preclinical_delay <span class="ot">&lt;-</span> <span class="fu">ordered</span>(<span class="fu">factor</span>(daily_Re<span class="sc">$</span>preclinical_delay), </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                                      <span class="fu">c</span>(<span class="st">"None"</span>, <span class="st">"1 Day"</span>, <span class="st">"2 Days"</span>, <span class="st">"3 Days"</span>, <span class="st">"6 Days"</span>))</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>myCols <span class="ot">&lt;-</span> <span class="fu">kelly</span>()</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(daily_Re, <span class="fu">aes</span>(infect_day, cred_50, <span class="at">group =</span> scenario, <span class="at">col =</span> preclinical_delay)) <span class="sc">+</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">col=</span><span class="st">"black"</span>, <span class="at">linewidth=</span><span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">span=</span><span class="fl">0.05</span>, <span class="at">se=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"None"</span> <span class="ot">=</span> myCols[<span class="dv">3</span>],</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"1 Day"</span> <span class="ot">=</span> myCols[<span class="dv">4</span>],</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2 Days"</span> <span class="ot">=</span> myCols[<span class="dv">6</span>],</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"3 Days"</span> <span class="ot">=</span> myCols[<span class="dv">7</span>],</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"6 Days"</span> <span class="ot">=</span> myCols[<span class="dv">10</span>]</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">+</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> scenario_type, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Simulation Day"</span>,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Median Effective Reproduction (Re)"</span>,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"Preclinical Duration"</span>,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">" "</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.margin    =</span> <span class="fu">unit</span>(<span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>), <span class="st">"cm"</span>),</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">strip.text     =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">color =</span> <span class="st">"gray40"</span>),</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.x   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">22</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x    =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y    =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.key.width =</span> <span class="fu">unit</span>(<span class="dv">3</span>, <span class="st">"line"</span>),</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.key.height =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">"line"</span>),</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title     =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">22</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="spread_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
-<section id="daily-distances" class="level2">
-<h2 class="anchored" data-anchor-id="daily-distances">Daily Distances</h2>
+</section>
+<section id="epidemic-velocity" class="level2">
+<h2 class="anchored" data-anchor-id="epidemic-velocity">Epidemic Velocity</h2>
+<p>The epidemic velocity is the distance (km) of spread per day. The epidemic velocity is estimated by first calculating the daily spread distances.</p>
+<section id="calculate-daily-distances" class="level3">
+<h3 class="anchored" data-anchor-id="calculate-daily-distances">Calculate Daily Distances</h3>
 <p>The <code>compile_daily_summary()</code> function calculates distances (km) between source farms and those infected for each iteration, then calculates the quantiles by day across all iterations to get the average statistics.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>daily_summary <span class="ot">&lt;-</span> <span class="fu">compile_daily_summary</span>(region_paths, reference)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(daily_summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>daily_summary <span class="ot">&lt;-</span> <span class="fu">compile_daily_summary</span>(region_paths, reference)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "list"</code></pre>
 </div>
+</section>
+<section id="compare-scenarios" class="level3">
+<h3 class="anchored" data-anchor-id="compare-scenarios">Compare Scenarios</h3>
+<p>Drop the low-virulence scenario from <code>combined_summary</code> and calculate percentiles</p>
+<div class="cell">
 <details open="" class="code-fold">
 <summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(daily_summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>daily_all <span class="ot">&lt;-</span> daily_summary<span class="sc">$</span>combined_summary</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>daily_quants <span class="ot">&lt;-</span> daily_summary<span class="sc">$</span>combined_summary <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scenario <span class="sc">!=</span> <span class="st">"low-virulence/6-days-preclinical"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
 </div>
+<p>Compare percentiles across all scenarios and prepare to wave velocity</p>
+<div class="cell">
 <details open="" class="code-fold">
 <summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(daily_summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>my_summary_compare <span class="ot">&lt;-</span> daily_quants <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">scenario_type =</span> <span class="fu">str_to_title</span>(<span class="fu">word</span>(scenario, <span class="dv">1</span>, <span class="at">sep =</span> <span class="st">"/"</span>)),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">preclinical_delay =</span> <span class="fu">word</span>(scenario, <span class="dv">2</span>, <span class="at">sep =</span> <span class="st">"/"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_replace_all</span>(<span class="st">"-days?-preclinical"</span>, <span class="st">""</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_trim</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste</span>(<span class="st">"Days Preclinical"</span>, .) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_to_title</span>()</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>all_summary_compare <span class="ot">&lt;-</span> daily_all <span class="sc">%&gt;%</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">scenario_type =</span> <span class="fu">str_to_title</span>(<span class="fu">word</span>(scenario, <span class="dv">1</span>, <span class="at">sep =</span> <span class="st">"/"</span>)),</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">preclinical_delay =</span> <span class="fu">word</span>(scenario, <span class="dv">2</span>, <span class="at">sep =</span> <span class="st">"/"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_replace_all</span>(<span class="st">"-days?-preclinical"</span>, <span class="st">""</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_trim</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">paste</span>(<span class="st">"Days Preclinical"</span>, .) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_to_title</span>()</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="plot-epidemic-velocity" class="level3">
+<h3 class="anchored" data-anchor-id="plot-epidemic-velocity">Plot Epidemic Velocity</h3>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>all_summary_compare <span class="ot">&lt;-</span> all_summary_compare <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">preclinical_delay =</span> <span class="fu">recode</span>(preclinical_delay,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Days Preclinical 0"</span> <span class="ot">=</span> <span class="st">"None"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Days Preclinical 1"</span> <span class="ot">=</span> <span class="st">"1 Day"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Days Preclinical 2"</span> <span class="ot">=</span> <span class="st">"2 Days"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Days Preclinical 3"</span> <span class="ot">=</span> <span class="st">"3 Days"</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Days Preclinical 6"</span> <span class="ot">=</span> <span class="st">"6 Days"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>all_summary_compare<span class="sc">$</span>scenario_type <span class="ot">&lt;-</span> <span class="fu">ordered</span>(<span class="fu">factor</span>(all_summary_compare<span class="sc">$</span>scenario_type), </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>                                      <span class="fu">c</span>(<span class="st">"Optimal"</span>, <span class="st">"Suboptimal"</span>, <span class="st">"Low-Virulence"</span>))</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>all_summary_compare<span class="sc">$</span>preclinical_delay <span class="ot">&lt;-</span> <span class="fu">ordered</span>(<span class="fu">factor</span>(all_summary_compare<span class="sc">$</span>preclinical_delay), </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>                                      <span class="fu">c</span>(<span class="st">"None"</span>, <span class="st">"1 Day"</span>, <span class="st">"2 Days"</span>, <span class="st">"3 Days"</span>, <span class="st">"6 Days"</span>))</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>myCols <span class="ot">&lt;-</span> <span class="fu">kelly</span>()</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(all_summary_compare, <span class="fu">aes</span>(infect_day, <span class="fu">log</span>(cred_50), </span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>                               <span class="at">group =</span> scenario, <span class="at">col =</span> preclinical_delay)) <span class="sc">+</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">6</span>) <span class="sc">+</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"None"</span> <span class="ot">=</span> myCols[<span class="dv">3</span>],</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"1 Day"</span> <span class="ot">=</span> myCols[<span class="dv">4</span>],</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2 Days"</span> <span class="ot">=</span> myCols[<span class="dv">6</span>],</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"3 Days"</span> <span class="ot">=</span> myCols[<span class="dv">7</span>],</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"6 Days"</span> <span class="ot">=</span> myCols[<span class="dv">10</span>]</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">+</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> scenario_type, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Simulation Day"</span>,</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Distance (log km)"</span>,</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"Preclinical Duration"</span>,</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">" "</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.margin    =</span> <span class="fu">unit</span>(<span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>), <span class="st">"cm"</span>),</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">strip.text     =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">color =</span> <span class="st">"gray40"</span>),</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.x   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">22</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">22</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x    =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y    =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.key.width =</span> <span class="fu">unit</span>(<span class="dv">3</span>, <span class="st">"line"</span>),</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.key.height =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">"line"</span>),</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title     =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">22</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="spread_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="iteration-metrics" class="level2">
+<h2 class="anchored" data-anchor-id="iteration-metrics">Iteration Metrics</h2>
+<p>Compare scenarios by looking for patterns at the level of individual iterations. The <code>iteration_metrics()</code> will use the other output in <code>daily_summary</code> to look at trends between optimal and suboptimal responses.</p>
+<p>The function returns iteration specific metrics:</p>
+<section id="auc_log" class="level4">
+<h4 class="anchored" data-anchor-id="auc_log">auc_log</h4>
+<p>The amount of area (total) under the plotted line (distance x day) above on a log scale, i.e., the Area Under Curve (AUC). This represents the total distance covered during the outbreak`s spread (on the log scale).</p>
+</section>
+<section id="peak_spread" class="level4">
+<h4 class="anchored" data-anchor-id="peak_spread">peak_spread</h4>
+<p>The maximum distance spread in any one day (log scale).</p>
+</section>
+<section id="peak_day" class="level4">
+<h4 class="anchored" data-anchor-id="peak_day">peak_day</h4>
+<p>The infect day that the maximum spread distance (peak_spread) occurred.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate iteration metrics</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>iteration_metrics <span class="ot">&lt;-</span> <span class="fu">iteration_metrics</span>(daily_summary<span class="sc">$</span>daily_distances)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(iteration_metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "combined_summary" "daily_distances" </code></pre>
+<pre><code>[1] 4213    7</code></pre>
+</div>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Print daily iteration metrics</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iteration_metrics, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 16%">
+<col style="width: 12%">
+<col style="width: 25%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">iteration</th>
+<th style="text-align: right;">auc_log</th>
+<th style="text-align: right;">peak_spread</th>
+<th style="text-align: right;">peak_day</th>
+<th style="text-align: right;">preclinical_delay</th>
+<th style="text-align: left;">scenario_type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1008.910</td>
+<td style="text-align: right;">5.706722</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">low-virulence</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1132.437</td>
+<td style="text-align: right;">5.999672</td>
+<td style="text-align: right;">247</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">low-virulence</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1154.273</td>
+<td style="text-align: right;">5.935495</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">low-virulence</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="order-scenario-levels" class="level3">
+<h3 class="anchored" data-anchor-id="order-scenario-levels">Order scenario levels</h3>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Capitalize for labels</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>iteration_metrics<span class="sc">$</span>scenario_type <span class="ot">&lt;-</span> <span class="fu">str_to_title</span>(iteration_metrics<span class="sc">$</span>scenario_type)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>iteration_metrics<span class="sc">$</span>scenario_type <span class="ot">&lt;-</span> <span class="fu">ordered</span>(<span class="fu">factor</span>(iteration_metrics<span class="sc">$</span>scenario_type), </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                                      <span class="fu">c</span>(<span class="st">"Optimal"</span>,<span class="st">"Suboptimal"</span>, <span class="st">"Low-virulence"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="cumulative-spread" class="level2">
+<h2 class="anchored" data-anchor-id="cumulative-spread">Cumulative Spread</h2>
+<p>Cumulative spatial spread is calculated to quantify the geographic extent of simulated outbreaks. First, drop the low-virulence scenario to compare optimal vs.&nbsp;suboptimal detection scenarios.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>iteration_metrics_no_low <span class="ot">&lt;-</span> iteration_metrics <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scenario_type <span class="sc">!=</span> <span class="st">"Low-Virulence"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Plot the estimated Area Under Curve (AUC), which represents total cumulative spread distance, for each response level and preclinical scenario, by iteration (points). Then do a regression (lm) to find the trend across increasing preclinical days.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iteration_metrics_no_low, </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> preclinical_delay, <span class="at">y =</span> auc_log, <span class="at">color =</span> scenario_type)) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">shape=</span><span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> <span class="co"># individual iterations</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">linewidth=</span><span class="fl">1.2</span>) <span class="sc">+</span> <span class="co"># trend</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> scenario_type) <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Suboptimal"</span> <span class="ot">=</span> <span class="st">"#74add1"</span>, <span class="st">"Optimal"</span> <span class="ot">=</span> <span class="st">"orange2"</span>)) <span class="sc">+</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Days Preclinical"</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Cumulative Spread (log AUC)"</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">" "</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.margin    =</span> <span class="fu">unit</span>(<span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>), <span class="st">"cm"</span>),</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">strip.text     =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">color =</span> <span class="st">"gray40"</span>),</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.x   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">22</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">22</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x    =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y    =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title     =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">22</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="spread_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="significance-test" class="level3">
+<h3 class="anchored" data-anchor-id="significance-test">Significance Test</h3>
+<p>Fit a linear model with an interaction term to quantify the influence of <code>preclinical_delay</code> and <code>scenario_type</code> on cumulative outbreak spread (<strong>auc_log</strong>).</p>
+<section id="linear-model" class="level4">
+<h4 class="anchored" data-anchor-id="linear-model">Linear Model</h4>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model_auc <span class="ot">&lt;-</span> <span class="fu">lm</span>(auc_log <span class="sc">~</span> preclinical_delay <span class="sc">*</span> scenario_type, <span class="at">data =</span> iteration_metrics_no_low)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_auc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = auc_log ~ preclinical_delay * scenario_type, data = iteration_metrics_no_low)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-316.97  -79.18  -28.81   47.52  855.07 
+
+Coefficients:
+                                  Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                         78.708      4.674  16.840  &lt; 2e-16 ***
+preclinical_delay                   45.739      2.373  19.276  &lt; 2e-16 ***
+scenario_type.L                     48.654      6.610   7.361 2.28e-13 ***
+preclinical_delay:scenario_type.L   32.891      3.356   9.802  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 150.3 on 3429 degrees of freedom
+  (280 observations deleted due to missingness)
+Multiple R-squared:  0.2637,    Adjusted R-squared:  0.263 
+F-statistic: 409.3 on 3 and 3429 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="analysis-of-variance-anova" class="level4">
+<h4 class="anchored" data-anchor-id="analysis-of-variance-anova">Analysis of Variance (ANOVA)</h4>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_auc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 42%">
+<col style="width: 6%">
+<col style="width: 12%">
+<col style="width: 16%">
+<col style="width: 13%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Df</th>
+<th style="text-align: right;">Sum Sq</th>
+<th style="text-align: right;">Mean Sq</th>
+<th style="text-align: right;">F value</th>
+<th style="text-align: right;">Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">preclinical_delay</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8014986</td>
+<td style="text-align: right;">8014986.44</td>
+<td style="text-align: right;">354.99578</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">scenario_type</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">17537524</td>
+<td style="text-align: right;">17537523.84</td>
+<td style="text-align: right;">776.76326</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">preclinical_delay:scenario_type</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2169123</td>
+<td style="text-align: right;">2169123.39</td>
+<td style="text-align: right;">96.07373</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Residuals</td>
+<td style="text-align: right;">3429</td>
+<td style="text-align: right;">77418915</td>
+<td style="text-align: right;">22577.69</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="peak-spread" class="level2">
+<h2 class="anchored" data-anchor-id="peak-spread">Peak Spread</h2>
+<p>As with cumulative spread above, comparisons can be made using the peak spread rates.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iteration_metrics_no_low, <span class="fu">aes</span>(<span class="at">x =</span> preclinical_delay, <span class="at">y =</span> peak_day, <span class="at">color =</span> scenario_type)) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">shape=</span><span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> <span class="co"># individual iterations</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">linewidth=</span><span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(. <span class="sc">~</span> scenario_type) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Delayed"</span> <span class="ot">=</span> <span class="st">"#74add1"</span>, <span class="st">"Optimal"</span> <span class="ot">=</span> <span class="st">"orange2"</span>)) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Days Preclinical"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Day of Peak Transmission"</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">" "</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.margin    =</span> <span class="fu">unit</span>(<span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>), <span class="st">"cm"</span>),</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">strip.text     =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">color =</span> <span class="st">"gray40"</span>),</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.x   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">22</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">22</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x    =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y    =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">18</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title     =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">22</span>, <span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>)</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="spread_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="significance-test-1" class="level3">
+<h3 class="anchored" data-anchor-id="significance-test-1">Significance Test</h3>
+<p>Fit a linear model with an interaction term to quantify the influence of <em>preclinical_delay</em> and <em>scenario_type</em> on the maximum spread rate and it`s (<em>peak_day</em>).</p>
+<section id="linear-model-1" class="level4">
+<h4 class="anchored" data-anchor-id="linear-model-1">Linear Model</h4>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model_peak <span class="ot">&lt;-</span> <span class="fu">lm</span>(peak_day <span class="sc">~</span> preclinical_delay <span class="sc">*</span> scenario_type, <span class="at">data =</span> iteration_metrics_no_low)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_peak)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = peak_day ~ preclinical_delay * scenario_type, data = iteration_metrics_no_low)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-43.909 -13.940  -6.919   5.852 287.081 
+
+Coefficients:
+                                  Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                        26.3329     0.8619  30.553  &lt; 2e-16 ***
+preclinical_delay                   4.7061     0.4506  10.444  &lt; 2e-16 ***
+scenario_type.L                     6.5160     1.2189   5.346 9.54e-08 ***
+preclinical_delay:scenario_type.L   4.6434     0.6373   7.286 3.87e-13 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 30.38 on 3709 degrees of freedom
+Multiple R-squared:  0.1263,    Adjusted R-squared:  0.1256 
+F-statistic: 178.7 on 3 and 3709 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="analysis-of-variance-anova-1" class="level4">
+<h4 class="anchored" data-anchor-id="analysis-of-variance-anova-1">Analysis of Variance (ANOVA)</h4>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Hide code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_peak)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 41%">
+<col style="width: 6%">
+<col style="width: 14%">
+<col style="width: 15%">
+<col style="width: 12%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Df</th>
+<th style="text-align: right;">Sum Sq</th>
+<th style="text-align: right;">Mean Sq</th>
+<th style="text-align: right;">F value</th>
+<th style="text-align: right;">Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">preclinical_delay</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">97130.83</td>
+<td style="text-align: right;">97130.8281</td>
+<td style="text-align: right;">105.25678</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">scenario_type</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">348554.42</td>
+<td style="text-align: right;">348554.4173</td>
+<td style="text-align: right;">377.71442</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">preclinical_delay:scenario_type</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">48993.79</td>
+<td style="text-align: right;">48993.7929</td>
+<td style="text-align: right;">53.09261</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Residuals</td>
+<td style="text-align: right;">3709</td>
+<td style="text-align: right;">3422660.79</td>
+<td style="text-align: right;">922.7988</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
