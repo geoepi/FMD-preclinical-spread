@@ -59,32 +59,52 @@ source(here("./R/utilities.R"))
 source_dir("./R")
 ```
 
-## Assign File Path
-```{r}
-generic_path <- "./script-inputs/isp-outputs"
-
-## Assign regional scenario
-regional_scenario <- "eastern"
-
-regional_path <- sprintf("%s/outputs_%s", generic_path, regional_scenario)
-```
-
 ## Import Data
 
-### Import Infection Data
-The `import_infection_data` function reads a `.txt` file containing infection events (`Outputs_Infection.txt`) for a specified region.
+### Assign File Path
 ```{r}
-infection <- import_infection_data(regional_path)
+file_path <- "./script-inputs/isp-outputs"
+```
+
+### Import Infection Data
+The `import_infection_data` function reads a `.txt` file containing infection events (`Outputs_Infection.txt`).
+```{r}
+infection <- import_infection_data(file_path)
 
 dim(infection)
+
+## Filter to Central U.S. region
+infection_central <- infection %>%
+  filter(regional_scenario == "central")
+
+dim(infection_central)
+
+## Filter to Eastern U.S. region
+infection_eastern <- infection %>%
+  filter(regional_scenario == "eastern")
+
+dim(infection_eastern)
 ```
 
 ### Import Detection Data
-The `import_detection_data` function reads a `.txt` file containing detection events (`Outputs_Detection.txt`) for a specified region.
+The `import_detection_data` function reads a `.txt` file containing detection events (`Outputs_Detection.txt`).
 ```{r}
-detection <- import_detection_data(regional_path)
+detection <- import_detection_data(file_path)
 
 dim(detection)
+
+## Filter to Central U.S. region
+detection_central <- detection %>%
+  filter(regional_scenario == "central")
+
+dim(detection_central)
+
+## Filter to Eastern U.S. region
+detection_eastern <- detection %>%
+  filter(regional_scenario == "eastern")
+
+dim(detection_eastern)
+```
 ```
 
 ## Read Farm Reference File

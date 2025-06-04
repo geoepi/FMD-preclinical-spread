@@ -16,15 +16,15 @@ require(patchwork)
   
   # optimal
   opt_set <- summary %>%
-    filter(response == "optimal")
+    filter(response_type == "optimal")
   
   # suboptimal
   subopt_set <- summary %>%
-    filter(response == "suboptimal" & preclinical_days != "6")
+    filter(response_type == "suboptimal" & preclinical_days != "6")
   
   # low-virulence
   lowV_set <- summary %>%
-    filter(response == "low-virulence")
+    filter(response_type == "low-virulence")
   
   # "optimal" (optimal detection)
   p_optimal <- ggplot(opt_set, aes(x = preclinical_days, y = q50)) +

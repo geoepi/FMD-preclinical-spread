@@ -2,7 +2,7 @@
 summarize_infections <- function(infection) {
   
   infect_summary <- infection %>% 
-    group_by(response, preclinical_days, iteration) %>% 
+    group_by(region, response_type, preclinical_days, iteration) %>% 
     summarize(
       farms_infected = n(),
       cattle_infected = sum(cattle, na.rm = FALSE),
@@ -10,7 +10,8 @@ summarize_infections <- function(infection) {
       last_infect_day = max(infect_day, na.rm = TRUE)
     ) %>%
     arrange(preclinical_days) %>%
-    arrange(desc(response))
+    arrange(response_type) %>%
+    arrange(region)
   
   return(infect_summary)
 }
@@ -27,7 +28,7 @@ generate_infect_statistics <- function(summary) {
     mutate(summary=factor(summary, levels=c("farms_infected", "cattle_infected", "first_infect_day", "last_infect_day")))
   
   infect_summary_statistics <- config_long %>% 
-    group_by(summary, response, preclinical_days) %>% 
+    group_by(summary, region, response_type, preclinical_days) %>% 
     summarize(
       iterations=n(),
       mean= mean(n, na.rm = TRUE),
@@ -39,7 +40,8 @@ generate_infect_statistics <- function(summary) {
       q95= quantile(n, 0.95, na.rm = TRUE)
     ) %>%
     arrange(preclinical_days) %>%
-    arrange(desc(response)) %>% 
+    arrange(response_type) %>% 
+    arrange(region) %>%
     arrange(summary)
   
   return(infect_summary_statistics)
@@ -49,7 +51,7 @@ generate_infect_statistics <- function(summary) {
 summarize_detections <- function(detection) {
   
   detect_summary <- detection %>% 
-    group_by(response, preclinical_days, iteration) %>% 
+    group_by(response_type, preclinical_days, iteration) %>% 
     summarize(
       farms_detected = n(),
       first_detect = min(detect_day, na.rm = TRUE),
@@ -57,7 +59,8 @@ summarize_detections <- function(detection) {
       duration = last_detect - first_detect
     ) %>%
     arrange(preclinical_days) %>%
-    arrange(desc(response))
+    arrange(response_type) %>%
+    arrange(region)
   
   return(detect_summary)
 }
@@ -74,7 +77,7 @@ generate_detect_statistics <- function(summary) {
     mutate(summary=factor(summary, levels=c("farms_detected", "first_detect", "last_detect", "duration")))
   
   detect_summary_statistics <- config_long %>% 
-    group_by(summary, response, preclinical_days) %>% 
+    group_by(summary, response_type, preclinical_days) %>% 
     summarize(
       iterations=n(),
       mean= mean(n, na.rm = TRUE),
@@ -86,7 +89,8 @@ generate_detect_statistics <- function(summary) {
       q95= quantile(n, 0.95, na.rm = TRUE)
     ) %>%
     arrange(preclinical_days) %>%
-    arrange(desc(response)) %>% 
+    arrange(response_type) %>% 
+    arrange(region) %>%
     arrange(summary)
   
   return(detect_summary_statistics)
