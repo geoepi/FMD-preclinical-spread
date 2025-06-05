@@ -4,8 +4,8 @@ description: "Load and format modeling data for analysis"
 format:
   html: 
     df-print: kable
-    code-fold: show
-    code-summary: "Hide code"
+    code-fold: true
+    code-summary: "Code"
     code-overflow: wrap
     toc-title: Page Contents
     toc: true
@@ -60,55 +60,122 @@ source_dir("./R")
 ```
 
 ## Import Data
-
-### Assign File Path
 ```{r}
+## Assign file path
 file_path <- "./script-inputs/isp-outputs"
 ```
 
-### Import Infection Data
-The `import_infection_data` function reads a `.txt` file containing infection events (`Outputs_Infection.txt`).
+#### Infection Data
+The `import_infection_data()` reads the `Outputs_Infection.txt` files that include data on simulated infection events.
 ```{r}
 infection <- import_infection_data(file_path)
+```
 
+::: panel-tabset
+## All Regions
+Check data frame dimensions
+```{r}
 dim(infection)
+```
 
-## Filter to Central U.S. region
+Check statistics for `infect_day`
+```{r}
+infection %>%
+  summarize(
+    first_day = min(infect_day),
+    mean_day = mean(infect_day),
+    median_day = median(infect_day),
+    last_day = max(infect_day))
+```
+
+#### What does this mean?
+
+Across all scenarios...
+
+## Central U.S.
+```{r}
+## Filter to central region
 infection_central <- infection %>%
   filter(regional_scenario == "central")
+```
 
+Statistics check
+```{r}
 dim(infection_central)
+```
 
-## Filter to Eastern U.S. region
+```{r}
+infection_central %>%
+  summarize(
+    first_infect_day = min(infect_day),
+    mean_infect_day = mean(infect_day),
+    median_infect_day = median(infect_day),
+    last_infect_day = max(infect_day))
+```
+
+## Eastern U.S.
+```{r}
+## Filter to eastern region
 infection_eastern <- infection %>%
   filter(regional_scenario == "eastern")
 
 dim(infection_eastern)
+
+infection_eastern %>%
+  summarize(
+    first_day = min(infect_day),
+    mean_day = mean(infect_day),
+    median_day = median(infect_day),
+    last_day = max(infect_day))
 ```
 
-### Import Detection Data
-The `import_detection_data` function reads a `.txt` file containing detection events (`Outputs_Detection.txt`).
+:::
+
+#### Detection Data
+The `import_detection_data()` reads the `Outputs_Detection.txt` files that include data on simulated detection events.
 ```{r}
 detection <- import_detection_data(file_path)
+```
 
+::: panel-tabset
+## All Regions
+```{r}
 dim(detection)
 
-## Filter to Central U.S. region
+detection %>%
+  summarize(
+    first_day = min(detect_day),
+    mean_day = mean(detect_day),
+    median_day = median(detect_day),
+    last_day = max(detect_day))
+```
+
+## Central U.S.
+```{r}
+## Filter to central region
 detection_central <- detection %>%
   filter(regional_scenario == "central")
 
 dim(detection_central)
 
-## Filter to Eastern U.S. region
+range(detection_central$detect_day)
+```
+
+## Eastern U.S.
+```{r}
+## Filter to eastern region
 detection_eastern <- detection %>%
   filter(regional_scenario == "eastern")
 
 dim(detection_eastern)
-```
+
+range(detection_eastern$detect_day)
 ```
 
+:::
+
 ## Read Farm Reference File
-The FMD Farm Reference File used for this project contains geographic coordinates for theoretical farm locations. Premises data were generated using the Farm Location and Agricultural Production Simulator (FLAPS, see Burdett et al. 2015) and do not reflect true farm locations. Farm demographics are based upon National Agricultural Statistical Service (NASS) Census of Agriculture data.
+The FMD Farm Reference File used for this project contains geographic coordinates for theoretical farm locations. Premises data were generated using the Farm Location and Agricultural Production Simulator (FLAPS, see Burdett et al. 2015) and do not reflect true farm locations. Farm demographics are based upon data collected in the U.S. Census of Agriculture conducted by the USDA National Agricultural Statistical Service (NASS).
 ```{r}
 reference <- read.csv2(here("script-inputs/reference-files/FMD_Reference_File.csv"), header=TRUE, sep=",")
 

@@ -4,8 +4,8 @@ description: "Summarize the epidemic duration of simulated outbreaks"
 format:
   html: 
     df-print: kable
-    code-fold: show
-    code-summary: "Hide code"
+    code-fold: true
+    code-summary: "Code"
     code-overflow: wrap
     toc-title: Page Contents
     toc: true
@@ -88,7 +88,7 @@ Significance testing performed on optimal and suboptimal detection scenarios
 ```{r}
 ## Filter out low virulence scenarios
 no_low_virulence <- detection %>%
-  filter(response != "low-virulence")
+  filter(response_type != "low-virulence")
 
 no_low_virulence_summary <- summarize_detections(no_low_virulence)
 
@@ -98,7 +98,7 @@ plot(density(no_low_virulence_summary$duration))
 
 ### Linear Model
 ```{r}
-model_duration <- lm(duration ~ preclinical_days * response, 
+model_duration <- lm(duration ~ preclinical_days * response_type, 
                        data = no_low_virulence_summary)
 
 summary(model_duration)
@@ -112,7 +112,7 @@ anova(model_duration)
 ## Plot Duration
 Prepare to plot the calculated median epidemic duration (days)
 ```{r}
-duration_summary$response <- ordered(factor(duration_summary$response), c("optimal", "suboptimal", "low-virulence"))
+duration_summary$response_type <- ordered(factor(duration_summary$response_type), c("optimal", "suboptimal", "low-virulence"))
 
 response_colors <- c("#74add1", "orange2", "red4") 
 ```

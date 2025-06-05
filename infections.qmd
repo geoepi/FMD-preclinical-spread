@@ -4,8 +4,8 @@ description: "Summarize the number of farms and total cattle infected in simulat
 format:
   html: 
     df-print: kable
-    code-fold: show
-    code-summary: "Hide code"
+    code-fold: true
+    code-summary: "Code"
     code-overflow: wrap
     toc-title: Page Contents
     toc: true
@@ -44,23 +44,17 @@ library(ggplot2)
 library(here)
 library(patchwork)
 library(scales)
-```
 
-```{r}
 ## Custom Functions
 source(here("./R/utilities.R"))
 source_dir("./R")
-```
 
-```{r}
 ## Assign file path 
 file_path <- "./script-inputs/isp-outputs"
 
 ## Import infection data
 infection <- import_infection_data(file_path)
-```
 
-```{r}
 ## Order response_type
 infection$response_type <- ordered(factor(infection$response_type), c("optimal", "suboptimal", "low-virulence"))
 
@@ -69,55 +63,65 @@ infection$regional_scenario <- ordered(factor(infection$regional_scenario), c("c
 ```
 
 ## Infection Summary
-The `summarize_infections` function generates a data frame summarizing infection events by iteration. The `generate_infect_statistics` generates a data frame of summary statistics grouped by regional scenario, preclinical infectious duration, and response type.
+The `summarize_infections()` summarizes infection metrics by iteration. 
 ```{r}
 ## Summarize infection metrics for each iteration
 infect_summary <- summarize_infections(infection)
 
-head(infect_summary, 3)
+## Select and order columns
+infect_summary <- infect_summary[c("iteration", "farms_infected", "cattle_infected", "first_infect_day", "last_infect_day", "regional_scenario", "response_type", "preclinical_days")]
 
-## Generate summary statistics
-infect_config_summary <- generate_infect_statistics(infect_summary)
+## Check data
+head(infect_summary, 3)
 ```
 
-## Summarize Farms
+### Summary Statistics
+The `generate_infect_statistics()` returns summary statistics grouped by `regional_scenario`, `preclinical_days`, and `response_type`. The `infect_config_summary` can be filtered by `summary` to summarize `farms_infected` or `cattle_infected` across scenarios.
 ```{r}
+infect_config_summary <- generate_infect_statistics(infect_summary)
+
+## Filter to farms
 farms_inf_summary <- infect_config_summary %>%    
   filter(summary == "farms_infected")
+
+## Filter to cattle
+cattle_inf_summary <- infect_config_summary %>%    
+  filter(summary == "cattle_infected")
 ```
 
-### Select tabs to view regional comparison
+## Infected Farms
 
 ::: panel-tabset
 ## Central U.S.
-```{r fig.width=8, fig.height=10}
+```{r}
+## Filter to central region
 farms_central_summary <- farms_inf_summary %>%
   filter(regional_scenario == "central")
+
+## Select and order columns
+farms_central_summary <- farms_central_summary[c("mean", "q05", "q25", "q50", "q75", "q95", "response_type", "preclinical_days")]
 
 farms_central_summary
 ```
 
 ## Eastern U.S.
-```{r fig.width=8, fig.height=10}
+```{r}
+## Filter to eastern region
 farms_eastern_summary <- farms_inf_summary %>%
   filter(regional_scenario == "eastern")
 
-farms_eastern_summary
+## Remove extra columns
+farms_eastern_summary[3:12]
 ```
 
 :::
 
-## Summarize Cattle
-```{r}
-cattle_inf_summary <- infect_config_summary %>%    
-  filter(summary == "cattle_infected")
-```
-
-### Select tabs to view regional comparison
+## Total Cattle
 
 ::: panel-tabset
 ## Central U.S.
-```{r fig.width=8, fig.height=10}
+```{r}
+## Filter to central region
 cattle_central_summary <- cattle_inf_summary %>%
   filter(regional_scenario == "central")
 
@@ -125,7 +129,8 @@ cattle_central_summary
 ```
 
 ## Eastern U.S.
-```{r fig.width=8, fig.height=10}
+```{r}
+## Filter to eastern region
 cattle_eastern_summary <- cattle_inf_summary %>%
   filter(regional_scenario == "eastern")
 
@@ -135,7 +140,7 @@ cattle_eastern_summary
 :::
 
 ## Significance Test
-Significance testing performed on optimal and suboptimal responses for each regional scenario independently
+Significance testing performed on optimal and suboptimal responses for each regional scenario independently.
 
 ```{r}
 ## Filter out low virulence scenarios
@@ -145,12 +150,10 @@ no_LV <- infection %>%
 no_LV_summary <- summarize_infections(no_LV)
 ```
 
-### Select tabs to view regional comparison
-
 ::: panel-tabset
 ## Central U.S.
 ```{r}
-## Filter to central regional scenario
+## Filter to central region
 no_LV_central_summary <- no_LV_summary %>%
   filter(regional_scenario == "central")
 
@@ -164,7 +167,7 @@ plot(density(log(no_LV_central_summary$cattle_infected)))
 
 ## Eastern U.S.
 ```{r}
-## Filter to eastern regional scenario
+## Filter to eastern region
 no_LV_eastern_summary <- no_LV_summary %>%
   filter(regional_scenario == "eastern")
 
@@ -179,8 +182,6 @@ plot(density(log(no_LV_eastern_summary$cattle_infected)))
 :::
 
 ### Linear Model
-
-### Select tabs to view regional comparison
 
 ::: panel-tabset
 ## Central U.S.
@@ -201,51 +202,41 @@ summary(model_eastern_cattle)
 
 :::
 
-### Analysis of Variance (ANOVA)
-
-### Select tabs to view regional comparison
+### ANOVA
 
 ::: panel-tabset
 ## Central U.S.
-```{r}
+```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
 anova(model_central_cattle)
 ```
 
-## Eastern U.S. region
-```{r}
+## Eastern U.S.
+```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
 anova(model_eastern_cattle)
 ```
 
 :::
 
 ## Plot Cattle Numbers
-Prepare to plot the median number of infected cattle by scenario
-```{r}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 ## Assign response_type colors
 response_colors <- c("#74add1", "orange2", "red4") 
 ```
 
-### Generate Plot Using Patchwork Package
 The `plot_infected_cattle` function plots infected cattle by scenario, with the duration of incubation phase transmission on the x-axis and the median number of infected cattle on the y-axis.
-
-### Select tabs to view regional comparison
 
 ::: panel-tabset
 ## Central U.S.
-```{r, message = FALSE, warning = FALSE}
-central_cattle_plot <- plot_infected_cattle(cattle_central_summary, "central")
-```
-
 ```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
+central_cattle_plot <- plot_infected_cattle(cattle_central_summary, "central")
+
 central_cattle_plot
 ```
 
 ## Eastern U.S.
-```{r, message = FALSE, warning = FALSE}
-eastern_cattle_plot <- plot_infected_cattle(cattle_eastern_summary, "eastern")
-```
-
 ```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
+eastern_cattle_plot <- plot_infected_cattle(cattle_eastern_summary, "eastern")
+
 eastern_cattle_plot
 ```
 

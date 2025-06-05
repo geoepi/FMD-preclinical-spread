@@ -4,8 +4,8 @@ description: ""
 format:
   html: 
     df-print: kable
-    code-fold: show
-    code-summary: "Hide code"
+    code-fold: true
+    code-summary: "Code"
     code-overflow: wrap
     toc-title: Page Contents
     toc: true
