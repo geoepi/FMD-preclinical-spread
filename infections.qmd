@@ -34,6 +34,12 @@ pre {
 </style>
 ```
 
+::: {.callout-tip icon=true}
+#### 
+
+This page includes tables and figures for the Central and Eastern U.S. scenarios. Select the tabs in the panels below to compare results between regions.
+  
+:::
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 library(tidyverse)
@@ -68,15 +74,15 @@ The `summarize_infections()` summarizes infection metrics by iteration.
 ## Summarize infection metrics for each iteration
 infect_summary <- summarize_infections(infection)
 
-## Select and order columns
-infect_summary <- infect_summary[c("iteration", "farms_infected", "cattle_infected", "first_infect_day", "last_infect_day", "regional_scenario", "response_type", "preclinical_days")]
+## Select and order columns to display
+infect_summary_select <- infect_summary[c("iteration", "farms_infected", "cattle_infected", "first_infect_day", "last_infect_day")]
 
 ## Check data
-head(infect_summary, 3)
+head(infect_summary_select, 3)
 ```
 
 ### Summary Statistics
-The `generate_infect_statistics()` returns summary statistics grouped by `regional_scenario`, `preclinical_days`, and `response_type`. The `infect_config_summary` can be filtered by `summary` to summarize `farms_infected` or `cattle_infected` across scenarios.
+The `generate_infect_statistics()` returns summary statistics grouped by region, preclinical infectious duration, and response type. The `infect_config_summary` can be filtered by `summary` to summarize `farms_infected` or `cattle_infected` across scenarios.
 ```{r}
 infect_config_summary <- generate_infect_statistics(infect_summary)
 
@@ -99,7 +105,7 @@ farms_central_summary <- farms_inf_summary %>%
   filter(regional_scenario == "central")
 
 ## Select and order columns
-farms_central_summary <- farms_central_summary[c("mean", "q05", "q25", "q50", "q75", "q95", "response_type", "preclinical_days")]
+farms_central_summary <- farms_central_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
 
 farms_central_summary
 ```
@@ -110,8 +116,10 @@ farms_central_summary
 farms_eastern_summary <- farms_inf_summary %>%
   filter(regional_scenario == "eastern")
 
-## Remove extra columns
-farms_eastern_summary[3:12]
+## Select and order columns
+farms_eastern_summary <- farms_eastern_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+
+farms_eastern_summary
 ```
 
 :::
@@ -125,6 +133,9 @@ farms_eastern_summary[3:12]
 cattle_central_summary <- cattle_inf_summary %>%
   filter(regional_scenario == "central")
 
+## Select and order columns
+cattle_central_summary <- cattle_central_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+
 cattle_central_summary
 ```
 
@@ -134,13 +145,16 @@ cattle_central_summary
 cattle_eastern_summary <- cattle_inf_summary %>%
   filter(regional_scenario == "eastern")
 
+## Select and order columns
+cattle_eastern_summary <- cattle_eastern_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+
 cattle_eastern_summary
 ```
 
 :::
 
 ## Significance Test
-Significance testing performed on optimal and suboptimal responses for each regional scenario independently.
+Significance testing performed on optimal and suboptimal response types for each region
 
 ```{r}
 ## Filter out low virulence scenarios
@@ -152,6 +166,7 @@ no_LV_summary <- summarize_infections(no_LV)
 
 ::: panel-tabset
 ## Central U.S.
+Check data range
 ```{r}
 ## Filter to central region
 no_LV_central_summary <- no_LV_summary %>%
@@ -159,13 +174,16 @@ no_LV_central_summary <- no_LV_summary %>%
 
 range(no_LV_central_summary$cattle_infected) # high values
 plot(density(no_LV_central_summary$cattle_infected)) #long tail
+```
 
-## Log scale to normalize data
+Normalize data using log scale
+```{r}
 range(log(no_LV_central_summary$cattle_infected))
 plot(density(log(no_LV_central_summary$cattle_infected)))
 ```
 
 ## Eastern U.S.
+Check data range
 ```{r}
 ## Filter to eastern region
 no_LV_eastern_summary <- no_LV_summary %>%
@@ -173,8 +191,10 @@ no_LV_eastern_summary <- no_LV_summary %>%
 
 range(no_LV_eastern_summary$cattle_infected) # high values
 plot(density(no_LV_eastern_summary$cattle_infected)) #long tail
+```
 
-## Log scale to normalize data
+Normalize data using log scale
+```{r}
 range(log(no_LV_eastern_summary$cattle_infected))
 plot(density(log(no_LV_eastern_summary$cattle_infected)))
 ```
@@ -186,7 +206,7 @@ plot(density(log(no_LV_eastern_summary$cattle_infected)))
 ::: panel-tabset
 ## Central U.S.
 ```{r}
-model_central_cattle <- lm(log(cattle_infected) ~ preclinical_days * response_type, 
+model_central_cattle <- lm(log(cattle_infected) ~ preclinical * response_type, 
                        data = no_LV_central_summary)
 
 summary(model_central_cattle)
@@ -194,7 +214,7 @@ summary(model_central_cattle)
 
 ## Eastern U.S.
 ```{r}
-model_eastern_cattle <- lm(log(cattle_infected) ~ preclinical_days * response_type, 
+model_eastern_cattle <- lm(log(cattle_infected) ~ preclinical * response_type, 
                        data = no_LV_eastern_summary)
 
 summary(model_eastern_cattle)
@@ -206,12 +226,12 @@ summary(model_eastern_cattle)
 
 ::: panel-tabset
 ## Central U.S.
-```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE}
 anova(model_central_cattle)
 ```
 
 ## Eastern U.S.
-```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE}
 anova(model_eastern_cattle)
 ```
 
@@ -223,7 +243,7 @@ anova(model_eastern_cattle)
 response_colors <- c("#74add1", "orange2", "red4") 
 ```
 
-The `plot_infected_cattle` function plots infected cattle by scenario, with the duration of incubation phase transmission on the x-axis and the median number of infected cattle on the y-axis.
+The `plot_infected_cattle()` plots infected cattle by scenario, with the duration of incubation phase transmission on the x-axis and the median number of infected cattle on the y-axis.
 
 ::: panel-tabset
 ## Central U.S.

@@ -98,7 +98,7 @@ plot(density(no_low_virulence_summary$duration))
 
 ### Linear Model
 ```{r}
-model_duration <- lm(duration ~ preclinical_days * response_type, 
+model_duration <- lm(duration ~ preclinical * response_type, 
                        data = no_low_virulence_summary)
 
 summary(model_duration)
