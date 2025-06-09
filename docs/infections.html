@@ -167,8 +167,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul class="collapse">
   <li><a href="#infection-summary" id="toc-infection-summary" class="nav-link active" data-scroll-target="#infection-summary">Infection Summary</a></li>
-  <li><a href="#summarize-farms" id="toc-summarize-farms" class="nav-link" data-scroll-target="#summarize-farms">Summarize Farms</a></li>
-  <li><a href="#summarize-cattle" id="toc-summarize-cattle" class="nav-link" data-scroll-target="#summarize-cattle">Summarize Cattle</a></li>
+  <li><a href="#infected-farms" id="toc-infected-farms" class="nav-link" data-scroll-target="#infected-farms">Infected Farms</a></li>
+  <li><a href="#total-cattle" id="toc-total-cattle" class="nav-link" data-scroll-target="#total-cattle">Total Cattle</a></li>
   <li><a href="#significance-test" id="toc-significance-test" class="nav-link" data-scroll-target="#significance-test">Significance Test</a></li>
   <li><a href="#plot-cattle-numbers" id="toc-plot-cattle-numbers" class="nav-link" data-scroll-target="#plot-cattle-numbers">Plot Cattle Numbers</a></li>
   </ul>
@@ -213,33 +213,46 @@ pre {
   font-size: 11pt
 }
 </style>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This page includes tables and figures for the Central and Eastern U.S. scenarios. Select the tabs in the panels below to compare results between regions.</p>
+</div>
+</div>
 <section id="infection-summary" class="level2">
 <h2 class="anchored" data-anchor-id="infection-summary">Infection Summary</h2>
-<p>The <code>summarize_infections</code> function generates a data frame summarizing infection events by iteration. The <code>generate_infect_statistics</code> generates a data frame of summary statistics grouped by preclinical infectious duration and response type.</p>
+<p>The <code>summarize_infections()</code> summarizes infection metrics by iteration.</p>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Summarize infection metrics for each iteration</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>infect_summary <span class="ot">&lt;-</span> <span class="fu">summarize_infections</span>(infection)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(infect_summary, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Select and order columns to display</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>infect_summary_select <span class="ot">&lt;-</span> infect_summary[<span class="fu">c</span>(<span class="st">"iteration"</span>, <span class="st">"farms_infected"</span>, <span class="st">"cattle_infected"</span>, <span class="st">"first_infect_day"</span>, <span class="st">"last_infect_day"</span>)]</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Check data</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(infect_summary_select, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 10%">
-<col style="width: 16%">
-<col style="width: 9%">
-<col style="width: 14%">
-<col style="width: 15%">
-<col style="width: 16%">
-<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 20%">
+<col style="width: 21%">
+<col style="width: 22%">
+<col style="width: 21%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">response</th>
-<th style="text-align: left;">preclinical_days</th>
 <th style="text-align: right;">iteration</th>
 <th style="text-align: right;">farms_infected</th>
 <th style="text-align: right;">cattle_infected</th>
@@ -249,82 +262,86 @@ pre {
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">0</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">27</td>
-<td style="text-align: right;">13404</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1627</td>
 <td style="text-align: right;">10</td>
-<td style="text-align: right;">48</td>
+<td style="text-align: right;">12</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">0</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">27</td>
-<td style="text-align: right;">6313</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1905</td>
 <td style="text-align: right;">10</td>
-<td style="text-align: right;">43</td>
+<td style="text-align: right;">36</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">0</td>
 <td style="text-align: right;">3</td>
-<td style="text-align: right;">15</td>
-<td style="text-align: right;">6634</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">10883</td>
 <td style="text-align: right;">10</td>
-<td style="text-align: right;">49</td>
+<td style="text-align: right;">30</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<details open="" class="code-fold">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Generate summary statistics</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>infect_config_summary <span class="ot">&lt;-</span> <span class="fu">generate_infect_statistics</span>(infect_summary)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(infect_config_summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 36 11</code></pre>
 </div>
+<section id="summary-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="summary-statistics">Summary Statistics</h3>
+<p>The <code>generate_infect_statistics()</code> returns summary statistics grouped by region, preclinical infectious duration, and response type. The <code>infect_config_summary</code> can be filtered by <code>summary</code> to summarize <code>farms_infected</code> or <code>cattle_infected</code> across scenarios.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>infect_config_summary <span class="ot">&lt;-</span> <span class="fu">generate_infect_statistics</span>(infect_summary)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter to farms</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>farms_inf_summary <span class="ot">&lt;-</span> infect_config_summary <span class="sc">%&gt;%</span>    </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(summary <span class="sc">==</span> <span class="st">"farms_infected"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter to cattle</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>cattle_inf_summary <span class="ot">&lt;-</span> infect_config_summary <span class="sc">%&gt;%</span>    </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(summary <span class="sc">==</span> <span class="st">"cattle_infected"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
-<section id="summarize-farms" class="level2">
-<h2 class="anchored" data-anchor-id="summarize-farms">Summarize Farms</h2>
+</section>
+<section id="infected-farms" class="level2">
+<h2 class="anchored" data-anchor-id="infected-farms">Infected Farms</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Central U.S.</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Eastern U.S.</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>farms_inf_summary <span class="ot">&lt;-</span> infect_config_summary <span class="sc">%&gt;%</span>    </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(summary <span class="sc">==</span> <span class="st">"farms_infected"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>farms_inf_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter to central region</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>farms_central_summary <span class="ot">&lt;-</span> farms_inf_summary <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">==</span> <span class="st">"central"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Select and order columns</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>farms_central_summary <span class="ot">&lt;-</span> farms_central_summary[<span class="fu">c</span>(<span class="st">"response_type"</span>, <span class="st">"preclinical"</span>, <span class="st">"mean"</span>, <span class="st">"q05"</span>, <span class="st">"q25"</span>, <span class="st">"q50"</span>, <span class="st">"q75"</span>, <span class="st">"q95"</span>)]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>farms_central_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 13%">
+<col style="width: 19%">
+<col style="width: 16%">
 <col style="width: 12%">
-<col style="width: 14%">
 <col style="width: 9%">
-<col style="width: 7%">
 <col style="width: 10%">
-<col style="width: 5%">
-<col style="width: 6%">
-<col style="width: 6%">
-<col style="width: 6%">
-<col style="width: 6%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 10%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">summary</th>
-<th style="text-align: left;">response</th>
-<th style="text-align: left;">preclinical_days</th>
-<th style="text-align: right;">iterations</th>
+<th style="text-align: left;">response_type</th>
+<th style="text-align: left;">preclinical</th>
 <th style="text-align: right;">mean</th>
-<th style="text-align: right;">sd</th>
 <th style="text-align: right;">q05</th>
 <th style="text-align: right;">q25</th>
 <th style="text-align: right;">q50</th>
@@ -334,64 +351,144 @@ pre {
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">farms_infected</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">0</td>
-<td style="text-align: right;">500</td>
-<td style="text-align: right;">41.674</td>
-<td style="text-align: right;">58.111803</td>
-<td style="text-align: right;">4.00</td>
-<td style="text-align: right;">10.00</td>
-<td style="text-align: right;">21.0</td>
-<td style="text-align: right;">51.00</td>
-<td style="text-align: right;">134.05</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">farms_infected</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: right;">500</td>
-<td style="text-align: right;">89.450</td>
-<td style="text-align: right;">132.375095</td>
-<td style="text-align: right;">5.00</td>
-<td style="text-align: right;">16.00</td>
-<td style="text-align: right;">41.0</td>
-<td style="text-align: right;">94.75</td>
-<td style="text-align: right;">330.70</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">farms_infected</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">2</td>
-<td style="text-align: right;">500</td>
-<td style="text-align: right;">186.164</td>
-<td style="text-align: right;">260.295764</td>
-<td style="text-align: right;">6.00</td>
-<td style="text-align: right;">26.00</td>
-<td style="text-align: right;">74.0</td>
-<td style="text-align: right;">268.25</td>
-<td style="text-align: right;">684.10</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">farms_infected</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">3</td>
-<td style="text-align: right;">500</td>
-<td style="text-align: right;">457.092</td>
-<td style="text-align: right;">534.114914</td>
-<td style="text-align: right;">9.00</td>
-<td style="text-align: right;">43.00</td>
-<td style="text-align: right;">250.5</td>
-<td style="text-align: right;">655.50</td>
-<td style="text-align: right;">1620.15</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">farms_infected</td>
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">0</td>
-<td style="text-align: right;">500</td>
+<td style="text-align: right;">7.352</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: right;">20.05</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">optimal</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">12.714</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">5.0</td>
+<td style="text-align: right;">11.00</td>
+<td style="text-align: right;">56.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">optimal</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">23.366</td>
+<td style="text-align: right;">2.0</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">9.0</td>
+<td style="text-align: right;">22.00</td>
+<td style="text-align: right;">94.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">optimal</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">72.506</td>
+<td style="text-align: right;">3.0</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">15.5</td>
+<td style="text-align: right;">67.00</td>
+<td style="text-align: right;">372.35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">46.924</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">22.0</td>
+<td style="text-align: right;">55.25</td>
+<td style="text-align: right;">176.05</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">106.394</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">15.00</td>
+<td style="text-align: right;">41.0</td>
+<td style="text-align: right;">140.25</td>
+<td style="text-align: right;">408.15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">250.570</td>
+<td style="text-align: right;">7.0</td>
+<td style="text-align: right;">24.00</td>
+<td style="text-align: right;">81.0</td>
+<td style="text-align: right;">369.75</td>
+<td style="text-align: right;">939.20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">578.078</td>
+<td style="text-align: right;">9.0</td>
+<td style="text-align: right;">45.75</td>
+<td style="text-align: right;">312.5</td>
+<td style="text-align: right;">1008.25</td>
+<td style="text-align: right;">1729.50</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">low-virulence</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">3722.938</td>
+<td style="text-align: right;">1491.7</td>
+<td style="text-align: right;">3034.50</td>
+<td style="text-align: right;">3917.0</td>
+<td style="text-align: right;">4595.00</td>
+<td style="text-align: right;">5520.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter to eastern region</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>farms_eastern_summary <span class="ot">&lt;-</span> farms_inf_summary <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">==</span> <span class="st">"eastern"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Select and order columns</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>farms_eastern_summary <span class="ot">&lt;-</span> farms_eastern_summary[<span class="fu">c</span>(<span class="st">"response_type"</span>, <span class="st">"preclinical"</span>, <span class="st">"mean"</span>, <span class="st">"q05"</span>, <span class="st">"q25"</span>, <span class="st">"q50"</span>, <span class="st">"q75"</span>, <span class="st">"q95"</span>)]</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>farms_eastern_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 16%">
+<col style="width: 12%">
+<col style="width: 8%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">response_type</th>
+<th style="text-align: left;">preclinical</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">q05</th>
+<th style="text-align: right;">q25</th>
+<th style="text-align: right;">q50</th>
+<th style="text-align: right;">q75</th>
+<th style="text-align: right;">q95</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">optimal</td>
+<td style="text-align: left;">0</td>
 <td style="text-align: right;">6.564</td>
-<td style="text-align: right;">9.493058</td>
 <td style="text-align: right;">2.00</td>
 <td style="text-align: right;">2.00</td>
 <td style="text-align: right;">4.0</td>
@@ -399,12 +496,9 @@ pre {
 <td style="text-align: right;">20.05</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">farms_infected</td>
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">1</td>
-<td style="text-align: right;">500</td>
 <td style="text-align: right;">13.590</td>
-<td style="text-align: right;">22.554985</td>
 <td style="text-align: right;">2.00</td>
 <td style="text-align: right;">3.00</td>
 <td style="text-align: right;">6.0</td>
@@ -412,12 +506,9 @@ pre {
 <td style="text-align: right;">57.05</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">farms_infected</td>
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">2</td>
-<td style="text-align: right;">500</td>
 <td style="text-align: right;">30.400</td>
-<td style="text-align: right;">65.448629</td>
 <td style="text-align: right;">2.00</td>
 <td style="text-align: right;">5.00</td>
 <td style="text-align: right;">10.0</td>
@@ -425,12 +516,9 @@ pre {
 <td style="text-align: right;">124.05</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">farms_infected</td>
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">3</td>
-<td style="text-align: right;">500</td>
 <td style="text-align: right;">54.782</td>
-<td style="text-align: right;">88.785179</td>
 <td style="text-align: right;">2.00</td>
 <td style="text-align: right;">7.00</td>
 <td style="text-align: right;">15.0</td>
@@ -438,12 +526,49 @@ pre {
 <td style="text-align: right;">237.10</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">farms_infected</td>
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">41.674</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">10.00</td>
+<td style="text-align: right;">21.0</td>
+<td style="text-align: right;">51.00</td>
+<td style="text-align: right;">134.05</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">89.450</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">16.00</td>
+<td style="text-align: right;">41.0</td>
+<td style="text-align: right;">94.75</td>
+<td style="text-align: right;">330.70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">186.164</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: right;">26.00</td>
+<td style="text-align: right;">74.0</td>
+<td style="text-align: right;">268.25</td>
+<td style="text-align: right;">684.10</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">457.092</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">43.00</td>
+<td style="text-align: right;">250.5</td>
+<td style="text-align: right;">655.50</td>
+<td style="text-align: right;">1620.15</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">low-virulence</td>
 <td style="text-align: left;">6</td>
-<td style="text-align: right;">500</td>
 <td style="text-align: right;">3101.590</td>
-<td style="text-align: right;">1465.846151</td>
 <td style="text-align: right;">61.85</td>
 <td style="text-align: right;">2435.75</td>
 <td style="text-align: right;">3412.5</td>
@@ -455,41 +580,46 @@ pre {
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
 </section>
-<section id="summarize-cattle" class="level2">
-<h2 class="anchored" data-anchor-id="summarize-cattle">Summarize Cattle</h2>
+<section id="total-cattle" class="level2">
+<h2 class="anchored" data-anchor-id="total-cattle">Total Cattle</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Central U.S.</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Eastern U.S.</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cattle_inf_summary <span class="ot">&lt;-</span> infect_config_summary <span class="sc">%&gt;%</span>    </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(summary <span class="sc">==</span> <span class="st">"cattle_infected"</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>cattle_inf_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter to central region</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>cattle_central_summary <span class="ot">&lt;-</span> cattle_inf_summary <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">==</span> <span class="st">"central"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Select and order columns</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>cattle_central_summary <span class="ot">&lt;-</span> cattle_central_summary[<span class="fu">c</span>(<span class="st">"response_type"</span>, <span class="st">"preclinical"</span>, <span class="st">"mean"</span>, <span class="st">"q05"</span>, <span class="st">"q25"</span>, <span class="st">"q50"</span>, <span class="st">"q75"</span>, <span class="st">"q95"</span>)]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>cattle_central_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 10%">
 <col style="width: 12%">
 <col style="width: 10%">
 <col style="width: 12%">
-<col style="width: 8%">
-<col style="width: 9%">
-<col style="width: 8%">
-<col style="width: 6%">
-<col style="width: 7%">
-<col style="width: 7%">
-<col style="width: 8%">
-<col style="width: 8%">
+<col style="width: 12%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">summary</th>
-<th style="text-align: left;">response</th>
-<th style="text-align: left;">preclinical_days</th>
-<th style="text-align: right;">iterations</th>
+<th style="text-align: left;">response_type</th>
+<th style="text-align: left;">preclinical</th>
 <th style="text-align: right;">mean</th>
-<th style="text-align: right;">sd</th>
 <th style="text-align: right;">q05</th>
 <th style="text-align: right;">q25</th>
 <th style="text-align: right;">q50</th>
@@ -499,64 +629,144 @@ pre {
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">cattle_infected</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">0</td>
-<td style="text-align: right;">500</td>
-<td style="text-align: right;">16142.812</td>
-<td style="text-align: right;">25425.965</td>
-<td style="text-align: right;">1267.80</td>
-<td style="text-align: right;">2524.25</td>
-<td style="text-align: right;">6678.5</td>
-<td style="text-align: right;">18888.50</td>
-<td style="text-align: right;">57099.95</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">cattle_infected</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: right;">500</td>
-<td style="text-align: right;">31848.112</td>
-<td style="text-align: right;">51456.903</td>
-<td style="text-align: right;">1453.00</td>
-<td style="text-align: right;">4203.00</td>
-<td style="text-align: right;">13355.5</td>
-<td style="text-align: right;">33844.50</td>
-<td style="text-align: right;">126665.70</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">cattle_infected</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">2</td>
-<td style="text-align: right;">500</td>
-<td style="text-align: right;">62893.166</td>
-<td style="text-align: right;">97353.900</td>
-<td style="text-align: right;">1606.45</td>
-<td style="text-align: right;">6739.00</td>
-<td style="text-align: right;">23120.0</td>
-<td style="text-align: right;">83048.75</td>
-<td style="text-align: right;">253791.15</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">cattle_infected</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">3</td>
-<td style="text-align: right;">500</td>
-<td style="text-align: right;">153263.466</td>
-<td style="text-align: right;">192759.277</td>
-<td style="text-align: right;">1933.45</td>
-<td style="text-align: right;">13765.75</td>
-<td style="text-align: right;">74901.5</td>
-<td style="text-align: right;">215762.00</td>
-<td style="text-align: right;">601651.45</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">cattle_infected</td>
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">0</td>
-<td style="text-align: right;">500</td>
+<td style="text-align: right;">4347.228</td>
+<td style="text-align: right;">1627.00</td>
+<td style="text-align: right;">1627.00</td>
+<td style="text-align: right;">1708.5</td>
+<td style="text-align: right;">2899.25</td>
+<td style="text-align: right;">13058.80</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">optimal</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">7215.244</td>
+<td style="text-align: right;">1627.00</td>
+<td style="text-align: right;">1675.75</td>
+<td style="text-align: right;">2089.5</td>
+<td style="text-align: right;">6008.25</td>
+<td style="text-align: right;">30945.40</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">optimal</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">13340.340</td>
+<td style="text-align: right;">1627.00</td>
+<td style="text-align: right;">1803.50</td>
+<td style="text-align: right;">3940.5</td>
+<td style="text-align: right;">11030.25</td>
+<td style="text-align: right;">51068.45</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">optimal</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">44453.892</td>
+<td style="text-align: right;">1651.85</td>
+<td style="text-align: right;">2390.25</td>
+<td style="text-align: right;">7635.0</td>
+<td style="text-align: right;">33766.50</td>
+<td style="text-align: right;">233234.75</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">25979.990</td>
+<td style="text-align: right;">1755.60</td>
+<td style="text-align: right;">4074.25</td>
+<td style="text-align: right;">11906.5</td>
+<td style="text-align: right;">28267.75</td>
+<td style="text-align: right;">103639.20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">62846.180</td>
+<td style="text-align: right;">1873.15</td>
+<td style="text-align: right;">7052.00</td>
+<td style="text-align: right;">18708.5</td>
+<td style="text-align: right;">72516.75</td>
+<td style="text-align: right;">275944.45</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">156362.888</td>
+<td style="text-align: right;">2106.40</td>
+<td style="text-align: right;">10801.75</td>
+<td style="text-align: right;">41477.5</td>
+<td style="text-align: right;">201033.25</td>
+<td style="text-align: right;">666540.50</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">455723.392</td>
+<td style="text-align: right;">2607.75</td>
+<td style="text-align: right;">20374.75</td>
+<td style="text-align: right;">167747.5</td>
+<td style="text-align: right;">666590.75</td>
+<td style="text-align: right;">1930262.85</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">low-virulence</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">3243921.747</td>
+<td style="text-align: right;">913215.30</td>
+<td style="text-align: right;">2260734.25</td>
+<td style="text-align: right;">3449833.0</td>
+<td style="text-align: right;">4241386.75</td>
+<td style="text-align: right;">5265010.15</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter to eastern region</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>cattle_eastern_summary <span class="ot">&lt;-</span> cattle_inf_summary <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">==</span> <span class="st">"eastern"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Select and order columns</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>cattle_eastern_summary <span class="ot">&lt;-</span> cattle_eastern_summary[<span class="fu">c</span>(<span class="st">"response_type"</span>, <span class="st">"preclinical"</span>, <span class="st">"mean"</span>, <span class="st">"q05"</span>, <span class="st">"q25"</span>, <span class="st">"q50"</span>, <span class="st">"q75"</span>, <span class="st">"q95"</span>)]</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>cattle_eastern_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 10%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">response_type</th>
+<th style="text-align: left;">preclinical</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">q05</th>
+<th style="text-align: right;">q25</th>
+<th style="text-align: right;">q50</th>
+<th style="text-align: right;">q75</th>
+<th style="text-align: right;">q95</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">optimal</td>
+<td style="text-align: left;">0</td>
 <td style="text-align: right;">2686.652</td>
-<td style="text-align: right;">4157.196</td>
 <td style="text-align: right;">1164.00</td>
 <td style="text-align: right;">1164.00</td>
 <td style="text-align: right;">1247.0</td>
@@ -564,12 +774,9 @@ pre {
 <td style="text-align: right;">8903.30</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">cattle_infected</td>
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">1</td>
-<td style="text-align: right;">500</td>
 <td style="text-align: right;">5315.418</td>
-<td style="text-align: right;">9521.187</td>
 <td style="text-align: right;">1164.00</td>
 <td style="text-align: right;">1208.75</td>
 <td style="text-align: right;">1843.0</td>
@@ -577,12 +784,9 @@ pre {
 <td style="text-align: right;">21955.40</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">cattle_infected</td>
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">2</td>
-<td style="text-align: right;">500</td>
 <td style="text-align: right;">11114.532</td>
-<td style="text-align: right;">27786.861</td>
 <td style="text-align: right;">1164.00</td>
 <td style="text-align: right;">1355.50</td>
 <td style="text-align: right;">2824.0</td>
@@ -590,12 +794,9 @@ pre {
 <td style="text-align: right;">47171.35</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">cattle_infected</td>
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">3</td>
-<td style="text-align: right;">500</td>
 <td style="text-align: right;">17873.322</td>
-<td style="text-align: right;">29748.032</td>
 <td style="text-align: right;">1164.00</td>
 <td style="text-align: right;">1766.75</td>
 <td style="text-align: right;">4779.0</td>
@@ -603,12 +804,49 @@ pre {
 <td style="text-align: right;">79301.35</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">cattle_infected</td>
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">16142.812</td>
+<td style="text-align: right;">1267.80</td>
+<td style="text-align: right;">2524.25</td>
+<td style="text-align: right;">6678.5</td>
+<td style="text-align: right;">18888.50</td>
+<td style="text-align: right;">57099.95</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">31848.112</td>
+<td style="text-align: right;">1453.00</td>
+<td style="text-align: right;">4203.00</td>
+<td style="text-align: right;">13355.5</td>
+<td style="text-align: right;">33844.50</td>
+<td style="text-align: right;">126665.70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">62893.166</td>
+<td style="text-align: right;">1606.45</td>
+<td style="text-align: right;">6739.00</td>
+<td style="text-align: right;">23120.0</td>
+<td style="text-align: right;">83048.75</td>
+<td style="text-align: right;">253791.15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">suboptimal</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">153263.466</td>
+<td style="text-align: right;">1933.45</td>
+<td style="text-align: right;">13765.75</td>
+<td style="text-align: right;">74901.5</td>
+<td style="text-align: right;">215762.00</td>
+<td style="text-align: right;">601651.45</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">low-virulence</td>
 <td style="text-align: left;">6</td>
-<td style="text-align: right;">500</td>
 <td style="text-align: right;">1019390.812</td>
-<td style="text-align: right;">485089.246</td>
 <td style="text-align: right;">14089.10</td>
 <td style="text-align: right;">799123.25</td>
 <td style="text-align: right;">1161486.0</td>
@@ -620,85 +858,196 @@ pre {
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
 </section>
 <section id="significance-test" class="level2">
 <h2 class="anchored" data-anchor-id="significance-test">Significance Test</h2>
-<p>Significance testing performed on optimal and suboptimal detection scenarios</p>
+<p>Significance testing performed on optimal and suboptimal response types for each region</p>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter out low virulence scenarios</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>no_low_virulence <span class="ot">&lt;-</span> infection <span class="sc">%&gt;%</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(response <span class="sc">!=</span> <span class="st">"low-virulence"</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>no_low_virulence_summary <span class="ot">&lt;-</span> <span class="fu">summarize_infections</span>(no_low_virulence)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(no_low_virulence_summary<span class="sc">$</span>cattle_infected) <span class="co"># high values</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter out low virulence scenarios</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>no_LV <span class="ot">&lt;-</span> infection <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(response_type <span class="sc">!=</span> <span class="st">"low-virulence"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>no_LV_summary <span class="ot">&lt;-</span> <span class="fu">summarize_infections</span>(no_LV)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">Central U.S.</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Eastern U.S.</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<p>Check data range</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter to central region</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>no_LV_central_summary <span class="ot">&lt;-</span> no_LV_summary <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">==</span> <span class="st">"central"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(no_LV_central_summary<span class="sc">$</span>cattle_infected) <span class="co"># high values</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]    1627 3610523</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(no_LV_central_summary<span class="sc">$</span>cattle_infected)) <span class="co">#long tail</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="infections_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Normalize data using log scale</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(<span class="fu">log</span>(no_LV_central_summary<span class="sc">$</span>cattle_infected))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  7.394493 15.099363</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(<span class="fu">log</span>(no_LV_central_summary<span class="sc">$</span>cattle_infected)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="infections_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<p>Check data range</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter to eastern region</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>no_LV_eastern_summary <span class="ot">&lt;-</span> no_LV_summary <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">==</span> <span class="st">"eastern"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(no_LV_eastern_summary<span class="sc">$</span>cattle_infected) <span class="co"># high values</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]   1164 893163</code></pre>
 </div>
-<details open="" class="code-fold">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(no_low_virulence_summary<span class="sc">$</span>cattle_infected)) <span class="co">#long tail</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(no_LV_eastern_summary<span class="sc">$</span>cattle_infected)) <span class="co">#long tail</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="infections_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="infections_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<details open="" class="code-fold">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Log scale to normalize data</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(<span class="fu">log</span>(no_low_virulence_summary<span class="sc">$</span>cattle_infected))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Normalize data using log scale</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(<span class="fu">log</span>(no_LV_eastern_summary<span class="sc">$</span>cattle_infected))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  7.059618 13.702524</code></pre>
 </div>
-<details open="" class="code-fold">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(<span class="fu">log</span>(no_low_virulence_summary<span class="sc">$</span>cattle_infected)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(<span class="fu">log</span>(no_LV_eastern_summary<span class="sc">$</span>cattle_infected)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="infections_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="infections_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <section id="linear-model" class="level3">
 <h3 class="anchored" data-anchor-id="linear-model">Linear Model</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">Central U.S.</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Eastern U.S.</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>model_inf_cattle <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(cattle_infected) <span class="sc">~</span> preclinical_days <span class="sc">*</span> response, </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> no_low_virulence_summary)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_inf_cattle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>model_central_cattle <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(cattle_infected) <span class="sc">~</span> preclinical <span class="sc">*</span> response_type, </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> no_LV_central_summary)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_central_cattle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = log(cattle_infected) ~ preclinical_days * response, 
-    data = no_low_virulence_summary)
+lm(formula = log(cattle_infected) ~ preclinical * response_type, 
+    data = no_LV_central_summary)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.2343 -0.8894 -0.2982  1.0457  4.4918 
+
+Coefficients:
+                             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                   8.60372    0.04628 185.898  &lt; 2e-16 ***
+preclinical1                  0.46313    0.06545   7.076 1.75e-12 ***
+preclinical2                  1.01288    0.06545  15.475  &lt; 2e-16 ***
+preclinical3                  1.83846    0.06545  28.088  &lt; 2e-16 ***
+response_type.L               1.08133    0.06545  16.521  &lt; 2e-16 ***
+preclinical1:response_type.L  0.19539    0.09256   2.111   0.0348 *  
+preclinical2:response_type.L  0.39906    0.09256   4.311 1.66e-05 ***
+preclinical3:response_type.L  0.59686    0.09256   6.448 1.27e-10 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.464 on 3992 degrees of freedom
+Multiple R-squared:  0.4032,    Adjusted R-squared:  0.4022 
+F-statistic: 385.3 on 7 and 3992 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>model_eastern_cattle <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(cattle_infected) <span class="sc">~</span> preclinical <span class="sc">*</span> response_type, </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> no_LV_eastern_summary)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_eastern_cattle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = log(cattle_infected) ~ preclinical * response_type, 
+    data = no_LV_eastern_summary)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
 -3.7779 -0.8537 -0.2152  0.9186  4.4417 
 
 Coefficients:
-                                     Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)                           7.50987    0.05923 126.797  &lt; 2e-16 ***
-preclinical_days1                     0.40348    0.08376   4.817 1.51e-06 ***
-preclinical_days2                     0.80329    0.08376   9.590  &lt; 2e-16 ***
-preclinical_days3                     1.26127    0.08376  15.058  &lt; 2e-16 ***
-responsesuboptimal                    1.40233    0.08376  16.742  &lt; 2e-16 ***
-preclinical_days1:responsesuboptimal  0.14443    0.11846   1.219  0.22280    
-preclinical_days2:responsesuboptimal  0.30751    0.11846   2.596  0.00947 ** 
-preclinical_days3:responsesuboptimal  0.66405    0.11846   5.606 2.21e-08 ***
+                             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                   8.21104    0.04188 196.060  &lt; 2e-16 ***
+preclinical1                  0.47570    0.05923   8.032 1.25e-15 ***
+preclinical2                  0.95705    0.05923  16.159  &lt; 2e-16 ***
+preclinical3                  1.59329    0.05923  26.901  &lt; 2e-16 ***
+response_type.L               0.99160    0.05923  16.742  &lt; 2e-16 ***
+preclinical1:response_type.L  0.10213    0.08376   1.219  0.22280    
+preclinical2:response_type.L  0.21745    0.08376   2.596  0.00947 ** 
+preclinical3:response_type.L  0.46956    0.08376   5.606 2.21e-08 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -707,13 +1056,20 @@ Multiple R-squared:  0.3794,    Adjusted R-squared:  0.3783
 F-statistic: 348.6 on 7 and 3992 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
+</div>
+</div>
+</div>
 </section>
-<section id="analysis-of-variance-anova" class="level3">
-<h3 class="anchored" data-anchor-id="analysis-of-variance-anova">Analysis of Variance (ANOVA)</h3>
+<section id="anova" class="level3">
+<h3 class="anchored" data-anchor-id="anova">ANOVA</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true">Central U.S.</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false">Eastern U.S.</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_inf_cattle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_central_cattle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -738,7 +1094,73 @@ F-statistic: 348.6 on 7 and 3992 DF,  p-value: &lt; 2.2e-16</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">preclinical_days</td>
+<td style="text-align: left;">preclinical</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1873.93075</td>
+<td style="text-align: right;">624.643584</td>
+<td style="text-align: right;">291.61346</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">response_type</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3804.16224</td>
+<td style="text-align: right;">3804.162244</td>
+<td style="text-align: right;">1775.96463</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">preclinical:response_type</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">99.43042</td>
+<td style="text-align: right;">33.143473</td>
+<td style="text-align: right;">15.47296</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Residuals</td>
+<td style="text-align: right;">3992</td>
+<td style="text-align: right;">8550.96743</td>
+<td style="text-align: right;">2.142026</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_eastern_cattle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 36%">
+<col style="width: 6%">
+<col style="width: 15%">
+<col style="width: 16%">
+<col style="width: 15%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Df</th>
+<th style="text-align: right;">Sum Sq</th>
+<th style="text-align: right;">Mean Sq</th>
+<th style="text-align: right;">F value</th>
+<th style="text-align: right;">Pr(&gt;F)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">preclinical</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">1391.58709</td>
 <td style="text-align: right;">463.862363</td>
@@ -746,7 +1168,7 @@ F-statistic: 348.6 on 7 and 3992 DF,  p-value: &lt; 2.2e-16</code></pre>
 <td style="text-align: right;">0e+00</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">response</td>
+<td style="text-align: left;">response_type</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">2826.86883</td>
 <td style="text-align: right;">2826.868825</td>
@@ -754,7 +1176,7 @@ F-statistic: 348.6 on 7 and 3992 DF,  p-value: &lt; 2.2e-16</code></pre>
 <td style="text-align: right;">0e+00</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">preclinical_days:response</td>
+<td style="text-align: left;">preclinical:response_type</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">61.25672</td>
 <td style="text-align: right;">20.418906</td>
@@ -774,45 +1196,55 @@ F-statistic: 348.6 on 7 and 3992 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="plot-cattle-numbers" class="level2">
 <h2 class="anchored" data-anchor-id="plot-cattle-numbers">Plot Cattle Numbers</h2>
-<p>Prepare to plot the median number of infected cattle by scenario</p>
+<p>The <code>plot_infected_cattle()</code> plots infected cattle by scenario, with the duration of incubation phase transmission on the x-axis and the median number of infected cattle on the y-axis.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">Central U.S.</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false">Eastern U.S.</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>cattle_inf_summary<span class="sc">$</span>response <span class="ot">&lt;-</span> <span class="fu">ordered</span>(<span class="fu">factor</span>(cattle_inf_summary<span class="sc">$</span>response), <span class="fu">c</span>(<span class="st">"optimal"</span>, <span class="st">"suboptimal"</span>, <span class="st">"low-virulence"</span>))</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Assign response colors</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>response_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#74add1"</span>, <span class="st">"orange2"</span>, <span class="st">"red4"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<section id="generate-plot-using-patchwork-package" class="level3">
-<h3 class="anchored" data-anchor-id="generate-plot-using-patchwork-package">Generate Plot Using Patchwork Package</h3>
-<p>The <code>plot_infected_cattle</code> function plots infected cattle by scenario, with the duration of incubation phase transmission on the x-axis and the median number of infected cattle on the y-axis.</p>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>infect_cattle_plot <span class="ot">&lt;-</span> <span class="fu">plot_infected_cattle</span>(cattle_inf_summary, regional_scenario)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>infect_cattle_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>central_cattle_plot <span class="ot">&lt;-</span> <span class="fu">plot_infected_cattle</span>(cattle_central_summary, <span class="st">"central"</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>central_cattle_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="infections_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="1152"></p>
+<p><img src="infections_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="1152"></p>
 </figure>
 </div>
 </div>
 </div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>eastern_cattle_plot <span class="ot">&lt;-</span> <span class="fu">plot_infected_cattle</span>(cattle_eastern_summary, <span class="st">"eastern"</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>eastern_cattle_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="infections_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

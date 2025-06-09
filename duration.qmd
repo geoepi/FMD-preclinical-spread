@@ -33,6 +33,13 @@ pre {
 </style>
 ```
 
+::: {.callout-note icon=true}
+#### 
+
+This page includes tables and figures for the Eastern U.S. scenarios only. Visuals for the Central U.S. scenarios are coming soon.
+  
+:::
+
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 library(tidyverse)
 options(dplyr.summarise.inform = FALSE)
@@ -51,9 +58,9 @@ source_dir("./R")
 generic_path <- "./script-inputs/isp-outputs"
 
 ## Assign regional scenario
-regional_scenario <- "eastern"
+region <- "eastern"
 
-regional_path <- sprintf("%s/outputs_%s", generic_path, regional_scenario)
+regional_path <- sprintf("%s/outputs_%s", generic_path, region)
 
 ## Import detection data
 detection <- import_detection_data(regional_path)
@@ -120,7 +127,7 @@ response_colors <- c("#74add1", "orange2", "red4")
 ### Generate Plot Using Patchwork Package
 The `plot_epidemic_duration` function plots epidemic duration by scenario, with epidemic duration (days) on the x-axis and the duration of incubation phase transmission on the y-axis.
 ```{r, message = FALSE, warning = FALSE}
-duration_plot <- plot_epidemic_duration(duration_summary, regional_scenario)
+duration_plot <- plot_epidemic_duration(duration_summary, region)
 ```
 
 ```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}

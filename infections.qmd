@@ -64,8 +64,8 @@ infection <- import_infection_data(file_path)
 ## Order response_type
 infection$response_type <- ordered(factor(infection$response_type), c("optimal", "suboptimal", "low-virulence"))
 
-## Order regional_scenarios
-infection$regional_scenario <- ordered(factor(infection$regional_scenario), c("central", "eastern"))
+## Order regions
+infection$region <- ordered(factor(infection$region), c("central", "eastern"))
 ```
 
 ## Infection Summary
@@ -102,7 +102,7 @@ cattle_inf_summary <- infect_config_summary %>%
 ```{r}
 ## Filter to central region
 farms_central_summary <- farms_inf_summary %>%
-  filter(regional_scenario == "central")
+  filter(region == "central")
 
 ## Select and order columns
 farms_central_summary <- farms_central_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
@@ -114,7 +114,7 @@ farms_central_summary
 ```{r}
 ## Filter to eastern region
 farms_eastern_summary <- farms_inf_summary %>%
-  filter(regional_scenario == "eastern")
+  filter(region == "eastern")
 
 ## Select and order columns
 farms_eastern_summary <- farms_eastern_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
@@ -131,7 +131,7 @@ farms_eastern_summary
 ```{r}
 ## Filter to central region
 cattle_central_summary <- cattle_inf_summary %>%
-  filter(regional_scenario == "central")
+  filter(region == "central")
 
 ## Select and order columns
 cattle_central_summary <- cattle_central_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
@@ -143,7 +143,7 @@ cattle_central_summary
 ```{r}
 ## Filter to eastern region
 cattle_eastern_summary <- cattle_inf_summary %>%
-  filter(regional_scenario == "eastern")
+  filter(region == "eastern")
 
 ## Select and order columns
 cattle_eastern_summary <- cattle_eastern_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
@@ -170,7 +170,7 @@ Check data range
 ```{r}
 ## Filter to central region
 no_LV_central_summary <- no_LV_summary %>%
-  filter(regional_scenario == "central")
+  filter(region == "central")
 
 range(no_LV_central_summary$cattle_infected) # high values
 plot(density(no_LV_central_summary$cattle_infected)) #long tail
@@ -187,7 +187,7 @@ Check data range
 ```{r}
 ## Filter to eastern region
 no_LV_eastern_summary <- no_LV_summary %>%
-  filter(regional_scenario == "eastern")
+  filter(region == "eastern")
 
 range(no_LV_eastern_summary$cattle_infected) # high values
 plot(density(no_LV_eastern_summary$cattle_infected)) #long tail

@@ -90,9 +90,7 @@ Check `infect_day` statistics
 infection %>%
   summarize(
     mean_day = mean(infect_day),
-    first_day = min(infect_day),
-    median_day = median(infect_day),
-    last_day = max(infect_day))
+    median_day = median(infect_day))
 ```
 
 ## Central U.S.
@@ -100,7 +98,7 @@ Check the number of infection events
 ```{r}
 ## Filter to central region
 infection_central <- infection %>%
-  filter(regional_scenario == "central")
+  filter(region == "central")
 
 ## Check data frame dimensions
 nrow(infection_central)
@@ -111,9 +109,7 @@ Check `infect_day` statistics
 infection_central %>%
   summarize(
     mean_day = mean(infect_day),
-    first_day = min(infect_day),
-    median_day = median(infect_day),
-    last_day = max(infect_day))
+    median_day = median(infect_day))
 ```
 
 ## Eastern U.S.
@@ -121,7 +117,7 @@ Check the number of infection events
 ```{r}
 ## Filter to eastern region
 infection_eastern <- infection %>%
-  filter(regional_scenario == "eastern")
+  filter(region == "eastern")
 
 ## Check data frame dimensions
 nrow(infection_eastern)
@@ -132,9 +128,7 @@ Check `infect_day` statistics
 infection_eastern %>%
   summarize(
     mean_day = mean(infect_day),
-    first_day = min(infect_day),
-    median_day = median(infect_day),
-    last_day = max(infect_day))
+    median_day = median(infect_day))
 ```
 
 :::
@@ -156,10 +150,8 @@ Check `detect_day` statistics
 ```{r}
 detection %>%
   summarize(
-    first_day = min(detect_day),
     mean_day = mean(detect_day),
-    median_day = median(detect_day),
-    last_day = max(detect_day))
+    median_day = median(detect_day))
 ```
 
 ## Central U.S.
@@ -167,7 +159,7 @@ Check the number of detection events
 ```{r}
 ## Filter to central region
 detection_central <- detection %>%
-  filter(regional_scenario == "central")
+  filter(region == "central")
 
 nrow(detection_central)
 ```
@@ -176,10 +168,8 @@ Check `detect_day` statistics
 ```{r}
 detection_central %>%
   summarize(
-    first_day = min(detect_day),
     mean_day = mean(detect_day),
-    median_day = median(detect_day),
-    last_day = max(detect_day))
+    median_day = median(detect_day))
 ```
 
 ## Eastern U.S.
@@ -187,7 +177,7 @@ Check the number of detection events
 ```{r}
 ## Filter to eastern region
 detection_eastern <- detection %>%
-  filter(regional_scenario == "eastern")
+  filter(region == "eastern")
 
 nrow(detection_eastern)
 ```
@@ -196,10 +186,8 @@ Check `detect_day` statistics
 ```{r}
 detection_eastern %>%
   summarize(
-    first_day = min(detect_day),
     mean_day = mean(detect_day),
-    median_day = median(detect_day),
-    last_day = max(detect_day))
+    median_day = median(detect_day))
 ```
 
 :::

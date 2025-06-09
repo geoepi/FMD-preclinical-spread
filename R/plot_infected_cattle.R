@@ -1,11 +1,11 @@
 
-plot_infected_cattle <- function(summary, regional_scenario) {
+plot_infected_cattle <- function(summary, region) {
 
 require(scales)
 require(patchwork)
  
-  # Convert `regional_scenario` to title case 
-  region_title <- str_to_title(regional_scenario)
+  # Convert `region` to title case 
+  region_title <- str_to_title(region)
 
   # Pre-format the label vector with commas
   summary <- summary %>%

@@ -33,6 +33,13 @@ pre {
 </style>
 ```
 
+::: {.callout-note icon=true}
+#### 
+
+This page includes tables and figures for the Eastern U.S. scenarios only. Visuals for the Central U.S. scenarios are coming soon.
+  
+:::
+
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 ## Load libraries
 library(tidyverse)

@@ -2,7 +2,7 @@
 summarize_infections <- function(infection) {
   
   infect_summary <- infection %>% 
-    group_by(regional_scenario, response_type, preclinical, iteration) %>% 
+    group_by(region, response_type, preclinical, iteration) %>% 
     summarize(
       farms_infected = n(),
       cattle_infected = sum(cattle, na.rm = FALSE),
@@ -28,7 +28,7 @@ generate_infect_statistics <- function(summary) {
     mutate(summary=factor(summary, levels=c("farms_infected", "cattle_infected", "first_infect_day", "last_infect_day")))
   
   infect_summary_statistics <- config_long %>% 
-    group_by(summary, regional_scenario, response_type, preclinical) %>% 
+    group_by(summary, region, response_type, preclinical) %>% 
     summarize(
       iterations=n(),
       mean= mean(n, na.rm = TRUE),

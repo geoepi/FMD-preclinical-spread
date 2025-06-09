@@ -213,12 +213,25 @@ pre {
   font-size: 11pt
 }
 </style>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This page includes tables and figures for the Eastern U.S. scenarios only. Visuals for the Central U.S. scenarios are coming soon.</p>
+</div>
+</div>
 <section id="effective-reproduction" class="level2">
 <h2 class="anchored" data-anchor-id="effective-reproduction">Effective Reproduction</h2>
 <p>The Effective Reproduction Number (Re) is the average number of secondary premises infected by a source per day. Re is used to estimate epidemic potential. The <code>calculate_daily_Re()</code> calculates the daily Re by simulation day (<code>combined_daily_Re</code>) and by iteration (<code>iteration_Re</code>).</p>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Re_tab <span class="ot">&lt;-</span> <span class="fu">calculate_daily_Re</span>(region_paths, reference)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Split scenario names</span></span>
@@ -237,8 +250,8 @@ pre {
 <h3 class="anchored" data-anchor-id="plot-effective-reproduction">Plot Effective Reproduction</h3>
 <p>The dashed line is at Re = 1</p>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>daily_Re <span class="ot">&lt;-</span> daily_Re <span class="sc">%&gt;%</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">preclinical_delay =</span> <span class="fu">recode</span>(preclinical_delay,</span>
@@ -307,8 +320,8 @@ pre {
 <h3 class="anchored" data-anchor-id="calculate-daily-distances">Calculate Daily Distances</h3>
 <p>The <code>compile_daily_summary()</code> function calculates distances (km) between source farms and those infected for each iteration, then calculates the quantiles by day across all iterations to get the average statistics.</p>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>daily_summary <span class="ot">&lt;-</span> <span class="fu">compile_daily_summary</span>(region_paths, reference)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
@@ -317,8 +330,8 @@ pre {
 <h3 class="anchored" data-anchor-id="compare-scenarios">Compare Scenarios</h3>
 <p>Drop the low-virulence scenario from <code>combined_summary</code> and calculate percentiles</p>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>daily_all <span class="ot">&lt;-</span> daily_summary<span class="sc">$</span>combined_summary</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>daily_quants <span class="ot">&lt;-</span> daily_summary<span class="sc">$</span>combined_summary <span class="sc">%&gt;%</span></span>
@@ -327,8 +340,8 @@ pre {
 </div>
 <p>Compare percentiles across all scenarios and prepare to wave velocity</p>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>my_summary_compare <span class="ot">&lt;-</span> daily_quants <span class="sc">%&gt;%</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">scenario_type =</span> <span class="fu">str_to_title</span>(<span class="fu">word</span>(scenario, <span class="dv">1</span>, <span class="at">sep =</span> <span class="st">"/"</span>)),</span>
@@ -354,8 +367,8 @@ pre {
 <section id="plot-epidemic-velocity" class="level3">
 <h3 class="anchored" data-anchor-id="plot-epidemic-velocity">Plot Epidemic Velocity</h3>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>all_summary_compare <span class="ot">&lt;-</span> all_summary_compare <span class="sc">%&gt;%</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">preclinical_delay =</span> <span class="fu">recode</span>(preclinical_delay,</span>
@@ -434,8 +447,8 @@ pre {
 <h4 class="anchored" data-anchor-id="peak_day">peak_day</h4>
 <p>The infect day that the maximum spread distance (peak_spread) occurred.</p>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate iteration metrics</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>iteration_metrics <span class="ot">&lt;-</span> <span class="fu">iteration_metrics</span>(daily_summary<span class="sc">$</span>daily_distances)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -446,8 +459,8 @@ pre {
 </div>
 </div>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Print daily iteration metrics</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iteration_metrics, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -506,8 +519,8 @@ pre {
 <section id="order-scenario-levels" class="level3">
 <h3 class="anchored" data-anchor-id="order-scenario-levels">Order scenario levels</h3>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Capitalize for labels</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>iteration_metrics<span class="sc">$</span>scenario_type <span class="ot">&lt;-</span> <span class="fu">str_to_title</span>(iteration_metrics<span class="sc">$</span>scenario_type)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -521,16 +534,16 @@ pre {
 <h2 class="anchored" data-anchor-id="cumulative-spread">Cumulative Spread</h2>
 <p>Cumulative spatial spread is calculated to quantify the geographic extent of simulated outbreaks. First, drop the low-virulence scenario to compare optimal vs.&nbsp;suboptimal detection scenarios.</p>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>iteration_metrics_no_low <span class="ot">&lt;-</span> iteration_metrics <span class="sc">%&gt;%</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scenario_type <span class="sc">!=</span> <span class="st">"Low-Virulence"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Plot the estimated Area Under Curve (AUC), which represents total cumulative spread distance, for each response level and preclinical scenario, by iteration (points). Then do a regression (lm) to find the trend across increasing preclinical days.</p>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iteration_metrics_no_low, </span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> preclinical_delay, <span class="at">y =</span> auc_log, <span class="at">color =</span> scenario_type)) <span class="sc">+</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">shape=</span><span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> <span class="co"># individual iterations</span></span>
@@ -568,8 +581,8 @@ pre {
 <section id="linear-model" class="level4">
 <h4 class="anchored" data-anchor-id="linear-model">Linear Model</h4>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model_auc <span class="ot">&lt;-</span> <span class="fu">lm</span>(auc_log <span class="sc">~</span> preclinical_delay <span class="sc">*</span> scenario_type, <span class="at">data =</span> iteration_metrics_no_low)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_auc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -602,8 +615,8 @@ F-statistic: 409.3 on 3 and 3429 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="analysis-of-variance-anova" class="level4">
 <h4 class="anchored" data-anchor-id="analysis-of-variance-anova">Analysis of Variance (ANOVA)</h4>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_auc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
@@ -672,8 +685,8 @@ F-statistic: 409.3 on 3 and 3429 DF,  p-value: &lt; 2.2e-16</code></pre>
 <h2 class="anchored" data-anchor-id="peak-spread">Peak Spread</h2>
 <p>As with cumulative spread above, comparisons can be made using the peak spread rates.</p>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(iteration_metrics_no_low, <span class="fu">aes</span>(<span class="at">x =</span> preclinical_delay, <span class="at">y =</span> peak_day, <span class="at">color =</span> scenario_type)) <span class="sc">+</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">shape=</span><span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> <span class="co"># individual iterations</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">linewidth=</span><span class="fl">1.2</span>) <span class="sc">+</span></span>
@@ -710,8 +723,8 @@ F-statistic: 409.3 on 3 and 3429 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="linear-model-1" class="level4">
 <h4 class="anchored" data-anchor-id="linear-model-1">Linear Model</h4>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model_peak <span class="ot">&lt;-</span> <span class="fu">lm</span>(peak_day <span class="sc">~</span> preclinical_delay <span class="sc">*</span> scenario_type, <span class="at">data =</span> iteration_metrics_no_low)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_peak)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -743,8 +756,8 @@ F-statistic: 178.7 on 3 and 3709 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="analysis-of-variance-anova-1" class="level4">
 <h4 class="anchored" data-anchor-id="analysis-of-variance-anova-1">Analysis of Variance (ANOVA)</h4>
 <div class="cell">
-<details open="" class="code-fold">
-<summary>Hide code</summary>
+<details class="code-fold">
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(model_peak)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
