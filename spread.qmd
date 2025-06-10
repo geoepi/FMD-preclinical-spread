@@ -34,7 +34,7 @@ pre {
 ```
 
 ::: {.callout-note icon=true}
-#### 
+#### Eastern U.S. Region Only
 
 This page includes tables and figures for the Eastern U.S. scenarios only. Visuals for the Central U.S. scenarios are coming soon.
   
@@ -104,7 +104,7 @@ region_paths <- list.files(path = here(regional_path),
 ```
 
 ## Effective Reproduction
-The Effective Reproduction Number (Re) is the average number of secondary premises infected by a source per day. Re is used to estimate epidemic potential. The `calculate_daily_Re()` calculates the daily Re by simulation day (`combined_daily_Re`) and by iteration (`iteration_Re`).
+The Effective Reproduction Number (Re) is the average number of secondary premises infected by a source per day. Re is used to estimate epidemic potential. `calculate_daily_Re()` calculates the daily Re by simulation day (`combined_daily_Re`) and by iteration (`iteration_Re`).
 ```{r}
 Re_tab <- calculate_daily_Re(region_paths, reference)
 
@@ -179,7 +179,7 @@ ggplot(daily_Re, aes(infect_day, cred_50, group = scenario, col = preclinical_de
 The epidemic velocity is the distance (km) of spread per day. The epidemic velocity is estimated by first calculating the daily spread distances.
 
 ### Calculate Daily Distances
-The `compile_daily_summary()` function calculates distances (km) between source farms and those infected for each iteration, then calculates the quantiles by day across all iterations to get the average statistics.
+`compile_daily_summary()` calculates distances (km) between source farms and those infected for each iteration, then calculates the quantiles by day across all iterations to get the average statistics.
 ```{r}
 daily_summary <- compile_daily_summary(region_paths, reference)
 ```
@@ -193,7 +193,7 @@ daily_quants <- daily_summary$combined_summary %>%
   filter(scenario != "low-virulence/6-days-preclinical")
 ```
 
-Compare percentiles across  all scenarios and prepare to wave velocity
+Compare percentiles across  all scenarios and prepare to calculate wave velocity
 ```{r}
 my_summary_compare <- daily_quants %>%
   mutate(
@@ -272,7 +272,7 @@ ggplot(all_summary_compare, aes(infect_day, log(cred_50),
 ```
 
 ## Iteration Metrics
-Compare scenarios by looking for patterns at the level of individual iterations. The `iteration_metrics()` will use the other output in `daily_summary` to look at trends between optimal and suboptimal responses.   
+Compare scenarios by looking for patterns at the level of individual iterations. `iteration_metrics()` will use the other output in `daily_summary` to look at trends between optimal and suboptimal responses.   
   
 The function returns iteration specific metrics:  
 
@@ -348,7 +348,7 @@ ggplot(iteration_metrics_no_low,
 ```
 
 ### Significance Test
-Fit a linear model with an interaction term to quantify the influence of `preclinical_delay` and `scenario_type` on cumulative outbreak spread (**auc_log**).
+Fit a linear model with an interaction term to quantify the influence of `preclinical_delay` and `scenario_type` on cumulative outbreak spread (`auc_log`).
 
 #### Linear Model
 ```{r}
@@ -357,7 +357,7 @@ model_auc <- lm(auc_log ~ preclinical_delay * scenario_type, data = iteration_me
 summary(model_auc)
 ```
 
-#### Analysis of Variance (ANOVA)
+#### ANOVA
 ```{r}
 anova(model_auc)
 ```
@@ -389,7 +389,7 @@ ggplot(iteration_metrics_no_low, aes(x = preclinical_delay, y = peak_day, color 
 ```
 
 ### Significance Test
-Fit a linear model with an interaction term to quantify the influence of *preclinical_delay* and *scenario_type* on the maximum spread rate and it`s (*peak_day*).
+Fit a linear model with an interaction term to quantify the influence of `preclinical_delay` and `scenario_type` on the maximum spread rate and it's (`peak_day`).
 
 #### Linear Model
 ```{r}
@@ -398,7 +398,7 @@ model_peak <- lm(peak_day ~ preclinical_delay * scenario_type, data = iteration_
 summary(model_peak)
 ```
 
-#### Analysis of Variance (ANOVA)
+#### ANOVA
 ```{r}
 anova(model_peak)
 ```

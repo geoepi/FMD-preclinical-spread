@@ -218,7 +218,7 @@ pre {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+Eastern U.S. Region Only
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -227,7 +227,7 @@ Note
 </div>
 <section id="detection-summary" class="level2">
 <h2 class="anchored" data-anchor-id="detection-summary">Detection Summary</h2>
-<p>The <code>summarize_detections</code> function generates a data frame summarizing detection events by iteration. The <code>generate_detect_statistics</code> generates a data frame of summary statistics grouped by preclinical infectious duration and response type.</p>
+<p><code>summarize_detections()</code> generates a data frame summarizing detection events by iteration. <code>generate_detect_statistics</code> returns a data frame of summary statistics grouped by preclinical infectious duration (<code>preclinical</code>) and <code>response_type</code>.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -549,7 +549,7 @@ Note
 </section>
 <section id="significance-test" class="level2">
 <h2 class="anchored" data-anchor-id="significance-test">Significance Test</h2>
-<p>Significance testing performed on optimal and suboptimal detection scenarios</p>
+<p>Perform significance testing on <code>optimal</code> and <code>suboptimal</code> detection scenarios</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -614,8 +614,8 @@ F-statistic: 253.2 on 7 and 3992 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </section>
-<section id="analysis-of-variance-anova" class="level3">
-<h3 class="anchored" data-anchor-id="analysis-of-variance-anova">Analysis of Variance (ANOVA)</h3>
+<section id="anova" class="level3">
+<h3 class="anchored" data-anchor-id="anova">ANOVA</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -695,7 +695,7 @@ F-statistic: 253.2 on 7 and 3992 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <section id="generate-plot-using-patchwork-package" class="level3">
 <h3 class="anchored" data-anchor-id="generate-plot-using-patchwork-package">Generate Plot Using Patchwork Package</h3>
-<p>The <code>plot_epidemic_duration</code> function plots epidemic duration by scenario, with epidemic duration (days) on the x-axis and the duration of incubation phase transmission on the y-axis.</p>
+<p><code>plot_epidemic_duration()</code> returns a plot with epidemic duration (days) on the x-axis and the duration of incubation phase transmission on the y-axis.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>

@@ -219,7 +219,7 @@ pre {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+Eastern U.S. Region Only
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -228,7 +228,7 @@ Note
 </div>
 <section id="effective-reproduction" class="level2">
 <h2 class="anchored" data-anchor-id="effective-reproduction">Effective Reproduction</h2>
-<p>The Effective Reproduction Number (Re) is the average number of secondary premises infected by a source per day. Re is used to estimate epidemic potential. The <code>calculate_daily_Re()</code> calculates the daily Re by simulation day (<code>combined_daily_Re</code>) and by iteration (<code>iteration_Re</code>).</p>
+<p>The Effective Reproduction Number (Re) is the average number of secondary premises infected by a source per day. Re is used to estimate epidemic potential. <code>calculate_daily_Re()</code> calculates the daily Re by simulation day (<code>combined_daily_Re</code>) and by iteration (<code>iteration_Re</code>).</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -318,7 +318,7 @@ Note
 <p>The epidemic velocity is the distance (km) of spread per day. The epidemic velocity is estimated by first calculating the daily spread distances.</p>
 <section id="calculate-daily-distances" class="level3">
 <h3 class="anchored" data-anchor-id="calculate-daily-distances">Calculate Daily Distances</h3>
-<p>The <code>compile_daily_summary()</code> function calculates distances (km) between source farms and those infected for each iteration, then calculates the quantiles by day across all iterations to get the average statistics.</p>
+<p><code>compile_daily_summary()</code> calculates distances (km) between source farms and those infected for each iteration, then calculates the quantiles by day across all iterations to get the average statistics.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -338,7 +338,7 @@ Note
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scenario <span class="sc">!=</span> <span class="st">"low-virulence/6-days-preclinical"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Compare percentiles across all scenarios and prepare to wave velocity</p>
+<p>Compare percentiles across all scenarios and prepare to calculate wave velocity</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -433,7 +433,7 @@ Note
 </section>
 <section id="iteration-metrics" class="level2">
 <h2 class="anchored" data-anchor-id="iteration-metrics">Iteration Metrics</h2>
-<p>Compare scenarios by looking for patterns at the level of individual iterations. The <code>iteration_metrics()</code> will use the other output in <code>daily_summary</code> to look at trends between optimal and suboptimal responses.</p>
+<p>Compare scenarios by looking for patterns at the level of individual iterations. <code>iteration_metrics()</code> will use the other output in <code>daily_summary</code> to look at trends between optimal and suboptimal responses.</p>
 <p>The function returns iteration specific metrics:</p>
 <section id="auc_log" class="level4">
 <h4 class="anchored" data-anchor-id="auc_log">auc_log</h4>
@@ -577,7 +577,7 @@ Note
 </div>
 <section id="significance-test" class="level3">
 <h3 class="anchored" data-anchor-id="significance-test">Significance Test</h3>
-<p>Fit a linear model with an interaction term to quantify the influence of <code>preclinical_delay</code> and <code>scenario_type</code> on cumulative outbreak spread (<strong>auc_log</strong>).</p>
+<p>Fit a linear model with an interaction term to quantify the influence of <code>preclinical_delay</code> and <code>scenario_type</code> on cumulative outbreak spread (<code>auc_log</code>).</p>
 <section id="linear-model" class="level4">
 <h4 class="anchored" data-anchor-id="linear-model">Linear Model</h4>
 <div class="cell">
@@ -612,8 +612,8 @@ F-statistic: 409.3 on 3 and 3429 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </section>
-<section id="analysis-of-variance-anova" class="level4">
-<h4 class="anchored" data-anchor-id="analysis-of-variance-anova">Analysis of Variance (ANOVA)</h4>
+<section id="anova" class="level4">
+<h4 class="anchored" data-anchor-id="anova">ANOVA</h4>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -719,7 +719,7 @@ F-statistic: 409.3 on 3 and 3429 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <section id="significance-test-1" class="level3">
 <h3 class="anchored" data-anchor-id="significance-test-1">Significance Test</h3>
-<p>Fit a linear model with an interaction term to quantify the influence of <em>preclinical_delay</em> and <em>scenario_type</em> on the maximum spread rate and it`s (<em>peak_day</em>).</p>
+<p>Fit a linear model with an interaction term to quantify the influence of <code>preclinical_delay</code> and <code>scenario_type</code> on the maximum spread rate and it’s (<code>peak_day</code>).</p>
 <section id="linear-model-1" class="level4">
 <h4 class="anchored" data-anchor-id="linear-model-1">Linear Model</h4>
 <div class="cell">
@@ -753,8 +753,8 @@ F-statistic: 178.7 on 3 and 3709 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </section>
-<section id="analysis-of-variance-anova-1" class="level4">
-<h4 class="anchored" data-anchor-id="analysis-of-variance-anova-1">Analysis of Variance (ANOVA)</h4>
+<section id="anova-1" class="level4">
+<h4 class="anchored" data-anchor-id="anova-1">ANOVA</h4>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>

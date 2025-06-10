@@ -34,7 +34,7 @@ pre {
 ```
 
 ::: {.callout-note icon=true}
-#### 
+#### Eastern U.S. Region Only
 
 This page includes tables and figures for the Eastern U.S. scenarios only. Visuals for the Central U.S. scenarios are coming soon.
   
@@ -67,7 +67,7 @@ detection <- import_detection_data(regional_path)
 ```
 
 ## Detection Summary
-The `summarize_detections` function generates a data frame summarizing detection events by iteration. The `generate_detect_statistics` generates a data frame of summary statistics grouped by preclinical infectious duration and response type.
+`summarize_detections()` generates a data frame summarizing detection events by iteration. `generate_detect_statistics` returns a data frame of summary statistics grouped by preclinical infectious duration (`preclinical`) and `response_type`.
 ```{r}
 detect_summary <- summarize_detections(detection)
 
@@ -91,7 +91,7 @@ duration_summary
 ```
 
 ## Significance Test
-Significance testing performed on optimal and suboptimal detection scenarios
+Perform significance testing on `optimal` and `suboptimal` detection scenarios
 ```{r}
 ## Filter out low virulence scenarios
 no_low_virulence <- detection %>%
@@ -111,7 +111,7 @@ model_duration <- lm(duration ~ preclinical * response_type,
 summary(model_duration)
 ```
 
-### Analysis of Variance (ANOVA)
+### ANOVA
 ```{r}
 anova(model_duration)
 ```
@@ -125,7 +125,7 @@ response_colors <- c("#74add1", "orange2", "red4")
 ```
 
 ### Generate Plot Using Patchwork Package
-The `plot_epidemic_duration` function plots epidemic duration by scenario, with epidemic duration (days) on the x-axis and the duration of incubation phase transmission on the y-axis.
+`plot_epidemic_duration()` returns a plot with epidemic duration (days) on the x-axis and the duration of incubation phase transmission on the y-axis.
 ```{r, message = FALSE, warning = FALSE}
 duration_plot <- plot_epidemic_duration(duration_summary, region)
 ```

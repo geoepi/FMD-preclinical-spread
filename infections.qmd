@@ -34,13 +34,6 @@ pre {
 </style>
 ```
 
-::: {.callout-tip icon=true}
-#### 
-
-This page includes tables and figures for the Central and Eastern U.S. scenarios. Select the tabs in the panels below to compare results between regions.
-  
-:::
-
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 library(tidyverse)
 options(dplyr.summarise.inform = FALSE)
@@ -69,7 +62,7 @@ infection$region <- ordered(factor(infection$region), c("central", "eastern"))
 ```
 
 ## Infection Summary
-The `summarize_infections()` summarizes infection metrics by iteration. 
+`summarize_infections()` summarizes infection metrics by iteration. 
 ```{r}
 ## Summarize infection metrics for each iteration
 infect_summary <- summarize_infections(infection)
@@ -82,7 +75,7 @@ head(infect_summary_select, 3)
 ```
 
 ### Summary Statistics
-The `generate_infect_statistics()` returns summary statistics grouped by region, preclinical infectious duration, and response type. The `infect_config_summary` can be filtered by `summary` to summarize `farms_infected` or `cattle_infected` across scenarios.
+`generate_infect_statistics()` returns summary statistics for each modeling scenario. Results are grouped by `region`, `response_type`, and `preclinical`. The output is filtered by `summary` and `region` to compare `farms_infected` and `cattle_infected` between scenarios.
 ```{r}
 infect_config_summary <- generate_infect_statistics(infect_summary)
 
@@ -96,6 +89,7 @@ cattle_inf_summary <- infect_config_summary %>%
 ```
 
 ## Infected Farms
+The number of infected farms
 
 ::: panel-tabset
 ## Central U.S.
@@ -125,6 +119,7 @@ farms_eastern_summary
 :::
 
 ## Total Cattle
+The total number of cattle on infected farms
 
 ::: panel-tabset
 ## Central U.S.
@@ -154,7 +149,7 @@ cattle_eastern_summary
 :::
 
 ## Significance Test
-Significance testing performed on optimal and suboptimal response types for each region
+Perform significance testing on `optimal` and `suboptimal` detection scenarios.
 
 ```{r}
 ## Filter out low virulence scenarios
@@ -243,7 +238,7 @@ anova(model_eastern_cattle)
 response_colors <- c("#74add1", "orange2", "red4") 
 ```
 
-The `plot_infected_cattle()` plots infected cattle by scenario, with the duration of incubation phase transmission on the x-axis and the median number of infected cattle on the y-axis.
+`plot_infected_cattle()` generates a plot with the duration of incubation phase transmission on the x-axis and the median number of infected cattle (log10) on the y-axis.
 
 ::: panel-tabset
 ## Central U.S.

@@ -213,22 +213,9 @@ pre {
   font-size: 11pt
 }
 </style>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This page includes tables and figures for the Central and Eastern U.S. scenarios. Select the tabs in the panels below to compare results between regions.</p>
-</div>
-</div>
 <section id="infection-summary" class="level2">
 <h2 class="anchored" data-anchor-id="infection-summary">Infection Summary</h2>
-<p>The <code>summarize_infections()</code> summarizes infection metrics by iteration.</p>
+<p><code>summarize_infections()</code> summarizes infection metrics by iteration.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -289,7 +276,7 @@ Tip
 </div>
 <section id="summary-statistics" class="level3">
 <h3 class="anchored" data-anchor-id="summary-statistics">Summary Statistics</h3>
-<p>The <code>generate_infect_statistics()</code> returns summary statistics grouped by region, preclinical infectious duration, and response type. The <code>infect_config_summary</code> can be filtered by <code>summary</code> to summarize <code>farms_infected</code> or <code>cattle_infected</code> across scenarios.</p>
+<p><code>generate_infect_statistics()</code> returns summary statistics for each modeling scenario. Results are grouped by <code>region</code>, <code>response_type</code>, and <code>preclinical</code>. The output is filtered by <code>summary</code> and <code>region</code> to compare <code>farms_infected</code> and <code>cattle_infected</code> between scenarios.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -308,6 +295,7 @@ Tip
 </section>
 <section id="infected-farms" class="level2">
 <h2 class="anchored" data-anchor-id="infected-farms">Infected Farms</h2>
+<p>The number of infected farms</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Central U.S.</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Eastern U.S.</a></li></ul>
 <div class="tab-content">
@@ -586,6 +574,7 @@ Tip
 </section>
 <section id="total-cattle" class="level2">
 <h2 class="anchored" data-anchor-id="total-cattle">Total Cattle</h2>
+<p>The total number of cattle on infected farms</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Central U.S.</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Eastern U.S.</a></li></ul>
 <div class="tab-content">
@@ -864,7 +853,7 @@ Tip
 </section>
 <section id="significance-test" class="level2">
 <h2 class="anchored" data-anchor-id="significance-test">Significance Test</h2>
-<p>Significance testing performed on optimal and suboptimal response types for each region</p>
+<p>Perform significance testing on <code>optimal</code> and <code>suboptimal</code> detection scenarios.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1203,7 +1192,7 @@ F-statistic: 348.6 on 7 and 3992 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="plot-cattle-numbers" class="level2">
 <h2 class="anchored" data-anchor-id="plot-cattle-numbers">Plot Cattle Numbers</h2>
-<p>The <code>plot_infected_cattle()</code> plots infected cattle by scenario, with the duration of incubation phase transmission on the x-axis and the median number of infected cattle on the y-axis.</p>
+<p><code>plot_infected_cattle()</code> generates a plot with the duration of incubation phase transmission on the x-axis and the median number of infected cattle (log10) on the y-axis.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true">Central U.S.</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false">Eastern U.S.</a></li></ul>
 <div class="tab-content">
