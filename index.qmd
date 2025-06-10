@@ -36,12 +36,28 @@ pre {
 ::: {.callout-important icon=true}
 #### Under Active Development  
 
-This site includes exploratory analyses that have not been verified or validated and are subject to change. 
+This site includes exploratory analyses that are subject to change. 
   
 :::
 
-## Navigation  
-The menu at right can be used to navigate through major sections on a webpage.  Links across the top of the page will direct to specific analyses.
-
 ## About 
-This site provides a demonstrative workflow for analyses of InterSpread Plus outputs from a FMDV preclinical transmission model in U.S. cattle.
+This site provides a demonstrative workflow for analyses of InterSpread Plus outputs from a FMDV preclinical transmission model in United States cattle. Simulations were run for multiple geographic regions. Figures for the Western U.S. are included in the main text. Tables and figures for the Eastern U.S. and Central U.S. region scenarios are included on this site.
+
+## Navigation  
+The menu at right can be used to navigate through major sections on a webpage.  Links across the top of the page will direct to specific analyses. Throughout this website, side-by-side panels are used to display results across regional scenarios.
+
+
+
+::: {.callout-tip icon=true}
+#### Regional Scenarios
+
+Select the tabs to compare regions.
+  
+:::
+
+::: panel-tabset
+## Central U.S.
+
+## Eastern U.S.
+
+:::
