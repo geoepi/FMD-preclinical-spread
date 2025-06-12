@@ -238,7 +238,7 @@ anova(model_eastern_cattle)
 response_colors <- c("#74add1", "orange2", "red4") 
 ```
 
-`plot_infected_cattle()` generates a plot with the duration of incubation phase transmission on the x-axis and the median number of infected cattle (log10) on the y-axis.
+`plot_infected_cattle()` returns a plot with the duration of incubation phase transmission on the x-axis and the median number of infected cattle (log10) on the y-axis.
 
 ::: panel-tabset
 ## Central U.S.
