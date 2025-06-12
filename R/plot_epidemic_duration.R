@@ -3,7 +3,7 @@ plot_epidemic_duration <- function(summary, region) {
 
 require(scales)
 require(patchwork)
- 
+  
   # Convert `region` to title case 
   region_title <- str_to_title(region)
 
@@ -35,9 +35,9 @@ require(patchwork)
     geom_text(aes(label = label_vector),
               size = 4.5, position = position_dodge(width = 0.9), hjust = -0.5) +
     scale_y_continuous(
-      limits = c(1, 300), 
-      breaks = seq(0, 300, 25),
-      labels = seq(0, 300, 25),
+      limits = c(1, 350), 
+      breaks = seq(0, 350, 50),
+      labels = seq(0, 350, 50),
       oob = scales::squish
     ) +
     coord_flip() +
@@ -62,9 +62,9 @@ require(patchwork)
     geom_text(aes(label = label_vector),
               size = 4.5, position = position_dodge(width = 0.9), hjust = -0.5) +
     scale_y_continuous(
-      limits = c(1, 300), 
-      breaks = seq(0, 300, 25),
-      labels = seq(0, 300, 25),
+      limits = c(1, 350), 
+      breaks = seq(0, 350, 50),
+      labels = seq(0, 350, 50),
       oob = scales::squish
     ) +
     coord_flip() +
@@ -89,9 +89,9 @@ require(patchwork)
     geom_text(aes(label = label_vector),
               size = 4.5, position = position_dodge(width = 0.9), hjust = -0.5) +
     scale_y_continuous(
-      limits = c(1, 300), 
-      breaks = seq(0, 300, 25),
-      labels = seq(0, 300, 25),
+      limits = c(1, 350), 
+      breaks = seq(0, 350, 50),
+      labels = seq(0, 350, 50),
       oob = scales::squish
     ) +
     coord_flip() +

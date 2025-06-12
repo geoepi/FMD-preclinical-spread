@@ -51,7 +51,7 @@ generate_infect_statistics <- function(summary) {
 summarize_detections <- function(detection) {
   
   detect_summary <- detection %>% 
-    group_by(response_type, preclinical, iteration) %>% 
+    group_by(region, response_type, preclinical, iteration) %>% 
     summarize(
       farms_detected = n(),
       first_detect = min(detect_day, na.rm = TRUE),
@@ -77,7 +77,7 @@ generate_detect_statistics <- function(summary) {
     mutate(summary=factor(summary, levels=c("farms_detected", "first_detect", "last_detect", "duration")))
   
   detect_summary_statistics <- config_long %>% 
-    group_by(summary, response_type, preclinical) %>% 
+    group_by(summary, region, response_type, preclinical) %>% 
     summarize(
       iterations=n(),
       mean= mean(n, na.rm = TRUE),

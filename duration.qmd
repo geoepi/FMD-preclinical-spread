@@ -33,13 +33,6 @@ pre {
 </style>
 ```
 
-::: {.callout-note icon=true}
-#### Eastern U.S. Region Only
-
-This page includes tables and figures for the Eastern U.S. scenarios only. Visuals for the Central U.S. scenarios are coming soon.
-  
-:::
-
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 library(tidyverse)
 options(dplyr.summarise.inform = FALSE)
@@ -55,81 +48,162 @@ source(here("./R/utilities.R"))
 source_dir("./R")
 
 ## Assign file path 
-generic_path <- "./script-inputs/isp-outputs"
-
-## Assign regional scenario
-region <- "eastern"
-
-regional_path <- sprintf("%s/outputs_%s", generic_path, region)
+file_path <- "./script-inputs/isp-outputs"
 
 ## Import detection data
-detection <- import_detection_data(regional_path)
+detection <- import_detection_data(file_path)
+
+## Order response_type
+detection$response_type <- ordered(factor(detection$response_type), c("optimal", "suboptimal", "low-virulence"))
+
+## Order regions
+detection$region <- ordered(factor(detection$region), c("central", "eastern"))
 ```
 
 ## Detection Summary
-`summarize_detections()` generates a data frame summarizing detection events by iteration. `generate_detect_statistics` returns a data frame of summary statistics grouped by preclinical infectious duration (`preclinical`) and `response_type`.
+`summarize_detections()` returns a summary of detection events by iteration.
 ```{r}
 detect_summary <- summarize_detections(detection)
 
-head(detect_summary, 3)
+## Select and order columns to display
+detect_summary_select <- detect_summary[c("iteration", "farms_detected", "first_detect", "last_detect", "duration")]
 
+## Check data
+head(detect_summary_select, 3)
+```
+
+### Summary Statistics
+`generate_detect_statistics()` returns summary statistics for each modeling scenario. Results are grouped by `region`, `response_type`, and `preclinical`.
+```{r}
 detect_config_summary <- generate_detect_statistics(detect_summary)
-
-head(detect_config_summary, 3)
 ```
 
 ## Epidemic Duration
-The *epidemic duration* is calculated as the number of days between the first detection and last detection of disease in a single outbreak.
+The number of days between the first detection and last detection in a single outbreak
 ```{r}
 duration_summary <- detect_config_summary %>%         
   filter(summary == "duration")
-
-dim(duration_summary)
-
-## Print summary of Epidemic Duration (days)
-duration_summary
 ```
+
+::: panel-tabset
+## Central U.S.
+```{r}
+## Filter to central region
+duration_central_summary <- duration_summary %>%
+  filter(region == "central")
+
+## Select and order columns
+duration_central_summary <- duration_central_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+
+duration_central_summary
+```
+
+## Eastern U.S.
+```{r}
+## Filter to eastern region
+duration_eastern_summary <- duration_summary %>%
+  filter(region == "eastern")
+
+## Select and order columns
+duration_eastern_summary <- duration_eastern_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+
+duration_eastern_summary
+```
+
+:::
 
 ## Significance Test
 Perform significance testing on `optimal` and `suboptimal` detection scenarios
 ```{r}
 ## Filter out low virulence scenarios
-no_low_virulence <- detection %>%
+no_LV_detect <- detection %>%
   filter(response_type != "low-virulence")
 
-no_low_virulence_summary <- summarize_detections(no_low_virulence)
-
-range(no_low_virulence_summary$duration)
-plot(density(no_low_virulence_summary$duration))
+no_LV_detect_summary <- summarize_detections(no_LV_detect)
 ```
+
+::: panel-tabset
+## Central U.S.
+Check data range
+```{r}
+## Filter to central region
+no_LV_detect_central_summary <- no_LV_detect_summary %>%
+  filter(region == "central")
+
+range(no_LV_detect_central_summary$duration)
+plot(density(no_LV_detect_central_summary$duration))
+```
+
+## Eastern U.S.
+Check data range
+```{r}
+## Filter to central region
+no_LV_detect_eastern_summary <- no_LV_detect_summary %>%
+  filter(region == "eastern")
+
+range(no_LV_detect_eastern_summary$duration)
+plot(density(no_LV_detect_eastern_summary$duration))
+```
+
+:::
 
 ### Linear Model
-```{r}
-model_duration <- lm(duration ~ preclinical * response_type, 
-                       data = no_low_virulence_summary)
 
-summary(model_duration)
+::: panel-tabset
+## Central U.S.
+```{r}
+model_central_duration <- lm(duration ~ preclinical * response_type, 
+                       data = no_LV_detect_central_summary)
+
+summary(model_central_duration)
 ```
+
+## Eastern U.S.
+```{r}
+model_eastern_duration <- lm(duration ~ preclinical * response_type, 
+                       data = no_LV_detect_eastern_summary)
+
+summary(model_eastern_duration)
+```
+
+:::
 
 ### ANOVA
-```{r}
-anova(model_duration)
+
+::: panel-tabset
+## Central U.S.
+```{r message=FALSE, warning=FALSE}
+anova(model_central_duration)
 ```
 
-## Plot Duration
-Prepare to plot the calculated median epidemic duration (days)
-```{r}
-duration_summary$response_type <- ordered(factor(duration_summary$response_type), c("optimal", "suboptimal", "low-virulence"))
+## Eastern U.S.
+```{r message=FALSE, warning=FALSE}
+anova(model_eastern_duration)
+```
 
+:::
+
+## Plot Duration
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+## Assign response_type colors
 response_colors <- c("#74add1", "orange2", "red4") 
 ```
 
-### Generate Plot Using Patchwork Package
-`plot_epidemic_duration()` returns a plot with epidemic duration (days) on the x-axis and the duration of incubation phase transmission on the y-axis.
-```{r, message = FALSE, warning = FALSE}
-duration_plot <- plot_epidemic_duration(duration_summary, region)
+`plot_epidemic_duration()` returns a plot with median epidemic duration (days) on the x-axis and the duration of incubation phase transmission on the y-axis.
+
+::: panel-tabset
+## Central U.S.
+```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
+central_duration_plot <- plot_epidemic_duration(duration_central_summary, "central")
+
+central_duration_plot
 ```
 
+## Eastern U.S.
 ```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
-duration_plot
+eastern_duration_plot <- plot_epidemic_duration(duration_eastern_summary, "eastern")
+
+eastern_duration_plot
 ```
+
+:::
