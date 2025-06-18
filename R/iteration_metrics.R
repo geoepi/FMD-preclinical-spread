@@ -18,7 +18,7 @@ iteration_metrics <- function(daily_distances, offset = 0.001) {
     ) %>%
     # get scenario name
     mutate(
-      preclinical_delay = as.numeric(str_extract(scenario, "\\d+")),
+      preclinical = as.numeric(str_extract(scenario, "\\d+")),
       scenario_type = str_extract(scenario, "^[^/]+")
     )
   

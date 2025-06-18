@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Plot cumulative case detections on regional maps">
 
-<title>Overview – FMD Preclinical Spread</title>
+<title>Outbreak Maps – FMD Preclinical Spread</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -105,7 +140,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Transmission Metrics</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./outbreak_maps.html"> 
+    <a class="nav-link active" href="./outbreak_maps.html" aria-current="page"> 
 <span class="menu-text">Outbreak Maps</span></a>
   </li>  
 </ul>
@@ -135,8 +170,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Page Contents</h2>
    
   <ul class="collapse">
-  <li><a href="#about" id="toc-about" class="nav-link active" data-scroll-target="#about">About</a></li>
-  <li><a href="#navigation" id="toc-navigation" class="nav-link" data-scroll-target="#navigation">Navigation</a></li>
+  <li><a href="#outbreak-maps" id="toc-outbreak-maps" class="nav-link active" data-scroll-target="#outbreak-maps">Outbreak Maps</a></li>
   </ul>
 </nav>
     </div>
@@ -145,9 +179,14 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Overview</h1>
+<h1 class="title">Outbreak Maps</h1>
 </div>
 
+<div>
+  <div class="description">
+    Plot cumulative case detections on regional maps
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -174,52 +213,132 @@ pre {
   font-size: 11pt
 }
 </style>
-<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Under Active Development
+Eastern U.S. Region Only
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This site includes exploratory analyses that are subject to change.</p>
+<p>This page includes tables and figures for the Eastern U.S. scenarios only. Visuals for the Central U.S. scenarios are coming soon.</p>
 </div>
 </div>
-<section id="about" class="level2">
-<h2 class="anchored" data-anchor-id="about">About</h2>
-<p>This site provides a demonstrative workflow for analyses of InterSpread Plus outputs from a FMDV preclinical transmission model in United States cattle. Simulations were run for multiple geographic regions. Figures for the Western U.S. are included in the main text. Tables and figures for the Eastern U.S. and Central U.S. region scenarios are included on this site.</p>
+<section id="outbreak-maps" class="level2">
+<h2 class="anchored" data-anchor-id="outbreak-maps">Outbreak Maps</h2>
+<p>Map total cases across all iterations by scenario.</p>
+<p>Get shapefile</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>whole_us <span class="ot">&lt;-</span> <span class="fu">vect</span>(<span class="fu">here</span>(<span class="st">"script-inputs/shapefile/Contiguous_USA_for Regional_Model.shp"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Subset to region</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(whole_us<span class="sc">$</span>SUB_REGION)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Pacific"            "Mountain"           "New England"       
+[4] "West North Central" "East North Central" "Middle Atlantic"   
+[7] "South Atlantic"     "East South Central" "West South Central"</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>eastern_US <span class="ot">&lt;-</span> <span class="fu">subset</span>(whole_us, whole_us<span class="sc">$</span>SUB_REGION <span class="sc">%in%</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">c</span>(<span class="st">"east North Central"</span>, <span class="st">"East North Central"</span>, </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"East South Central"</span>, <span class="st">"east South Central"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"New England"</span>, <span class="st">"Middle Atlantic"</span>, <span class="st">"South Atlantic"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Create a raster grid version</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>tmp_r <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">ext</span>(eastern_US), </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">resolution =</span> <span class="dv">25000</span>, <span class="co"># 25km grid</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">crs =</span> <span class="fu">crs</span>(eastern_US))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>east_r  <span class="ot">&lt;-</span> <span class="fu">rasterize</span>(eastern_US, tmp_r)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>east_r[east_r <span class="sc">==</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># set land areas to 0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The function <em>raster_point_counts()</em> will count the number of events in each 25km cell.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>count_events <span class="ot">&lt;-</span> <span class="fu">raster_point_counts</span>(region_paths, <span class="co"># paths to files</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                                    reference, <span class="co"># coordinate references</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                                    east_r) <span class="co"># raster defining grid</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(count_events)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "low-virulence/6-days-preclinical" "optimal/0-days-preclinical"      
+[3] "optimal/1-day-preclinical"        "optimal/2-days-preclinical"      
+[5] "optimal/3-days-preclinical"       "suboptimal/0-days-preclinical"   
+[7] "suboptimal/1-day-preclinical"     "suboptimal/2-days-preclinical"   
+[9] "suboptimal/3-days-preclinical"   </code></pre>
+</div>
+</div>
+<p>Smoothing the raster to improve appearance. i.e., making smaller cells and finding averages of surrounding cells.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>count_events <span class="ot">&lt;-</span> <span class="fu">smooth_raster</span>(count_events)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="plot-counts" class="level3">
+<h3 class="anchored" data-anchor-id="plot-counts">Plot Counts</h3>
+<p>The function <em>plot_raster_stack()</em> will plot the rasters for comparison.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>no_low_virulence <span class="ot">&lt;-</span> <span class="fu">subset</span>(count_events, </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                           <span class="sc">!</span>(<span class="fu">names</span>(count_events) <span class="sc">%in%</span> <span class="st">"low-virulence/6-days-preclinical"</span>))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>only_low_virulence <span class="ot">&lt;-</span> <span class="fu">subset</span>(count_events, </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">names</span>(count_events) <span class="sc">%in%</span> <span class="st">"low-virulence/6-days-preclinical"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Plot Comparison</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>stack_set <span class="ot">&lt;-</span> <span class="fu">plot_raster_stack</span>(no_low_virulence, eastern_US)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Plot Low-virulence</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>lowV_set <span class="ot">&lt;-</span> <span class="fu">plot_raster_stack</span>(only_low_virulence, eastern_US)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Render Plot</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>combined_plot <span class="ot">&lt;-</span> stack_set <span class="sc">+</span> lowV_set <span class="sc">+</span> <span class="fu">plot_layout</span>(<span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">widths =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.4</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>combined_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="outbreak_maps_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
 </section>
-<section id="navigation" class="level2">
-<h2 class="anchored" data-anchor-id="navigation">Navigation</h2>
-<p>The menu at right can be used to navigate through major sections on a webpage. Links across the top of the page will direct to specific analyses. Throughout this website, panels are used to display results across regional scenarios.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-View Comparisons
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Select the tabs to view comparisons between regional scenarios.</p>
-</div>
-</div>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Central U.S.</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Eastern U.S.</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<p>FMDV-spread was simulated throughout the Central U.S. region.</p>
-</div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<p>FMDV-spread was simulated throughout the Eastern U.S. region.</p>
-</div>
-</div>
-</div>
-
-
 </section>
 
 </main> <!-- /main -->

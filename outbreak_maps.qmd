@@ -1,0 +1,215 @@
+---
+title: "Outbreak Maps"
+description: "Map cumulative case detections across all iterations by scenario"
+format:
+  html: 
+    df-print: kable
+    code-fold: true
+    code-summary: "Code"
+    code-overflow: wrap
+    toc-title: Page Contents
+    toc: true
+    toc-depth: 2
+    toc-location: right
+    number-sections: false
+    html-math-method: katex
+    smooth-scroll: true
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+
+```{=html}
+<style type="text/css">
+
+body, td {
+   font-size: 13pt;
+}
+code.r{
+  font-size: 9pt;
+}
+pre {
+  font-size: 11pt
+}
+</style>
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+## Load libraries
+library(tidyverse)
+options(dplyr.summarise.inform = FALSE)
+
+library(geosphere)# calculate distances from long/lat
+library(terra)
+library(raster)
+library(sf)
+library(scales)
+library(viridis)
+library(pals)
+library(here)
+library(patchwork)
+
+select <- dplyr::select
+
+## Custom functions
+source(here("./R/utilities.R"))
+source_dir("./R")
+
+## Assign file path 
+generic_path <- "./script-inputs/isp-outputs"
+
+## Read farm reference file
+reference <- read.csv2(here("script-inputs/reference-files/FMD_Reference_File.csv"), header=TRUE, sep=",")
+
+colnames(reference) <- c(
+                      "premises",
+                      "class",
+                      "cattle",
+                      "weight",
+                      "x",
+                      "y",
+                      "state",
+                      "longitude",
+                      "latitude",
+                      "geo_region"
+                        )
+
+reference <- reference %>%
+  mutate(longitude = as.numeric(longitude),
+         latitude = as.numeric(latitude)) %>%
+  select(-c(weight, cattle, x, y, geo_region))
+```
+
+## Region Boundaries
+Get shapefile and subset to region
+```{r}
+## Get shapefile for conterminous U.S.
+whole_us <- vect(here("script-inputs/shapefile/Contiguous_USA_for Regional_Model.shp")) 
+
+## Boundaries for central U.S.
+central_us <- subset(whole_us, whole_us$SUB_REGION %in% 
+                       c("West North Central", "East North Central", 
+                         "East South Central", "West South Central",
+                         "New England", "Middle Atlantic", "South Atlantic"))
+
+## Boundaries for eastern U.S.
+eastern_us <- subset(whole_us, whole_us$SUB_REGION %in% 
+                       c("East North Central", "East North Central", 
+                         "East South Central", "east South Central",
+                         "New England", "Middle Atlantic", "South Atlantic"))
+```
+
+::: panel-tabset
+## Central U.S.
+Print list of subregions
+```{r}
+unique(central_us$SUB_REGION)
+```
+
+## Eastern U.S.
+Print list of subregions
+```{r}
+unique(eastern_us$SUB_REGION)
+```
+
+:::
+
+## Extract File Paths
+Example code demonstrates the workflow for the Eastern U.S. First, assign the regional scenario and extract corresponding file paths.
+```{r}
+regional_scenario <- "eastern"
+
+regional_path <- sprintf("%s/outputs_%s", generic_path, regional_scenario)
+
+region_paths <- list.files(path = here(regional_path),
+                            recursive = T, pattern= "Outputs_Detection", full.names=TRUE)
+
+## Confirm number of file paths = expected number of scenarios
+length(region_paths)
+```
+
+## Create Raster Grid
+Create a raster grid version and prepare to count cumulative cases.
+```{r}
+tmp_r <- rast(ext(eastern_us), 
+              resolution = 25000, # 25km grid
+              crs = crs(eastern_us))
+
+east_r  <- rasterize(eastern_us, tmp_r)
+
+east_r[east_r == 1] <- 0 # set land areas to 0
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+## Central U.S.
+tmp_r <- rast(ext(central_us), 
+              resolution = 25000, # 25km grid
+              crs = crs(central_us))
+
+central_r  <- rasterize(central_us, tmp_r)
+
+central_r[central_r == 1] <- 0 # set land areas to 0
+```
+
+## Count Cumulative Cases
+`raster_point_counts()` will count the number of events (cases) in each 25km cell. Smoothing the raster will improve the appearance by making the cells smaller and finding averages of surrounding cells.
+```{r}
+## Count events
+count_events <- raster_point_counts(region_paths, # paths to files
+                                    reference, # coordinate references
+                                    east_r) # raster defining grid
+
+## Smooth raster
+count_events <- smooth_raster(count_events)
+```
+
+## Plot Cumulative Cases
+`plot_raster_stack()` will plot the rasters for comparison.
+```{r}
+no_low_virulence <- subset(count_events, 
+                           !(names(count_events) %in% "low-virulence/6-days-preclinical"))
+
+only_low_virulence <- subset(count_events, 
+                            names(count_events) %in% "low-virulence/6-days-preclinical")
+```
+
+### Eastern U.S.
+Compare outbreak maps across optimal and suboptimal detection scenarios
+```{r fig.width=12, fig.height=12, warning=FALSE, message=FALSE}
+stack_set <- plot_raster_stack(no_low_virulence, eastern_us)
+
+stack_set
+```
+
+View map of cumulative cases for low-virulence scenario
+```{r fig.width=8, fig.height=8, warning=FALSE, message=FALSE}
+lv_set <- plot_raster_stack(only_low_virulence, eastern_us)
+
+lv_set
+```
+
+### Central U.S.
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+## Set-up Central U.S. raster
+regional_scenario <- "central"
+
+regional_path <- sprintf("%s/outputs_%s", generic_path, regional_scenario)
+
+region_paths <- list.files(path = here(regional_path),
+                            recursive = T, pattern= "Outputs_Detection", full.names=TRUE)
+
+## Count events for Central U.S.
+count_events <- raster_point_counts(region_paths, # paths to files
+                                    reference, # coordinate references
+                                    central_r) # raster defining grid
+
+## Smooth raster
+count_events <- smooth_raster(count_events)
+
+## Create subsets for Central U.S.
+no_low_virulence <- subset(count_events, 
+                           !(names(count_events) %in% "low-virulence/6-days-preclinical"))
+
+only_low_virulence <- subset(count_events, 
+                            names(count_events) %in% "low-virulence/6-days-preclinical")
+```

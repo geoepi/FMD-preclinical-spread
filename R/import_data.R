@@ -15,7 +15,7 @@ import_data <- function(file_path, data_type, columns) {
     map_dfr(function(path) {
       folders <- str_extract(path, "(?<=outputs/).+(?=/)")
       region <- str_extract(path, "(?<=outputs_).+(?=/.+/.+/)")
-      response_type <- str_extract(path,(sprintf("(?<=outputs/outputs_%s/).+(?=/.-day)", region)))
+      scenario_type <- str_extract(path,(sprintf("(?<=outputs/outputs_%s/).+(?=/.-day)", region)))
       preclinical <- str_extract(path, ".(?=-day)")
       filename <- str_extract(path, "(?<=/Outputs_).+(?=\\.txt$)")
       read.table(path,
@@ -23,7 +23,7 @@ import_data <- function(file_path, data_type, columns) {
                  comment.char="",
                  col.names= columns) %>%
         mutate(region) %>%
-        mutate(response_type) %>%
+        mutate(scenario_type) %>%
         mutate(preclinical)
     })
   

@@ -18,6 +18,7 @@ editor: source
 editor_options: 
   chunk_output_type: console
 ---
+
 ```{=html}
 <style type="text/css">
 
@@ -32,13 +33,6 @@ pre {
 }
 </style>
 ```
-
-::: {.callout-note icon=true}
-#### Eastern U.S. Region Only
-
-This page includes tables and figures for the Eastern U.S. scenarios only. Visuals for the Central U.S. scenarios are coming soon.
-  
-:::
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 ## Load libraries
@@ -61,20 +55,22 @@ source(here("./R/utilities.R"))
 source_dir("./R")
 
 ## Assign file path 
-generic_path <- "./script-inputs/isp-outputs"
+file_path <- "./script-inputs/isp-outputs"
 
-## Assign regional scenario
+## Assign regional scenario                 
 regional_scenario <- "eastern"
 
-regional_path <- sprintf("%s/outputs_%s", generic_path, regional_scenario)
-```
+regional_path <- sprintf("%s/outputs_%s", file_path, regional_scenario)
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
 ## Import infection data
-infection <- import_infection_data(regional_path)
-```
+infection <- import_infection_data(file_path)
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
+## Order scenario_type
+infection$scenario_type <- ordered(factor(infection$scenario_type), c("optimal", "suboptimal", "low-virulence"))
+
+## Order regions
+infection$region <- ordered(factor(infection$region), c("central", "eastern"))
+
 ## Read farm reference file
 reference <- read.csv2(here("script-inputs/reference-files/FMD_Reference_File.csv"), header=TRUE, sep=",")
 
@@ -95,53 +91,103 @@ reference <- reference %>%
   mutate(longitude = as.numeric(longitude),
          latitude = as.numeric(latitude)) %>%
   select(-c(weight, cattle, x, y, geo_region))
-```
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
+## Merge infection data with reference file
+merge <- left_join(infection, reference, by = join_by(premises))
+
 ## Extract paths for each scenario
 region_paths <- list.files(path = here(regional_path),
                             recursive = T, pattern= "Outputs_Infection", full.names=TRUE) 
 ```
 
 ## Effective Reproduction
-The Effective Reproduction Number (Re) is the average number of secondary premises infected by a source per day. Re is used to estimate epidemic potential. `calculate_daily_Re()` calculates the daily Re by simulation day (`combined_daily_Re`) and by iteration (`iteration_Re`).
+The Effective Reproduction Number (Re) is the average number of secondary premises infected by a source per day. Re is used to estimate epidemic potential.
 ```{r}
-Re_tab <- calculate_daily_Re(region_paths, reference)
+## exclude index cases (source == 0)
+transmissions <- merge %>% 
+  filter(source != 0)
 
-## Split scenario names
-daily_Re <- Re_tab$combined_daily_Re %>%
-  mutate(
-    scenario_type = str_to_title(word(scenario, 1, sep = "/")),
-    preclinical_delay = word(scenario, 2, sep = "/") %>% 
-      str_replace_all("-days?-preclinical", "") %>% 
-      str_trim() %>% 
-      paste("Days Preclinical", .) %>% 
-      str_to_title()
-  )
+## find the number of transmissions per source for each iteration and infect_day,
+iteration_Re <- transmissions %>%
+  group_by(region, scenario_type, preclinical, iteration, infect_day, source) %>%
+  summarize(num_transmissions = n(), .groups = "drop") %>%
+  group_by(region, scenario_type, preclinical, iteration, infect_day) %>%
+  summarize(Re = mean(num_transmissions), .groups = "drop")
+
+## summarize daily Re across iterations
+daily_Re_summary <- iteration_Re %>%
+  group_by(region, scenario_type, preclinical, infect_day) %>%
+  summarize(
+    cred_50   = mean(Re, na.rm = TRUE),
+    cred_025  = quantile(Re, probs = 0.025, na.rm = TRUE),
+    cred_25   = quantile(Re, probs = 0.25, na.rm = TRUE),
+    cred_75   = quantile(Re, probs = 0.75, na.rm = TRUE),
+    cred_975  = quantile(Re, probs = 0.975, na.rm = TRUE),
+    .groups   = "drop")
+
+## Daily summary
+daily_Re <- daily_Re_summary %>%
+  group_by(region, scenario_type, preclinical) %>%
+  complete(infect_day = 10:365, 
+            fill = list(cred_50 = 0, cred_025 = 0, 
+                        cred_25 = 0, cred_75 = 0, cred_975 = 0)) %>%
+  ungroup()
 ```
+
+### Daily Summaries
+
+::: panel-tabset
+## Central U.S.
+```{r}
+## Filter to central region
+daily_Re_central <- daily_Re %>%
+  filter(region == "central")
+
+head(daily_Re_central)
+```
+
+## Eastern U.S.
+```{r}
+## Filter to eastern region
+daily_Re_eastern <- daily_Re %>%
+  filter(region == "eastern")
+
+head(daily_Re_eastern)
+```
+
+:::
 
 ### Plot Effective Reproduction
 The dashed line is at Re = 1
-```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
-daily_Re <- daily_Re %>%
-  mutate(
-    preclinical_delay = recode(preclinical_delay,
-                               "Days Preclinical 0" = "None",
-                               "Days Preclinical 1" = "1 Day",
-                               "Days Preclinical 2" = "2 Days",
-                               "Days Preclinical 3" = "3 Days",
-                               "Days Preclinical 6" = "6 Days")
-  )
-  
-daily_Re$scenario_type <- ordered(factor(daily_Re$scenario_type), 
-                                      c("Optimal", "Suboptimal", "Low-Virulence"))
 
-daily_Re$preclinical_delay <- ordered(factor(daily_Re$preclinical_delay), 
+::: panel-tabset
+## Central U.S.
+```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
+## Prepare data
+daily_Re <- daily_Re_central %>%
+  mutate(
+    preclinical = recode(preclinical,
+                               "0" = "None",
+                               "1" = "1 Day",
+                               "2" = "2 Days",
+                               "3" = "3 Days",
+                               "6" = "6 Days")
+  ) %>%
+  mutate(
+    scenario_type = recode(scenario_type,
+                               "optimal" = "Optimal",
+                               "suboptimal" = "Suboptimal",
+                               "low-virulence" = "Low-Virulence")
+  )  
+
+daily_Re$preclinical <- ordered(factor(daily_Re$preclinical), 
                                       c("None", "1 Day", "2 Days", "3 Days", "6 Days"))
 
+## Assign colors
 myCols <- kelly()
 
-ggplot(daily_Re, aes(infect_day, cred_50, group = scenario, col = preclinical_delay)) +
+## Plot data
+ggplot(daily_Re, aes(infect_day, cred_50, group = preclinical, col = preclinical)) +
   geom_hline(yintercept = 1, col="black", linewidth=0.5, linetype = "dashed") +
   geom_smooth(method = "loess", span=0.05, se=FALSE) +
   scale_color_manual(values = c(
@@ -175,11 +221,80 @@ ggplot(daily_Re, aes(infect_day, cred_50, group = scenario, col = preclinical_de
   )
 ```
 
+## Eastern U.S.
+```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
+## Prepare data
+daily_Re <- daily_Re_eastern %>%
+  mutate(
+    preclinical = recode(preclinical,
+                               "0" = "None",
+                               "1" = "1 Day",
+                               "2" = "2 Days",
+                               "3" = "3 Days",
+                               "6" = "6 Days")
+  ) %>%
+  mutate(
+    scenario_type = recode(scenario_type,
+                               "optimal" = "Optimal",
+                               "suboptimal" = "Suboptimal",
+                               "low-virulence" = "Low-Virulence")
+  ) 
+
+daily_Re$preclinical <- ordered(factor(daily_Re$preclinical), 
+                                      c("None", "1 Day", "2 Days", "3 Days", "6 Days"))
+
+## Assign colors
+myCols <- kelly()
+
+## Plot data
+ggplot(daily_Re, aes(infect_day, cred_50, group = preclinical, col = preclinical)) +
+  geom_hline(yintercept = 1, col="black", linewidth=0.5, linetype = "dashed") +
+  geom_smooth(method = "loess", span=0.05, se=FALSE) +
+  scale_color_manual(values = c(
+    "None" = myCols[3],
+    "1 Day" = myCols[4],
+    "2 Days" = myCols[6],
+    "3 Days" = myCols[7],
+    "6 Days" = myCols[10]
+    )) +
+  facet_wrap(~ scenario_type, ncol=1) +
+  labs(
+    x = "Simulation Day",
+    y = "Median Effective Reproduction (Re)",
+    col = "Preclinical Duration",
+    title = " "
+  ) +
+  theme_minimal() +
+  theme(
+    plot.margin    = unit(c(0.25, 0.25, 0.25, 0.25), "cm"),
+    legend.position = "bottom",
+    strip.text     = element_text(size = 18, face = "bold", color = "gray40"),
+    axis.title.x   = element_text(size = 22, face = "bold"),
+    axis.title.y   = element_text(size = 20, face = "bold"),
+    axis.text.x    = element_text(size = 18, face = "bold"),
+    axis.text.y    = element_text(size = 18, face = "bold"),
+    legend.key.width = unit(3, "line"),
+    legend.key.height = unit(1, "line"),
+    legend.text = element_text(size = 16, face = "bold"),
+    legend.title = element_text(size = 18, face = "bold"),
+    plot.title     = element_text(size = 22, face = "bold", hjust = 0.5)
+  )
+```
+
+:::
+
+::: {.callout-note icon=true}
+#### Eastern U.S. Region Only
+
+The analyses below include tables and figures for the Eastern U.S. scenarios only. Visuals for the Central U.S. scenarios are coming soon.
+  
+:::
+
 ## Epidemic Velocity
 The epidemic velocity is the distance (km) of spread per day. The epidemic velocity is estimated by first calculating the daily spread distances.
 
 ### Calculate Daily Distances
-`compile_daily_summary()` calculates distances (km) between source farms and those infected for each iteration, then calculates the quantiles by day across all iterations to get the average statistics.
+`compile_daily_summary()` calculates distances (km) between source farms and those infected for each iteration, then calculates the percentiles by day across all iterations to get the average statistics.
 ```{r}
 daily_summary <- compile_daily_summary(region_paths, reference)
 ```
@@ -193,12 +308,12 @@ daily_quants <- daily_summary$combined_summary %>%
   filter(scenario != "low-virulence/6-days-preclinical")
 ```
 
-Compare percentiles across  all scenarios and prepare to calculate wave velocity
+Compare percentiles across all scenarios and prepare to calculate wave velocity
 ```{r}
 my_summary_compare <- daily_quants %>%
   mutate(
     scenario_type = str_to_title(word(scenario, 1, sep = "/")),
-    preclinical_delay = word(scenario, 2, sep = "/") %>% 
+    preclinical = word(scenario, 2, sep = "/") %>% 
       str_replace_all("-days?-preclinical", "") %>% 
       str_trim() %>% 
       paste("Days Preclinical", .) %>% 
@@ -208,7 +323,7 @@ my_summary_compare <- daily_quants %>%
 all_summary_compare <- daily_all %>%
   mutate(
     scenario_type = str_to_title(word(scenario, 1, sep = "/")),
-    preclinical_delay = word(scenario, 2, sep = "/") %>% 
+    preclinical = word(scenario, 2, sep = "/") %>% 
       str_replace_all("-days?-preclinical", "") %>% 
       str_trim() %>% 
       paste("Days Preclinical", .) %>% 
@@ -220,7 +335,7 @@ all_summary_compare <- daily_all %>%
 ```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
 all_summary_compare <- all_summary_compare %>%
   mutate(
-    preclinical_delay = recode(preclinical_delay,
+    preclinical = recode(preclinical,
                                "Days Preclinical 0" = "None",
                                "Days Preclinical 1" = "1 Day",
                                "Days Preclinical 2" = "2 Days",
@@ -231,13 +346,13 @@ all_summary_compare <- all_summary_compare %>%
 all_summary_compare$scenario_type <- ordered(factor(all_summary_compare$scenario_type), 
                                       c("Optimal", "Suboptimal", "Low-Virulence"))
 
-all_summary_compare$preclinical_delay <- ordered(factor(all_summary_compare$preclinical_delay), 
+all_summary_compare$preclinical <- ordered(factor(all_summary_compare$preclinical), 
                                       c("None", "1 Day", "2 Days", "3 Days", "6 Days"))
 
 myCols <- kelly()
 
 ggplot(all_summary_compare, aes(infect_day, log(cred_50), 
-                               group = scenario, col = preclinical_delay)) +
+                               group = scenario, col = preclinical)) +
   geom_line(linewidth = 0.4) +
   ylim(0, 6) +
   scale_color_manual(values = c(
@@ -272,59 +387,49 @@ ggplot(all_summary_compare, aes(infect_day, log(cred_50),
 ```
 
 ## Iteration Metrics
-Compare scenarios by looking for patterns at the level of individual iterations. `iteration_metrics()` will use the other output in `daily_summary` to look at trends between optimal and suboptimal responses.   
-  
-The function returns iteration specific metrics:  
+Compare scenarios by looking for patterns at the level of individual iterations. `iteration_metrics()` will use the other output in `daily_summary` to look at trends between optimal and suboptimal responses.
 
-#### auc_log 
+The function returns iteration specific metrics:
 
-The amount of area (total) under the plotted line (distance x day) above on a log scale, i.e., the Area Under Curve (AUC). This represents the total distance covered during the outbreak`s spread (on the log scale).
+auc_log
 
-#### peak_spread
+:   The amount of area (total) under the plotted line (distance x day) above on a log scale, i.e., the Area Under Curve (AUC). This represents the total distance covered during the outbreak`s spread (on the log scale).
 
-The maximum distance spread in any one day (log scale).  
+peak_spread
 
-#### peak_day
+:   The maximum distance spread in any one day (log scale).
 
-The infect day that the maximum spread distance (peak_spread) occurred. 
+peak_day
+
+:   The infect day that the maximum spread distance (peak_spread) occurred.
 
 ```{r}
-## Calculate iteration metrics
-iteration_metrics <- iteration_metrics(daily_summary$daily_distances)
-
-dim(iteration_metrics)
-```
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-iteration_metrics <- iteration_metrics %>%
+## Calculate daily iteration metrics
+iteration_metrics <- iteration_metrics(daily_summary$daily_distances) %>%
   select(-c(scenario))
-```
 
-```{r}
+## Capitalize scenario labels
+iteration_metrics$scenario_type <- str_to_title(iteration_metrics$scenario_type)
+
+## Order scenario levels
+iteration_metrics$scenario_type <- ordered(factor(iteration_metrics$scenario_type), 
+                                      c("Optimal","Suboptimal", "Low-virulence"))
+
 ## Print daily iteration metrics
 head(iteration_metrics, 3)
 ```
 
-### Order scenario levels
-```{r}
-# Capitalize for labels
-iteration_metrics$scenario_type <- str_to_title(iteration_metrics$scenario_type)
-
-iteration_metrics$scenario_type <- ordered(factor(iteration_metrics$scenario_type), 
-                                      c("Optimal","Suboptimal", "Low-virulence"))
-```
-
 ## Cumulative Spread
-Cumulative spatial spread is calculated to quantify the geographic extent of simulated outbreaks. First, drop the low-virulence scenario to compare optimal vs. suboptimal detection scenarios.
+Calculate the cumulative spatial spread of simulated outbreaks. First, drop the low-virulence scenario to compare optimal vs. suboptimal detection scenarios.
 ```{r}
 iteration_metrics_no_low <- iteration_metrics %>%
   filter(scenario_type != "Low-Virulence")
 ```
 
-Plot the estimated Area Under Curve (AUC), which represents total cumulative spread distance, for each response level and preclinical scenario, by iteration (points).  Then do a regression (lm) to find the trend across increasing preclinical days.
+Plot the estimated Area Under the Curve (AUC), which represents total cumulative spread distance, for each scenario by iteration (points). Then run a linear regression model to find the trend across increasing preclinical infectious duration.
 ```{r fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
 ggplot(iteration_metrics_no_low, 
-       aes(x = preclinical_delay, y = auc_log, color = scenario_type)) +
+       aes(x = preclinical, y = auc_log, color = scenario_type)) +
   geom_point(shape=1, alpha = 0.3, size = 2) + # individual iterations
   geom_smooth(method = "lm", se = FALSE, linewidth=1.2) + # trend
   facet_grid(. ~ scenario_type) +
@@ -348,11 +453,11 @@ ggplot(iteration_metrics_no_low,
 ```
 
 ### Significance Test
-Fit a linear model with an interaction term to quantify the influence of `preclinical_delay` and `scenario_type` on cumulative outbreak spread (`auc_log`).
+Fit a linear model with an interaction term to quantify the influence of `preclinical` and `scenario_type` on cumulative outbreak spread (`auc_log`).
 
 #### Linear Model
 ```{r}
-model_auc <- lm(auc_log ~ preclinical_delay * scenario_type, data = iteration_metrics_no_low)
+model_auc <- lm(auc_log ~ preclinical * scenario_type, data = iteration_metrics_no_low)
 
 summary(model_auc)
 ```
@@ -365,7 +470,7 @@ anova(model_auc)
 ## Peak Spread
 As with cumulative spread above, comparisons can be made using the peak spread rates.
 ```{r fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
-ggplot(iteration_metrics_no_low, aes(x = preclinical_delay, y = peak_day, color = scenario_type)) +
+ggplot(iteration_metrics_no_low, aes(x = preclinical, y = peak_day, color = scenario_type)) +
   geom_point(shape=1, alpha = 0.3, size = 2) + # individual iterations
   geom_smooth(method = "lm", se = FALSE, linewidth=1.2) +
   facet_grid(. ~ scenario_type) +
@@ -389,11 +494,11 @@ ggplot(iteration_metrics_no_low, aes(x = preclinical_delay, y = peak_day, color 
 ```
 
 ### Significance Test
-Fit a linear model with an interaction term to quantify the influence of `preclinical_delay` and `scenario_type` on the maximum spread rate and it's (`peak_day`).
+Fit a linear model with an interaction term to quantify the influence of `preclinical` and `scenario_type` on the maximum spread rate and it's (`peak_day`).
 
 #### Linear Model
 ```{r}
-model_peak <- lm(peak_day ~ preclinical_delay * scenario_type, data = iteration_metrics_no_low)
+model_peak <- lm(peak_day ~ preclinical * scenario_type, data = iteration_metrics_no_low)
 
 summary(model_peak)
 ```

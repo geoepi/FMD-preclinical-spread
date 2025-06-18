@@ -16,20 +16,20 @@ require(patchwork)
   
   # optimal
   opt_set <- summary %>%
-    filter(response_type == "optimal")
+    filter(scenario_type == "optimal")
   
   # suboptimal
   subopt_set <- summary %>%
-    filter(response_type == "suboptimal" & preclinical != "6")
+    filter(scenario_type == "suboptimal" & preclinical != "6")
   
   # low-virulence
   lowV_set <- summary %>%
-    filter(response_type == "low-virulence")
+    filter(scenario_type == "low-virulence")
   
   # "optimal" (optimal detection)
   p_optimal <- ggplot(opt_set, aes(x = preclinical, y = q50)) +
     geom_bar(stat="identity", width = 0.9, fill = "#74add1") +
-    scale_fill_manual(values = response_colors) +
+    scale_fill_manual(values = scenario_colors) +
     scale_x_discrete(labels = x_labels) +
     geom_text(aes(label = label_vector),
               size = 4.5, position = position_dodge(width = 0.9), vjust = -0.5) +
@@ -56,7 +56,7 @@ require(patchwork)
   # suboptimal
   p_suboptimal <- ggplot(subopt_set, aes(x = preclinical, y = q50)) +
     geom_bar(stat="identity", width = 0.9, fill = "orange2") +
-    scale_fill_manual(values = response_colors) +
+    scale_fill_manual(values = scenario_colors) +
     scale_x_discrete(labels = x_labels) +
     geom_text(aes(label = label_vector),
               size = 4.5, position = position_dodge(width = 0.9), vjust = -0.5) +
@@ -83,7 +83,7 @@ require(patchwork)
   # "low-virulence"
   p_lowV <- ggplot(lowV_set, aes(x = preclinical, y = q50)) +
     geom_bar(stat="identity", width = 0.3, fill="red4") +
-    scale_fill_manual(values = response_colors) +
+    scale_fill_manual(values = scenario_colors) +
     scale_x_discrete(labels = x_labels) +
     geom_text(aes(label = label_vector),
               size = 4.5, position = position_dodge(width = 0.9), vjust = -0.5) +

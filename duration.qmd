@@ -53,8 +53,8 @@ file_path <- "./script-inputs/isp-outputs"
 ## Import detection data
 detection <- import_detection_data(file_path)
 
-## Order response_type
-detection$response_type <- ordered(factor(detection$response_type), c("optimal", "suboptimal", "low-virulence"))
+## Order scenario_type
+detection$scenario_type <- ordered(factor(detection$scenario_type), c("optimal", "suboptimal", "low-virulence"))
 
 ## Order regions
 detection$region <- ordered(factor(detection$region), c("central", "eastern"))
@@ -69,11 +69,12 @@ detect_summary <- summarize_detections(detection)
 detect_summary_select <- detect_summary[c("iteration", "farms_detected", "first_detect", "last_detect", "duration")]
 
 ## Check data
-head(detect_summary_select, 3)
+sample_n(detect_summary_select, 5) %>%
+  arrange(iteration)
 ```
 
 ### Summary Statistics
-`generate_detect_statistics()` returns summary statistics for each modeling scenario. Results are grouped by `region`, `response_type`, and `preclinical`.
+`generate_detect_statistics()` returns summary statistics for each modeling scenario. Results are grouped by `region`, `scenario_type`, and `preclinical`.
 ```{r}
 detect_config_summary <- generate_detect_statistics(detect_summary)
 ```
@@ -93,7 +94,7 @@ duration_central_summary <- duration_summary %>%
   filter(region == "central")
 
 ## Select and order columns
-duration_central_summary <- duration_central_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+duration_central_summary <- duration_central_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
 
 duration_central_summary
 ```
@@ -105,7 +106,7 @@ duration_eastern_summary <- duration_summary %>%
   filter(region == "eastern")
 
 ## Select and order columns
-duration_eastern_summary <- duration_eastern_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+duration_eastern_summary <- duration_eastern_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
 
 duration_eastern_summary
 ```
@@ -117,7 +118,7 @@ Perform significance testing on `optimal` and `suboptimal` detection scenarios
 ```{r}
 ## Filter out low virulence scenarios
 no_LV_detect <- detection %>%
-  filter(response_type != "low-virulence")
+  filter(scenario_type != "low-virulence")
 
 no_LV_detect_summary <- summarize_detections(no_LV_detect)
 ```
@@ -152,7 +153,7 @@ plot(density(no_LV_detect_eastern_summary$duration))
 ::: panel-tabset
 ## Central U.S.
 ```{r}
-model_central_duration <- lm(duration ~ preclinical * response_type, 
+model_central_duration <- lm(duration ~ preclinical * scenario_type, 
                        data = no_LV_detect_central_summary)
 
 summary(model_central_duration)
@@ -160,7 +161,7 @@ summary(model_central_duration)
 
 ## Eastern U.S.
 ```{r}
-model_eastern_duration <- lm(duration ~ preclinical * response_type, 
+model_eastern_duration <- lm(duration ~ preclinical * scenario_type, 
                        data = no_LV_detect_eastern_summary)
 
 summary(model_eastern_duration)
@@ -185,8 +186,8 @@ anova(model_eastern_duration)
 
 ## Plot Duration
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
-## Assign response_type colors
-response_colors <- c("#74add1", "orange2", "red4") 
+## Assign scenario_type colors
+scenario_colors <- c("#74add1", "orange2", "red4") 
 ```
 
 `plot_epidemic_duration()` returns a plot with median epidemic duration (days) on the x-axis and the duration of incubation phase transmission on the y-axis.

@@ -82,8 +82,10 @@ Check `infect_day` statistics
 ```{r}
 infection %>%
   summarize(
-    mean_day = mean(infect_day),
-    median_day = median(infect_day))
+    mean = mean(infect_day),
+    min = min(infect_day),
+    median = median(infect_day),
+    max = max(infect_day))
 ```
 
 ## Central U.S.
@@ -101,8 +103,10 @@ Check `infect_day` statistics
 ```{r}
 infection_central %>%
   summarize(
-    mean_day = mean(infect_day),
-    median_day = median(infect_day))
+    mean = mean(infect_day),
+    min = min(infect_day),
+    median = median(infect_day),
+    max = max(infect_day))
 ```
 
 ## Eastern U.S.
@@ -120,8 +124,10 @@ Check `infect_day` statistics
 ```{r}
 infection_eastern %>%
   summarize(
-    mean_day = mean(infect_day),
-    median_day = median(infect_day))
+    mean = mean(infect_day),
+    min = min(infect_day),
+    median = median(infect_day),
+    max = max(infect_day))
 ```
 
 :::
@@ -143,8 +149,10 @@ Check `detect_day` statistics
 ```{r}
 detection %>%
   summarize(
-    mean_day = mean(detect_day),
-    median_day = median(detect_day))
+    mean = mean(detect_day),
+    min = min(detect_day),
+    median = median(detect_day),
+    max = max(detect_day))
 ```
 
 ## Central U.S.
@@ -161,8 +169,10 @@ Check `detect_day` statistics
 ```{r}
 detection_central %>%
   summarize(
-    mean_day = mean(detect_day),
-    median_day = median(detect_day))
+    mean = mean(detect_day),
+    min = min(detect_day),
+    median = median(detect_day),
+    max = max(detect_day))
 ```
 
 ## Eastern U.S.
@@ -179,8 +189,10 @@ Check `detect_day` statistics
 ```{r}
 detection_eastern %>%
   summarize(
-    mean_day = mean(detect_day),
-    median_day = median(detect_day))
+    mean = mean(detect_day),
+    min = min(detect_day),
+    median = median(detect_day),
+    max = max(detect_day))
 ```
 
 :::

@@ -54,8 +54,8 @@ file_path <- "./script-inputs/isp-outputs"
 ## Import infection data
 infection <- import_infection_data(file_path)
 
-## Order response_type
-infection$response_type <- ordered(factor(infection$response_type), c("optimal", "suboptimal", "low-virulence"))
+## Order scenario_type
+infection$scenario_type <- ordered(factor(infection$scenario_type), c("optimal", "suboptimal", "low-virulence"))
 
 ## Order regions
 infection$region <- ordered(factor(infection$region), c("central", "eastern"))
@@ -68,14 +68,14 @@ infection$region <- ordered(factor(infection$region), c("central", "eastern"))
 infect_summary <- summarize_infections(infection)
 
 ## Select and order columns to display
-infect_summary_select <- infect_summary[c("iteration", "farms_infected", "cattle_infected", "first_infect_day", "last_infect_day")]
+infect_summary_select <- infect_summary[c("iteration", "farms_infected", "cattle_infected", "first_infect", "last_infect")]
 
 ## Check data
 head(infect_summary_select, 3)
 ```
 
 ### Summary Statistics
-`generate_infect_statistics()` returns summary statistics for each modeling scenario. Results are grouped by `region`, `response_type`, and `preclinical`. The output is filtered by `summary` and `region` to compare `farms_infected` and `cattle_infected` between scenarios.
+`generate_infect_statistics()` returns summary statistics for each modeling scenario. Results are grouped by `region`, `scenario_type`, and `preclinical`. The output is filtered by `summary` and `region` to compare `farms_infected` and `cattle_infected` between scenarios.
 ```{r}
 infect_config_summary <- generate_infect_statistics(infect_summary)
 
@@ -99,7 +99,7 @@ farms_central_summary <- farms_inf_summary %>%
   filter(region == "central")
 
 ## Select and order columns
-farms_central_summary <- farms_central_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+farms_central_summary <- farms_central_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
 
 farms_central_summary
 ```
@@ -111,7 +111,7 @@ farms_eastern_summary <- farms_inf_summary %>%
   filter(region == "eastern")
 
 ## Select and order columns
-farms_eastern_summary <- farms_eastern_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+farms_eastern_summary <- farms_eastern_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
 
 farms_eastern_summary
 ```
@@ -129,7 +129,7 @@ cattle_central_summary <- cattle_inf_summary %>%
   filter(region == "central")
 
 ## Select and order columns
-cattle_central_summary <- cattle_central_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+cattle_central_summary <- cattle_central_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
 
 cattle_central_summary
 ```
@@ -141,7 +141,7 @@ cattle_eastern_summary <- cattle_inf_summary %>%
   filter(region == "eastern")
 
 ## Select and order columns
-cattle_eastern_summary <- cattle_eastern_summary[c("response_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+cattle_eastern_summary <- cattle_eastern_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
 
 cattle_eastern_summary
 ```
@@ -154,7 +154,7 @@ Perform significance testing on `optimal` and `suboptimal` detection scenarios.
 ```{r}
 ## Filter out low virulence scenarios
 no_LV <- infection %>%
-  filter(response_type != "low-virulence")
+  filter(scenario_type != "low-virulence")
 
 no_LV_summary <- summarize_infections(no_LV)
 ```
@@ -201,7 +201,7 @@ plot(density(log(no_LV_eastern_summary$cattle_infected)))
 ::: panel-tabset
 ## Central U.S.
 ```{r}
-model_central_cattle <- lm(log(cattle_infected) ~ preclinical * response_type, 
+model_central_cattle <- lm(log(cattle_infected) ~ preclinical * scenario_type, 
                        data = no_LV_central_summary)
 
 summary(model_central_cattle)
@@ -209,7 +209,7 @@ summary(model_central_cattle)
 
 ## Eastern U.S.
 ```{r}
-model_eastern_cattle <- lm(log(cattle_infected) ~ preclinical * response_type, 
+model_eastern_cattle <- lm(log(cattle_infected) ~ preclinical * scenario_type, 
                        data = no_LV_eastern_summary)
 
 summary(model_eastern_cattle)
@@ -234,8 +234,8 @@ anova(model_eastern_cattle)
 
 ## Plot Cattle Numbers
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
-## Assign response_type colors
-response_colors <- c("#74add1", "orange2", "red4") 
+## Assign scenario colors
+scenario_colors <- c("#74add1", "orange2", "red4") 
 ```
 
 `plot_infected_cattle()` returns a plot with the duration of incubation phase transmission on the x-axis and the median number of infected cattle (log10) on the y-axis.

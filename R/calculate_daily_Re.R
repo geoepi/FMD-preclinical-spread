@@ -31,7 +31,7 @@ calculate_daily_Re <- function(scenarios_df, reference, impute_zero = TRUE) {
     # join with the reference data
     scenario_tmp <- left_join(scenario_tmp, reference, by = "premises")
     
-    # eExclude index cases (source == 0)
+    # exclude index cases (source == 0)
     df_transmissions <- scenario_tmp %>% 
       filter(source != 0)
 
