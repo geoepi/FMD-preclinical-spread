@@ -238,20 +238,21 @@ pre {
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>daily_Re_summary <span class="ot">&lt;-</span> iteration_Re <span class="sc">%&gt;%</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(region, scenario_type, preclinical, infect_day) <span class="sc">%&gt;%</span></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">cred_50   =</span> <span class="fu">mean</span>(Re, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">cred_025  =</span> <span class="fu">quantile</span>(Re, <span class="at">probs =</span> <span class="fl">0.025</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">cred_25   =</span> <span class="fu">quantile</span>(Re, <span class="at">probs =</span> <span class="fl">0.25</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">cred_75   =</span> <span class="fu">quantile</span>(Re, <span class="at">probs =</span> <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">cred_975  =</span> <span class="fu">quantile</span>(Re, <span class="at">probs =</span> <span class="fl">0.975</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups   =</span> <span class="st">"drop"</span>)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="do">## Daily summary</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>daily_Re <span class="ot">&lt;-</span> daily_Re_summary <span class="sc">%&gt;%</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(region, scenario_type, preclinical) <span class="sc">%&gt;%</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete</span>(<span class="at">infect_day =</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">365</span>, </span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>            <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">cred_50 =</span> <span class="dv">0</span>, <span class="at">cred_025 =</span> <span class="dv">0</span>, </span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>                        <span class="at">cred_25 =</span> <span class="dv">0</span>, <span class="at">cred_75 =</span> <span class="dv">0</span>, <span class="at">cred_975 =</span> <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean =</span> <span class="fu">mean</span>(Re, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">q05 =</span> <span class="fu">quantile</span>(Re, <span class="at">probs =</span> <span class="fl">0.05</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">q25 =</span> <span class="fu">quantile</span>(Re, <span class="at">probs =</span> <span class="fl">0.25</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">q50 =</span> <span class="fu">quantile</span>(Re, <span class="at">probs =</span> <span class="fl">0.50</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">q75 =</span> <span class="fu">quantile</span>(Re, <span class="at">probs =</span> <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">q95 =</span> <span class="fu">quantile</span>(Re, <span class="at">probs =</span> <span class="fl">0.95</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups   =</span> <span class="st">"drop"</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="do">## Daily summary</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>daily_Re <span class="ot">&lt;-</span> daily_Re_summary <span class="sc">%&gt;%</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(region, scenario_type, preclinical) <span class="sc">%&gt;%</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete</span>(<span class="at">infect_day =</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">365</span>, </span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>            <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">mean =</span> <span class="dv">0</span>, <span class="at">q05 =</span> <span class="dv">0</span>, </span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>                        <span class="at">q25 =</span> <span class="dv">0</span>, <span class="at">q50 =</span> <span class="dv">0</span>, <span class="at">q75 =</span> <span class="dv">0</span>, <span class="at">q95 =</span> <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <section id="daily-summaries" class="level3">
@@ -260,7 +261,7 @@ pre {
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Central U.S.</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Eastern U.S.</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<p>View sample of daily summaries</p>
+<p>View subset of daily Re summary</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -273,101 +274,79 @@ pre {
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scenario_type <span class="sc">==</span> <span class="st">"suboptimal"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(preclinical <span class="sc">==</span> <span class="st">"3"</span>)</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(daily_Re_central_select)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Select and order columns to display</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>daily_Re_central_select <span class="ot">&lt;-</span> daily_Re_central_select[<span class="fu">c</span>(<span class="st">"infect_day"</span>, <span class="st">"mean"</span>, <span class="st">"q05"</span>, <span class="st">"q25"</span>, <span class="st">"q50"</span>, <span class="st">"q75"</span>, <span class="st">"q95"</span>)]</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(daily_Re_central_select)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
-<colgroup>
-<col style="width: 9%">
-<col style="width: 15%">
-<col style="width: 13%">
-<col style="width: 12%">
-<col style="width: 10%">
-<col style="width: 10%">
-<col style="width: 9%">
-<col style="width: 9%">
-<col style="width: 10%">
-</colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">region</th>
-<th style="text-align: left;">scenario_type</th>
-<th style="text-align: left;">preclinical</th>
 <th style="text-align: right;">infect_day</th>
-<th style="text-align: right;">cred_50</th>
-<th style="text-align: right;">cred_025</th>
-<th style="text-align: right;">cred_25</th>
-<th style="text-align: right;">cred_75</th>
-<th style="text-align: right;">cred_975</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">q05</th>
+<th style="text-align: right;">q25</th>
+<th style="text-align: right;">q50</th>
+<th style="text-align: right;">q75</th>
+<th style="text-align: right;">q95</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">central</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">3</td>
 <td style="text-align: right;">10</td>
 <td style="text-align: right;">0.000000</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">central</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">3</td>
 <td style="text-align: right;">11</td>
 <td style="text-align: right;">2.155172</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
 <td style="text-align: right;">3</td>
-<td style="text-align: right;">5</td>
+<td style="text-align: right;">4.150</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">central</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">3</td>
 <td style="text-align: right;">12</td>
 <td style="text-align: right;">1.771429</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">4</td>
+<td style="text-align: right;">4.000</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">central</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">3</td>
 <td style="text-align: right;">13</td>
 <td style="text-align: right;">1.955095</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">6</td>
+<td style="text-align: right;">5.000</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">central</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">3</td>
 <td style="text-align: right;">14</td>
 <td style="text-align: right;">1.945014</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">6</td>
+<td style="text-align: right;">5.425</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">central</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">3</td>
 <td style="text-align: right;">15</td>
 <td style="text-align: right;">1.886877</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">6</td>
+<td style="text-align: right;">5.000</td>
 </tr>
 </tbody>
 </table>
@@ -376,6 +355,7 @@ pre {
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>View subset of daily Re summary</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -388,101 +368,79 @@ pre {
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scenario_type <span class="sc">==</span> <span class="st">"suboptimal"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(preclinical <span class="sc">==</span> <span class="st">"3"</span>)</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(daily_Re_eastern_select)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Select and order columns to display</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>daily_Re_eastern_select <span class="ot">&lt;-</span> daily_Re_eastern_select[<span class="fu">c</span>(<span class="st">"infect_day"</span>, <span class="st">"mean"</span>, <span class="st">"q05"</span>, <span class="st">"q25"</span>, <span class="st">"q50"</span>, <span class="st">"q75"</span>, <span class="st">"q95"</span>)]</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(daily_Re_eastern_select)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
-<colgroup>
-<col style="width: 9%">
-<col style="width: 15%">
-<col style="width: 13%">
-<col style="width: 12%">
-<col style="width: 10%">
-<col style="width: 10%">
-<col style="width: 9%">
-<col style="width: 9%">
-<col style="width: 10%">
-</colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">region</th>
-<th style="text-align: left;">scenario_type</th>
-<th style="text-align: left;">preclinical</th>
 <th style="text-align: right;">infect_day</th>
-<th style="text-align: right;">cred_50</th>
-<th style="text-align: right;">cred_025</th>
-<th style="text-align: right;">cred_25</th>
-<th style="text-align: right;">cred_75</th>
-<th style="text-align: right;">cred_975</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">q05</th>
+<th style="text-align: right;">q25</th>
+<th style="text-align: right;">q50</th>
+<th style="text-align: right;">q75</th>
+<th style="text-align: right;">q95</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">eastern</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">3</td>
 <td style="text-align: right;">10</td>
 <td style="text-align: right;">0.000000</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">0.000</td>
-<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.0</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">eastern</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">3</td>
 <td style="text-align: right;">11</td>
 <td style="text-align: right;">2.153846</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
 <td style="text-align: right;">3.000</td>
-<td style="text-align: right;">4.725</td>
+<td style="text-align: right;">4.0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">eastern</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">3</td>
 <td style="text-align: right;">12</td>
 <td style="text-align: right;">1.971014</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
 <td style="text-align: right;">3.000</td>
-<td style="text-align: right;">5.000</td>
+<td style="text-align: right;">4.6</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">eastern</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">3</td>
 <td style="text-align: right;">13</td>
 <td style="text-align: right;">2.043243</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">3.000</td>
-<td style="text-align: right;">5.400</td>
+<td style="text-align: right;">5.0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">eastern</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">3</td>
 <td style="text-align: right;">14</td>
 <td style="text-align: right;">1.878851</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">2.375</td>
-<td style="text-align: right;">5.000</td>
+<td style="text-align: right;">4.5</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">eastern</td>
-<td style="text-align: left;">suboptimal</td>
-<td style="text-align: left;">3</td>
 <td style="text-align: right;">15</td>
 <td style="text-align: right;">2.013787</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">3.000</td>
-<td style="text-align: right;">6.000</td>
+<td style="text-align: right;">5.0</td>
 </tr>
 </tbody>
 </table>
@@ -527,7 +485,7 @@ pre {
 <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>myCols <span class="ot">&lt;-</span> <span class="fu">kelly</span>()</span>
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="do">## Plot data</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(daily_Re, <span class="fu">aes</span>(infect_day, cred_50, <span class="at">group =</span> preclinical, <span class="at">col =</span> preclinical)) <span class="sc">+</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(daily_Re, <span class="fu">aes</span>(infect_day, q50, <span class="at">group =</span> preclinical, <span class="at">col =</span> preclinical)) <span class="sc">+</span></span>
 <span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">col=</span><span class="st">"black"</span>, <span class="at">linewidth=</span><span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
 <span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">span=</span><span class="fl">0.05</span>, <span class="at">se=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
 <span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
@@ -597,7 +555,7 @@ pre {
 <span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>myCols <span class="ot">&lt;-</span> <span class="fu">kelly</span>()</span>
 <span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="do">## Plot data</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(daily_Re, <span class="fu">aes</span>(infect_day, cred_50, <span class="at">group =</span> preclinical, <span class="at">col =</span> preclinical)) <span class="sc">+</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(daily_Re, <span class="fu">aes</span>(infect_day, q50, <span class="at">group =</span> preclinical, <span class="at">col =</span> preclinical)) <span class="sc">+</span></span>
 <span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">col=</span><span class="st">"black"</span>, <span class="at">linewidth=</span><span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
 <span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">span=</span><span class="fl">0.05</span>, <span class="at">se=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
 <span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
@@ -671,7 +629,7 @@ Eastern U.S. Region Only
 </section>
 <section id="compare-scenarios" class="level3">
 <h3 class="anchored" data-anchor-id="compare-scenarios">Compare Scenarios</h3>
-<p>Drop the low-virulence scenario from <code>combined_summary</code> and calculate percentiles</p>
+<p>Drop the low-virulence scenario from <code>combined_summary</code> and calculate quantiles</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -730,7 +688,7 @@ Eastern U.S. Region Only
 <span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>myCols <span class="ot">&lt;-</span> <span class="fu">kelly</span>()</span>
 <span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(all_summary_compare, <span class="fu">aes</span>(infect_day, <span class="fu">log</span>(cred_50), </span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(all_summary_compare, <span class="fu">aes</span>(infect_day, <span class="fu">log</span>(q50), </span>
 <span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>                               <span class="at">group =</span> scenario, <span class="at">col =</span> preclinical)) <span class="sc">+</span></span>
 <span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
 <span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">6</span>) <span class="sc">+</span></span>
