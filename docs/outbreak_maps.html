@@ -170,9 +170,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Page Contents</h2>
    
   <ul class="collapse">
-  <li><a href="#prepare-for-maps" id="toc-prepare-for-maps" class="nav-link active" data-scroll-target="#prepare-for-maps">Prepare for Maps</a></li>
-  <li><a href="#count-cumulative-cases" id="toc-count-cumulative-cases" class="nav-link" data-scroll-target="#count-cumulative-cases">Count Cumulative Cases</a></li>
-  <li><a href="#plot-cumulative-cases" id="toc-plot-cumulative-cases" class="nav-link" data-scroll-target="#plot-cumulative-cases">Plot Cumulative Cases</a></li>
+  <li><a href="#create-raster-grids" id="toc-create-raster-grids" class="nav-link active" data-scroll-target="#create-raster-grids">Create Raster Grids</a></li>
+  <li><a href="#cumulative-cases" id="toc-cumulative-cases" class="nav-link" data-scroll-target="#cumulative-cases">Cumulative Cases</a></li>
+  <li><a href="#eastern-u.s.-maps" id="toc-eastern-u.s.-maps" class="nav-link" data-scroll-target="#eastern-u.s.-maps">Eastern U.S. Maps</a></li>
+  <li><a href="#central-u.s.-maps" id="toc-central-u.s.-maps" class="nav-link" data-scroll-target="#central-u.s.-maps">Central U.S. Maps</a></li>
   </ul>
 </nav>
     </div>
@@ -215,9 +216,9 @@ pre {
   font-size: 11pt
 }
 </style>
-<section id="prepare-for-maps" class="level2">
-<h2 class="anchored" data-anchor-id="prepare-for-maps">Prepare for Maps</h2>
-<p>Prepare data to count cumulative case detections and plot outbreak maps. Example code demonstrates the workflow for the Eastern U.S. region.</p>
+<section id="create-raster-grids" class="level2">
+<h2 class="anchored" data-anchor-id="create-raster-grids">Create Raster Grids</h2>
+<p>Prepare to plot outbreak maps. First, get shapefile and set region boundaries. Then, create a raster grid version. Code demonstrates the workflow for the Eastern U.S. region. Outbreak maps for the Central U.S. are included below.</p>
 <section id="region-boundaries" class="level3">
 <h3 class="anchored" data-anchor-id="region-boundaries">Region Boundaries</h3>
 <p>Get shapefile and subset to region</p>
@@ -235,104 +236,133 @@ pre {
 </details>
 </div>
 </section>
-<section id="extract-file-paths" class="level3">
-<h3 class="anchored" data-anchor-id="extract-file-paths">Extract File Paths</h3>
-<p>Assign regional scenario and extract corresponding file paths</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>regional_scenario <span class="ot">&lt;-</span> <span class="st">"eastern"</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>regional_path <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">"%s/outputs_%s"</span>, generic_path, regional_scenario)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>region_paths <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="fu">here</span>(regional_path),</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">recursive =</span> T, <span class="at">pattern=</span> <span class="st">"Outputs_Detection"</span>, <span class="at">full.names=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</section>
 <section id="create-raster-grid" class="level3">
 <h3 class="anchored" data-anchor-id="create-raster-grid">Create Raster Grid</h3>
 <p>Create a raster grid version for each region</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tmp_r <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">ext</span>(eastern_us), </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">resolution =</span> <span class="dv">25000</span>, <span class="co"># 25km grid</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">crs =</span> <span class="fu">crs</span>(eastern_us))</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>east_r  <span class="ot">&lt;-</span> <span class="fu">rasterize</span>(eastern_us, tmp_r)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>east_r[east_r <span class="sc">==</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># set land areas to 0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>tmp_r <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">ext</span>(eastern_us), </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">resolution =</span> <span class="dv">25000</span>, <span class="co"># 25km grid</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">crs =</span> <span class="fu">crs</span>(eastern_us))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>east_r  <span class="ot">&lt;-</span> <span class="fu">rasterize</span>(eastern_us, tmp_r)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>east_r[east_r <span class="sc">==</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># set land areas to 0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
 </section>
-<section id="count-cumulative-cases" class="level2">
-<h2 class="anchored" data-anchor-id="count-cumulative-cases">Count Cumulative Cases</h2>
+<section id="cumulative-cases" class="level2">
+<h2 class="anchored" data-anchor-id="cumulative-cases">Cumulative Cases</h2>
+<section id="count-cumulative-case-detections" class="level3">
+<h3 class="anchored" data-anchor-id="count-cumulative-case-detections">Count Cumulative Case Detections</h3>
 <p><code>raster_point_counts()</code> will count the number of detection events in each 25km cell. Smoothing the raster will improve the appearance by making the cells smaller and finding averages of surrounding cells.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Count events</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>count_events <span class="ot">&lt;-</span> <span class="fu">raster_point_counts</span>(region_paths, <span class="co"># paths to files</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                                    reference, <span class="co"># coordinate references</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                                    east_r) <span class="co"># raster defining grid</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Smooth raster</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>count_events <span class="ot">&lt;-</span> <span class="fu">smooth_raster</span>(count_events)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Extract file paths to data</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>regional_path <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">"%s/outputs_%s"</span>, generic_path, <span class="st">"eastern"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>region_paths <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="fu">here</span>(regional_path),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                            <span class="at">recursive =</span> T, <span class="at">pattern=</span> <span class="st">"Outputs_Detection"</span>, <span class="at">full.names=</span><span class="cn">TRUE</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Count events</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>count_events <span class="ot">&lt;-</span> <span class="fu">raster_point_counts</span>(region_paths, <span class="co"># paths to files</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                                    reference, <span class="co"># coordinate references</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                                    east_r) <span class="co"># raster defining grid</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="do">## Smooth raster</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>count_events <span class="ot">&lt;-</span> <span class="fu">smooth_raster</span>(count_events)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
-<section id="plot-cumulative-cases" class="level2">
-<h2 class="anchored" data-anchor-id="plot-cumulative-cases">Plot Cumulative Cases</h2>
+<section id="plot-cumulative-case-detections" class="level3">
+<h3 class="anchored" data-anchor-id="plot-cumulative-case-detections">Plot Cumulative Case Detections</h3>
 <p><code>plot_raster_stack()</code> will plot the rasters for comparison.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>no_lv_eastern <span class="ot">&lt;-</span> <span class="fu">subset</span>(count_events, </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                           <span class="sc">!</span>(<span class="fu">names</span>(count_events) <span class="sc">%in%</span> <span class="st">"low-virulence/6-days-preclinical"</span>))</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>only_lv_eastern <span class="ot">&lt;-</span> <span class="fu">subset</span>(count_events, </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">names</span>(count_events) <span class="sc">%in%</span> <span class="st">"low-virulence/6-days-preclinical"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>no_low_virulence <span class="ot">&lt;-</span> <span class="fu">subset</span>(count_events, </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                           <span class="sc">!</span>(<span class="fu">names</span>(count_events) <span class="sc">%in%</span> <span class="st">"low-virulence/6-days-preclinical"</span>))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>only_low_virulence <span class="ot">&lt;-</span> <span class="fu">subset</span>(count_events, </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">names</span>(count_events) <span class="sc">%in%</span> <span class="st">"low-virulence/6-days-preclinical"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<section id="eastern-u.s." class="level3">
-<h3 class="anchored" data-anchor-id="eastern-u.s.">Eastern U.S.</h3>
-<p>Compare outbreak maps across varying preclinical infectious durations</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>stack_set <span class="ot">&lt;-</span> <span class="fu">plot_raster_stack</span>(no_lv_eastern, eastern_us)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>stack_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="outbreak_maps_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="1152"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>View map of cumulative case detections for low-virulence scenario</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>lv_set <span class="ot">&lt;-</span> <span class="fu">plot_raster_stack</span>(only_lv_eastern, eastern_us)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>lv_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="outbreak_maps_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="768"></p>
-</figure>
-</div>
-</div>
-</div>
-
-
 </section>
+</section>
+<section id="eastern-u.s.-maps" class="level2">
+<h2 class="anchored" data-anchor-id="eastern-u.s.-maps">Eastern U.S. Maps</h2>
+<p>Compare outbreak maps across optimal and suboptimal detection scenarios</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>stack_set <span class="ot">&lt;-</span> <span class="fu">plot_raster_stack</span>(no_low_virulence, eastern_us)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>stack_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="outbreak_maps_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>View map of cumulative cases for low-virulence scenario</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>lv_set <span class="ot">&lt;-</span> <span class="fu">plot_raster_stack</span>(only_low_virulence, eastern_us)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>lv_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="outbreak_maps_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="central-u.s.-maps" class="level2">
+<h2 class="anchored" data-anchor-id="central-u.s.-maps">Central U.S. Maps</h2>
+<p>Compare outbreak maps across optimal and suboptimal detection scenarios</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>stack_set <span class="ot">&lt;-</span> <span class="fu">plot_raster_stack</span>(no_low_virulence, central_us)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>stack_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="outbreak_maps_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="1728"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>View map of cumulative cases for low-virulence scenario</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>lv_set <span class="ot">&lt;-</span> <span class="fu">plot_raster_stack</span>(only_low_virulence, central_us)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>lv_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="outbreak_maps_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->
