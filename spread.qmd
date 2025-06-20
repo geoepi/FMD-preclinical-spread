@@ -303,9 +303,8 @@ ggplot(daily_Re, aes(infect_day, q50, group = preclinical, col = preclinical)) +
 :::
 
 ::: {.callout-note icon=true}
-#### Eastern U.S. Region Only
 
-The analyses below include tables and figures for the Eastern U.S. scenarios only. Visuals for the Central U.S. scenarios are coming soon.
+Example code demonstrates the workflow for the Eastern U.S. region. Central U.S. figures are included in the regional panels below. Select the tabs to view regional comparisons.
   
 :::
 
@@ -351,6 +350,110 @@ all_summary_compare <- daily_all %>%
 ```
 
 ### Plot Epidemic Velocity
+
+::: panel-tabset
+## Central U.S.
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+## Extract file paths
+central_path <- sprintf("%s/outputs_%s", file_path, "central")
+
+central_paths <- list.files(path = here(central_path),
+                            recursive = T, pattern= "Outputs_Infection", full.names=TRUE) 
+
+daily_summary_central <- compile_daily_summary(central_paths, reference)
+
+daily_all_central <- daily_summary_central$combined_summary
+
+daily_quants_central <- daily_summary_central$combined_summary %>%
+  filter(scenario != "low-virulence/6-days-preclinical")
+
+my_summary_compare_central <- daily_quants_central %>%
+  mutate(
+    scenario_type = str_to_title(word(scenario, 1, sep = "/")),
+    preclinical = word(scenario, 2, sep = "/") %>% 
+      str_replace_all("-days?-preclinical", "") %>% 
+      str_trim() %>% 
+      paste("Days Preclinical", .) %>% 
+      str_to_title()
+  )
+
+all_summary_compare_central <- daily_all_central %>%
+  mutate(
+    scenario_type = str_to_title(word(scenario, 1, sep = "/")),
+    preclinical = word(scenario, 2, sep = "/") %>% 
+      str_replace_all("-days?-preclinical", "") %>% 
+      str_trim() %>% 
+      paste("Days Preclinical", .) %>% 
+      str_to_title()
+  )
+```
+
+```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
+all_summary_compare <- all_summary_compare_central %>%
+  mutate(
+    preclinical = recode(preclinical,
+                               "Days Preclinical 0" = "None",
+                               "Days Preclinical 1" = "1 Day",
+                               "Days Preclinical 2" = "2 Days",
+                               "Days Preclinical 3" = "3 Days",
+                               "Days Preclinical 6" = "6 Days")
+  )
+
+all_summary_compare$scenario_type <- ordered(factor(all_summary_compare$scenario_type), 
+                                      c("Optimal", "Suboptimal", "Low-Virulence"))
+
+all_summary_compare$preclinical <- ordered(factor(all_summary_compare$preclinical), 
+                                      c("None", "1 Day", "2 Days", "3 Days", "6 Days"))
+
+myCols <- kelly()
+
+ggplot(all_summary_compare, aes(infect_day, log(q50), 
+                               group = scenario, col = preclinical)) +
+  geom_line(linewidth = 0.4) +
+  ylim(0, 6) +
+  scale_color_manual(values = c(
+    "None" = myCols[3],
+    "1 Day" = myCols[4],
+    "2 Days" = myCols[6],
+    "3 Days" = myCols[7],
+    "6 Days" = myCols[10]
+    )) +
+  facet_wrap(~ scenario_type, ncol=1) +
+  labs(
+    x = "Simulation Day",
+    y = "Distance (log km)",
+    col = "Preclinical Infectious Duration",
+    title = " "
+  ) +
+  theme_minimal() +
+  theme(
+    plot.margin    = unit(c(0.25, 0.25, 0.25, 0.25), "cm"),
+    legend.position = "bottom",
+    strip.text     = element_text(size = 18, face = "bold", color = "gray40"),
+    axis.title.x   = element_text(size = 22, face = "bold"),
+    axis.title.y   = element_text(size = 22, face = "bold"),
+    axis.text.x    = element_text(size = 18, face = "bold"),
+    axis.text.y    = element_text(size = 18, face = "bold"),
+    legend.key.width = unit(3, "line"),
+    legend.key.height = unit(1, "line"),
+    legend.text = element_text(size = 16, face = "bold"),
+    legend.title = element_text(size = 18, face = "bold"),
+    plot.title     = element_text(size = 22, face = "bold", hjust = 0.5)
+  )
+```
+
+## Eastern U.S.
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+all_summary_compare <- daily_all %>%
+  mutate(
+    scenario_type = str_to_title(word(scenario, 1, sep = "/")),
+    preclinical = word(scenario, 2, sep = "/") %>% 
+      str_replace_all("-days?-preclinical", "") %>% 
+      str_trim() %>% 
+      paste("Days Preclinical", .) %>% 
+      str_to_title())
+```
+
 ```{r fig.width=12, fig.height=10, message=FALSE, warning=FALSE}
 all_summary_compare <- all_summary_compare %>%
   mutate(
@@ -385,7 +488,7 @@ ggplot(all_summary_compare, aes(infect_day, log(q50),
   labs(
     x = "Simulation Day",
     y = "Distance (log km)",
-    col = "Preclinical Duration",
+    col = "Preclinical Infectious Duration",
     title = " "
   ) +
   theme_minimal() +
@@ -404,6 +507,8 @@ ggplot(all_summary_compare, aes(infect_day, log(q50),
     plot.title     = element_text(size = 22, face = "bold", hjust = 0.5)
   )
 ```
+
+:::
 
 ## Iteration Metrics
 Compare scenarios by looking for patterns at the level of individual iterations. `iteration_metrics()` will use the other output in `daily_summary` to look at trends between optimal and suboptimal responses.
