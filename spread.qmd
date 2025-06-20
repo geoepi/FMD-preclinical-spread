@@ -589,16 +589,55 @@ ggplot(iteration_metrics_no_low,
 Fit a linear model with an interaction term to quantify the influence of preclinical infectious duration (`preclinical`) and detection scenario (`scenario_type`) on cumulative outbreak spread (`auc_log`).
 
 #### Linear Model
+
+::: panel-tabset
+## Central U.S.
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+## Calculate daily iteration metrics
+iteration_metrics_central <- iteration_metrics(daily_summary_central$daily_distances) %>%
+  select(-c(scenario))
+
+## Capitalize scenario labels
+iteration_metrics_central$scenario_type <- str_to_title(iteration_metrics_central$scenario_type)
+
+## Order scenario levels
+iteration_metrics_central$scenario_type <- ordered(factor(iteration_metrics_central$scenario_type), 
+                                      c("Optimal","Suboptimal", "Low-virulence"))
+
+## Drop the low-virulence scenario
+iteration_metrics_no_low_central <- iteration_metrics_central %>%
+  filter(scenario_type != "Low-Virulence")
+```
+
+```{r}
+model_auc_central <- lm(auc_log ~ preclinical * scenario_type, data = iteration_metrics_no_low_central)
+
+summary(model_auc_central)
+```
+
+## Eastern U.S.
 ```{r}
 model_auc <- lm(auc_log ~ preclinical * scenario_type, data = iteration_metrics_no_low)
 
 summary(model_auc)
 ```
 
+:::
+
 #### ANOVA
+
+::: panel-tabset
+## Central U.S.
+```{r}
+anova(model_auc_central)
+```
+
+## Eastern U.S.
 ```{r}
 anova(model_auc)
 ```
+
+:::
 
 ## Peak Spread
 As with cumulative spread above, comparisons can be made using the peak spread rates.
