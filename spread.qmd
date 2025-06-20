@@ -118,19 +118,20 @@ iteration_Re <- transmissions %>%
 daily_Re_summary <- iteration_Re %>%
   group_by(region, scenario_type, preclinical, infect_day) %>%
   summarize(
-    cred_50   = mean(Re, na.rm = TRUE),
-    cred_025  = quantile(Re, probs = 0.025, na.rm = TRUE),
-    cred_25   = quantile(Re, probs = 0.25, na.rm = TRUE),
-    cred_75   = quantile(Re, probs = 0.75, na.rm = TRUE),
-    cred_975  = quantile(Re, probs = 0.975, na.rm = TRUE),
+    mean = mean(Re, na.rm = TRUE),
+    q05 = quantile(Re, probs = 0.05, na.rm = TRUE),
+    q25 = quantile(Re, probs = 0.25, na.rm = TRUE),
+    q50 = quantile(Re, probs = 0.50, na.rm = TRUE),
+    q75 = quantile(Re, probs = 0.75, na.rm = TRUE),
+    q95 = quantile(Re, probs = 0.95, na.rm = TRUE),
     .groups   = "drop")
 
 ## Daily summary
 daily_Re <- daily_Re_summary %>%
   group_by(region, scenario_type, preclinical) %>%
   complete(infect_day = 10:365, 
-            fill = list(cred_50 = 0, cred_025 = 0, 
-                        cred_25 = 0, cred_75 = 0, cred_975 = 0)) %>%
+            fill = list(mean = 0, q05 = 0, 
+                        q25 = 0, q50 = 0, q75 = 0, q95 = 0)) %>%
   ungroup()
 ```
 
@@ -138,21 +139,39 @@ daily_Re <- daily_Re_summary %>%
 
 ::: panel-tabset
 ## Central U.S.
+View subset of daily Re summary
 ```{r}
 ## Filter to central region
 daily_Re_central <- daily_Re %>%
   filter(region == "central")
 
-head(daily_Re_central)
+## Filter to scenario
+daily_Re_central_select <- daily_Re_central %>%
+  filter(scenario_type == "suboptimal") %>%
+  filter(preclinical == "3")
+
+## Select and order columns to display
+daily_Re_central_select <- daily_Re_central_select[c("infect_day", "mean", "q05", "q25", "q50", "q75", "q95")]
+
+head(daily_Re_central_select)
 ```
 
 ## Eastern U.S.
+View subset of daily Re summary
 ```{r}
 ## Filter to eastern region
 daily_Re_eastern <- daily_Re %>%
   filter(region == "eastern")
 
-head(daily_Re_eastern)
+## Filter to scenario
+daily_Re_eastern_select <- daily_Re_eastern %>%
+  filter(scenario_type == "suboptimal") %>%
+  filter(preclinical == "3")
+
+## Select and order columns to display
+daily_Re_eastern_select <- daily_Re_eastern_select[c("infect_day", "mean", "q05", "q25", "q50", "q75", "q95")]
+
+head(daily_Re_eastern_select)
 ```
 
 :::
@@ -187,7 +206,7 @@ daily_Re$preclinical <- ordered(factor(daily_Re$preclinical),
 myCols <- kelly()
 
 ## Plot data
-ggplot(daily_Re, aes(infect_day, cred_50, group = preclinical, col = preclinical)) +
+ggplot(daily_Re, aes(infect_day, q50, group = preclinical, col = preclinical)) +
   geom_hline(yintercept = 1, col="black", linewidth=0.5, linetype = "dashed") +
   geom_smooth(method = "loess", span=0.05, se=FALSE) +
   scale_color_manual(values = c(
@@ -247,7 +266,7 @@ daily_Re$preclinical <- ordered(factor(daily_Re$preclinical),
 myCols <- kelly()
 
 ## Plot data
-ggplot(daily_Re, aes(infect_day, cred_50, group = preclinical, col = preclinical)) +
+ggplot(daily_Re, aes(infect_day, q50, group = preclinical, col = preclinical)) +
   geom_hline(yintercept = 1, col="black", linewidth=0.5, linetype = "dashed") +
   geom_smooth(method = "loess", span=0.05, se=FALSE) +
   scale_color_manual(values = c(
@@ -300,7 +319,7 @@ daily_summary <- compile_daily_summary(region_paths, reference)
 ```
 
 ### Compare Scenarios
-Drop the low-virulence scenario from `combined_summary` and calculate percentiles
+Drop the low-virulence scenario from `combined_summary` and calculate quantiles
 ```{r}
 daily_all <- daily_summary$combined_summary
 
@@ -351,7 +370,7 @@ all_summary_compare$preclinical <- ordered(factor(all_summary_compare$preclinica
 
 myCols <- kelly()
 
-ggplot(all_summary_compare, aes(infect_day, log(cred_50), 
+ggplot(all_summary_compare, aes(infect_day, log(q50), 
                                group = scenario, col = preclinical)) +
   geom_line(linewidth = 0.4) +
   ylim(0, 6) +
@@ -401,7 +420,7 @@ peak_spread
 
 peak_day
 
-:   The infect day that the maximum spread distance (peak_spread) occurred.
+:   The infect day that the maximum spread distance (`peak_spread`) occurred.
 
 ```{r}
 ## Calculate daily iteration metrics
@@ -414,20 +433,29 @@ iteration_metrics$scenario_type <- str_to_title(iteration_metrics$scenario_type)
 ## Order scenario levels
 iteration_metrics$scenario_type <- ordered(factor(iteration_metrics$scenario_type), 
                                       c("Optimal","Suboptimal", "Low-virulence"))
+```
 
-## Print daily iteration metrics
-head(iteration_metrics, 3)
+View sample of iteration metrics
+```{r}
+## Filter data to scenario
+iteration_metrics_select <- iteration_metrics %>%
+  filter(scenario_type == "Suboptimal") %>%
+  filter(preclinical == "3")
+
+## Select and order columns to display
+iteration_metrics_select <- iteration_metrics_select[c("iteration", "auc_log", "peak_spread", "peak_day")]
+
+head(iteration_metrics_select)
 ```
 
 ## Cumulative Spread
-Calculate the cumulative spatial spread of simulated outbreaks. First, drop the low-virulence scenario to compare optimal vs. suboptimal detection scenarios.
-```{r}
+Drop the low-virulence scenarios to compare optimal and suboptimal detection scenarios. Plot the estimated Area Under the Curve (AUC). `auc_log` represents the total cumulative spread distance, for each scenario by iteration, on a log scale.
+```{r fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
+## Drop the low-virulence scenario
 iteration_metrics_no_low <- iteration_metrics %>%
   filter(scenario_type != "Low-Virulence")
-```
 
-Plot the estimated Area Under the Curve (AUC), which represents total cumulative spread distance, for each scenario by iteration (points). Then run a linear regression model to find the trend across increasing preclinical infectious duration.
-```{r fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
+## Plot AUC
 ggplot(iteration_metrics_no_low, 
        aes(x = preclinical, y = auc_log, color = scenario_type)) +
   geom_point(shape=1, alpha = 0.3, size = 2) + # individual iterations
@@ -435,7 +463,7 @@ ggplot(iteration_metrics_no_low,
   facet_grid(. ~ scenario_type) +
   scale_color_manual(values = c("Suboptimal" = "#74add1", "Optimal" = "orange2")) +
   labs(
-    x = "Days Preclinical",
+    x = "Preclinical Infectious Duration (days)",
     y = "Cumulative Spread (log AUC)",
     title = " "
   ) +
@@ -453,7 +481,7 @@ ggplot(iteration_metrics_no_low,
 ```
 
 ### Significance Test
-Fit a linear model with an interaction term to quantify the influence of `preclinical` and `scenario_type` on cumulative outbreak spread (`auc_log`).
+Fit a linear model with an interaction term to quantify the influence of preclinical infectious duration (`preclinical`) and detection scenario (`scenario_type`) on cumulative outbreak spread (`auc_log`).
 
 #### Linear Model
 ```{r}
@@ -474,9 +502,9 @@ ggplot(iteration_metrics_no_low, aes(x = preclinical, y = peak_day, color = scen
   geom_point(shape=1, alpha = 0.3, size = 2) + # individual iterations
   geom_smooth(method = "lm", se = FALSE, linewidth=1.2) +
   facet_grid(. ~ scenario_type) +
-  scale_color_manual(values = c("Delayed" = "#74add1", "Optimal" = "orange2")) +
+  scale_color_manual(values = c("Suboptimal" = "#74add1", "Optimal" = "orange2")) +
   labs(
-    x = "Days Preclinical",
+    x = "Preclinical Infectious Duration (days)",
     y = "Day of Peak Transmission",
     title = " "
   ) +

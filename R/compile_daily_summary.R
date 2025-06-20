@@ -71,11 +71,12 @@ compile_daily_summary <- function(scenarios_df, reference, impute_zero = TRUE) {
     daily_summary <- daily_distances %>%
       group_by(infect_day) %>%
       summarize(
-        cred_50   = median(mean_distance, na.rm = TRUE),
-        cred_025  = quantile(mean_distance, probs = 0.025, na.rm = TRUE),
-        cred_25   = quantile(mean_distance, probs = 0.25, na.rm = TRUE),
-        cred_75   = quantile(mean_distance, probs = 0.75, na.rm = TRUE),
-        cred_975  = quantile(mean_distance, probs = 0.975, na.rm = TRUE),
+        mean = mean(mean_distance, na.rm = TRUE),
+        q05  = quantile(mean_distance, probs = 0.05, na.rm = TRUE),
+        q25   = quantile(mean_distance, probs = 0.25, na.rm = TRUE),
+        q50   = quantile(mean_distance, probs = 0.50, na.rm = TRUE),
+        q75   = quantile(mean_distance, probs = 0.75, na.rm = TRUE),
+        q95  = quantile(mean_distance, probs = 0.975, na.rm = TRUE),
         min_spread = min(mean_distance, na.rm = TRUE),
         max_spread = max(mean_distance, na.rm = TRUE),
         .groups    = "drop"
@@ -94,8 +95,8 @@ compile_daily_summary <- function(scenarios_df, reference, impute_zero = TRUE) {
     combined_summary <- combined_summary %>%
       group_by(scenario) %>%
       complete(infect_day = 1:365, 
-               fill = list(cred_50 = 0, cred_025 = 0, cred_25 = 0, 
-                           cred_75 = 0, cred_975 = 0, min_spread = 0, max_spread = 0)) %>%
+               fill = list(mean = 0, q05 = 0, q25 = 0, q50 = 0,
+                           q75 = 0, q95 = 0, min_spread = 0, max_spread = 0)) %>%
       ungroup()
   }
   

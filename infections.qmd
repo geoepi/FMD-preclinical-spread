@@ -66,12 +66,21 @@ infection$region <- ordered(factor(infection$region), c("central", "eastern"))
 ```{r}
 ## Summarize infection metrics for each iteration
 infect_summary <- summarize_infections(infection)
+```
+
+View a subset of `infect_summary`
+```{r}
+## Filter data to scenario
+infect_summary_select <- infect_summary %>%
+  filter(region == "central") %>%
+  filter(scenario_type == "suboptimal") %>%
+  filter(preclinical == 2)
 
 ## Select and order columns to display
-infect_summary_select <- infect_summary[c("iteration", "farms_infected", "cattle_infected", "first_infect", "last_infect")]
+infect_summary_select <- infect_summary_select[c("iteration", "farms_infected", "cattle_infected", "first_infect", "last_infect")]
 
 ## Check data
-head(infect_summary_select, 3)
+head(infect_summary_select)
 ```
 
 ### Summary Statistics
@@ -159,48 +168,15 @@ no_LV <- infection %>%
 no_LV_summary <- summarize_infections(no_LV)
 ```
 
-::: panel-tabset
-## Central U.S.
-Check data range
-```{r}
-## Filter to central region
-no_LV_central_summary <- no_LV_summary %>%
-  filter(region == "central")
-
-range(no_LV_central_summary$cattle_infected) # high values
-plot(density(no_LV_central_summary$cattle_infected)) #long tail
-```
-
-Normalize data using log scale
-```{r}
-range(log(no_LV_central_summary$cattle_infected))
-plot(density(log(no_LV_central_summary$cattle_infected)))
-```
-
-## Eastern U.S.
-Check data range
-```{r}
-## Filter to eastern region
-no_LV_eastern_summary <- no_LV_summary %>%
-  filter(region == "eastern")
-
-range(no_LV_eastern_summary$cattle_infected) # high values
-plot(density(no_LV_eastern_summary$cattle_infected)) #long tail
-```
-
-Normalize data using log scale
-```{r}
-range(log(no_LV_eastern_summary$cattle_infected))
-plot(density(log(no_LV_eastern_summary$cattle_infected)))
-```
-
-:::
-
 ### Linear Model
 
 ::: panel-tabset
 ## Central U.S.
 ```{r}
+## Filter to central region
+no_LV_central_summary <- no_LV_summary %>%
+  filter(region == "central")
+
 model_central_cattle <- lm(log(cattle_infected) ~ preclinical * scenario_type, 
                        data = no_LV_central_summary)
 
@@ -209,6 +185,10 @@ summary(model_central_cattle)
 
 ## Eastern U.S.
 ```{r}
+## Filter to eastern region
+no_LV_eastern_summary <- no_LV_summary %>%
+  filter(region == "eastern")
+
 model_eastern_cattle <- lm(log(cattle_infected) ~ preclinical * scenario_type, 
                        data = no_LV_eastern_summary)
 

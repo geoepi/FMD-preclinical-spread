@@ -64,13 +64,21 @@ detection$region <- ordered(factor(detection$region), c("central", "eastern"))
 `summarize_detections()` returns a summary of detection events by iteration.
 ```{r}
 detect_summary <- summarize_detections(detection)
+```
+
+View a subset of `detect_summary`
+```{r}
+## Filter data to scenario
+detect_summary_select <- detect_summary %>%
+  filter(region == "central") %>%
+  filter(scenario_type == "suboptimal") %>%
+  filter(preclinical == 2)
 
 ## Select and order columns to display
-detect_summary_select <- detect_summary[c("iteration", "farms_detected", "first_detect", "last_detect", "duration")]
+detect_summary_select <- detect_summary_select[c("iteration", "farms_detected", "first_detect", "last_detect", "duration")]
 
 ## Check data
-sample_n(detect_summary_select, 5) %>%
-  arrange(iteration)
+head(detect_summary_select)
 ```
 
 ### Summary Statistics
@@ -123,36 +131,15 @@ no_LV_detect <- detection %>%
 no_LV_detect_summary <- summarize_detections(no_LV_detect)
 ```
 
-::: panel-tabset
-## Central U.S.
-Check data range
-```{r}
-## Filter to central region
-no_LV_detect_central_summary <- no_LV_detect_summary %>%
-  filter(region == "central")
-
-range(no_LV_detect_central_summary$duration)
-plot(density(no_LV_detect_central_summary$duration))
-```
-
-## Eastern U.S.
-Check data range
-```{r}
-## Filter to central region
-no_LV_detect_eastern_summary <- no_LV_detect_summary %>%
-  filter(region == "eastern")
-
-range(no_LV_detect_eastern_summary$duration)
-plot(density(no_LV_detect_eastern_summary$duration))
-```
-
-:::
-
 ### Linear Model
 
 ::: panel-tabset
 ## Central U.S.
 ```{r}
+## Filter to central region
+no_LV_detect_central_summary <- no_LV_detect_summary %>%
+  filter(region == "central")
+
 model_central_duration <- lm(duration ~ preclinical * scenario_type, 
                        data = no_LV_detect_central_summary)
 
@@ -161,6 +148,10 @@ summary(model_central_duration)
 
 ## Eastern U.S.
 ```{r}
+## Filter to eastern region
+no_LV_detect_eastern_summary <- no_LV_detect_summary %>%
+  filter(region == "eastern")
+
 model_eastern_duration <- lm(duration ~ preclinical * scenario_type, 
                        data = no_LV_detect_eastern_summary)
 
