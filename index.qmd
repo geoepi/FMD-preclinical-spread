@@ -18,6 +18,7 @@ editor: source
 editor_options: 
   chunk_output_type: console
 ---
+
 ```{=html}
 <style type="text/css">
 
@@ -33,26 +34,27 @@ pre {
 </style>
 ```
 
-::: {.callout-important icon=true}
-#### Under Active Development  
+::: {.callout-important icon="true"}
+#### Supporting Information
 
-This site includes exploratory analyses that are subject to change. 
-  
+This site provides supplemental materials and a demonstrative workflow of the statistical analyses presented in a manuscript that is currently under peer review and subject to change.
+
+**Modeling Incubation Phase Transmission of Foot-and-Mouth Disease Virus in Cattle**
+
+Scharzenberger, Humphreys, Rigney, Freifeld, Stenfeldt, and Arzt
 :::
 
-## About 
+## About
 This site provides a demonstrative workflow for analyses of InterSpread Plus outputs from a FMDV preclinical transmission model in United States cattle. Simulations were run for multiple geographic regions. Figures for the Western U.S. are included in the main text. Tables and figures for the Eastern U.S. and Central U.S. region scenarios are included on this site.
 
-## Navigation  
-The menu at right can be used to navigate through major sections on a webpage.  Links across the top of the page will direct to specific analyses. Throughout this website, panels are used to display results across regional scenarios.
-
-
+## Navigation
+The menu at right can be used to navigate through major sections on a webpage. Links across the top of the page will direct to specific analyses. Throughout this website, panels are used to display results across regional scenarios.
 
 ::: {.callout-tip icon=true}
 #### View Comparisons
 
 Select the tabs to view comparisons between regional scenarios.
-  
+
 :::
 
 ::: panel-tabset
