@@ -158,7 +158,7 @@
     "href": "index.html",
     "title": "Overview",
     "section": "",
-    "text": "Under Active Development\n\n\n\nThis site includes exploratory analyses that are subject to change."
+    "text": "Supporting Information\n\n\n\nThis site provides supplemental materials and a demonstrative workflow of the statistical analyses presented in a manuscript that is currently under peer review and subject to change.\nModeling Incubation Phase Transmission of Foot-and-Mouth Disease Virus in Cattle\nScharzenberger, Humphreys, Rigney, Freifeld, Stenfeldt, and Arzt"
   },
   {
     "objectID": "index.html#about",
@@ -189,18 +189,11 @@
     "text": "Prepare to plot outbreak maps. First, get shapefile and set region boundaries. Then, create a raster grid version. Code demonstrates the workflow for the Eastern U.S. region. Outbreak maps for the Central U.S. are included below.\n\n\nGet shapefile and subset to region\n\n\nCode\n## Get shapefile for conterminous U.S.\nwhole_us &lt;- vect(here(\"script-inputs/shapefile/Contiguous_USA_for Regional_Model.shp\")) \n\n## Boundaries for eastern U.S.\neastern_us &lt;- subset(whole_us, whole_us$SUB_REGION %in% \n                       c(\"East North Central\", \"East North Central\", \n                         \"East South Central\", \"east South Central\",\n                         \"New England\", \"Middle Atlantic\", \"South Atlantic\"))\n\n\n\n\n\nCreate a raster grid version for each region\n\n\nCode\ntmp_r &lt;- rast(ext(eastern_us), \n              resolution = 25000, # 25km grid\n              crs = crs(eastern_us))\n\neast_r  &lt;- rasterize(eastern_us, tmp_r)\n\neast_r[east_r == 1] &lt;- 0 # set land areas to 0"
   },
   {
-    "objectID": "outbreak_maps.html#extract-file-paths",
-    "href": "outbreak_maps.html#extract-file-paths",
+    "objectID": "outbreak_maps.html#cumulative-cases",
+    "href": "outbreak_maps.html#cumulative-cases",
     "title": "Outbreak Maps",
-    "section": "Extract File Paths",
-    "text": "Extract File Paths\nAssign regional scenario and extract corresponding file paths\n\n\nCode\nregional_scenario &lt;- \"eastern\"\n\nregional_path &lt;- sprintf(\"%s/outputs_%s\", generic_path, regional_scenario)\n\nregion_paths &lt;- list.files(path = here(regional_path),\n                            recursive = T, pattern= \"Outputs_Detection\", full.names=TRUE)"
-  },
-  {
-    "objectID": "outbreak_maps.html#cumulative-cases-detections",
-    "href": "outbreak_maps.html#cumulative-cases-detections",
-    "title": "Outbreak Maps",
-    "section": "Cumulative Cases Detections",
-    "text": "Cumulative Cases Detections\n\nCount Cumulative Cases\nraster_point_counts() will count the number of detection events in each 25km cell. Smoothing the raster will improve the appearance by making the cells smaller and finding averages of surrounding cells.\n\n\nCode\n## Extract file paths to data\nregional_path &lt;- sprintf(\"%s/outputs_%s\", generic_path, \"eastern\")\n\nregion_paths &lt;- list.files(path = here(regional_path),\n                            recursive = T, pattern= \"Outputs_Detection\", full.names=TRUE)\n\n## Count events\ncount_events &lt;- raster_point_counts(region_paths, # paths to files\n                                    reference, # coordinate references\n                                    east_r) # raster defining grid\n\n## Smooth raster\ncount_events &lt;- smooth_raster(count_events)\n\n\n\n\nPlot Cumulative Cases\nplot_raster_stack() will plot the rasters for comparison.\n\n\nCode\nno_low_virulence &lt;- subset(count_events, \n                           !(names(count_events) %in% \"low-virulence/6-days-preclinical\"))\n\nonly_low_virulence &lt;- subset(count_events, \n                            names(count_events) %in% \"low-virulence/6-days-preclinical\")"
+    "section": "Cumulative Cases",
+    "text": "Cumulative Cases\n\nCount Cumulative Case Detections\nraster_point_counts() will count the number of detection events in each 25km cell. Smoothing the raster will improve the appearance by making the cells smaller and finding averages of surrounding cells.\n\n\nCode\n## Extract file paths to data\nregional_path &lt;- sprintf(\"%s/outputs_%s\", generic_path, \"eastern\")\n\nregion_paths &lt;- list.files(path = here(regional_path),\n                            recursive = T, pattern= \"Outputs_Detection\", full.names=TRUE)\n\n## Count events\ncount_events &lt;- raster_point_counts(region_paths, # paths to files\n                                    reference, # coordinate references\n                                    east_r) # raster defining grid\n\n## Smooth raster\ncount_events &lt;- smooth_raster(count_events)\n\n\n\n\nPlot Cumulative Case Detections\nplot_raster_stack() will plot the rasters for comparison.\n\n\nCode\nno_low_virulence &lt;- subset(count_events, \n                           !(names(count_events) %in% \"low-virulence/6-days-preclinical\"))\n\nonly_low_virulence &lt;- subset(count_events, \n                            names(count_events) %in% \"low-virulence/6-days-preclinical\")"
   },
   {
     "objectID": "outbreak_maps.html#eastern-u.s.-maps",
@@ -215,12 +208,5 @@
     "title": "Outbreak Maps",
     "section": "Central U.S. Maps",
     "text": "Central U.S. Maps\nCompare outbreak maps across optimal and suboptimal detection scenarios\n\n\nCode\nstack_set &lt;- plot_raster_stack(no_low_virulence, central_us)\n\nstack_set\n\n\n\n\n\n\n\n\n\nView map of cumulative cases for low-virulence scenario\n\n\nCode\nlv_set &lt;- plot_raster_stack(only_low_virulence, central_us)\n\nlv_set"
-  },
-  {
-    "objectID": "outbreak_maps.html#cumulative-cases",
-    "href": "outbreak_maps.html#cumulative-cases",
-    "title": "Outbreak Maps",
-    "section": "Cumulative Cases",
-    "text": "Cumulative Cases\n\nCount Cumulative Case Detections\nraster_point_counts() will count the number of detection events in each 25km cell. Smoothing the raster will improve the appearance by making the cells smaller and finding averages of surrounding cells.\n\n\nCode\n## Extract file paths to data\nregional_path &lt;- sprintf(\"%s/outputs_%s\", generic_path, \"eastern\")\n\nregion_paths &lt;- list.files(path = here(regional_path),\n                            recursive = T, pattern= \"Outputs_Detection\", full.names=TRUE)\n\n## Count events\ncount_events &lt;- raster_point_counts(region_paths, # paths to files\n                                    reference, # coordinate references\n                                    east_r) # raster defining grid\n\n## Smooth raster\ncount_events &lt;- smooth_raster(count_events)\n\n\n\n\nPlot Cumulative Case Detections\nplot_raster_stack() will plot the rasters for comparison.\n\n\nCode\nno_low_virulence &lt;- subset(count_events, \n                           !(names(count_events) %in% \"low-virulence/6-days-preclinical\"))\n\nonly_low_virulence &lt;- subset(count_events, \n                            names(count_events) %in% \"low-virulence/6-days-preclinical\")"
   }
 ]
