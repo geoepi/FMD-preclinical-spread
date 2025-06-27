@@ -107,15 +107,17 @@ The Effective Reproduction Number (Re) is the average number of secondary premis
 transmissions <- merge %>% 
   filter(source != 0)
 
-## find the number of transmissions per source for each iteration and infect_day,
+## find the number of transmissions per source for each iteration and infect_day
 iteration_Re <- transmissions %>%
   group_by(region, scenario_type, preclinical, iteration, infect_day, source) %>%
-  summarize(num_transmissions = n(), .groups = "drop") %>%
+  summarize(num_transmissions = n(), .groups = "drop") 
+
+iteration_mean_Re <- iteration_Re %>%
   group_by(region, scenario_type, preclinical, iteration, infect_day) %>%
   summarize(Re = mean(num_transmissions), .groups = "drop")
 
 ## summarize daily Re across iterations
-daily_Re_summary <- iteration_Re %>%
+daily_Re_summary <- iteration_mean_Re %>%
   group_by(region, scenario_type, preclinical, infect_day) %>%
   summarize(
     mean = mean(Re, na.rm = TRUE),
@@ -139,7 +141,7 @@ daily_Re <- daily_Re_summary %>%
 
 ::: panel-tabset
 ## Central U.S.
-View subset of daily Re summary
+View summary table of `daily Re` in the central region
 ```{r}
 ## Filter to central region
 daily_Re_central <- daily_Re %>%
@@ -157,7 +159,7 @@ head(daily_Re_central_select)
 ```
 
 ## Eastern U.S.
-View subset of daily Re summary
+View summary table of `daily Re` in the eastern region
 ```{r}
 ## Filter to eastern region
 daily_Re_eastern <- daily_Re %>%
@@ -318,26 +320,12 @@ daily_summary <- compile_daily_summary(region_paths, reference)
 ```
 
 ### Compare Scenarios
-Drop the low-virulence scenario from `combined_summary` and calculate quantiles
+Compare quantiles across all scenarios and prepare to calculate wave velocity.
 ```{r}
+## Get quantiles
 daily_all <- daily_summary$combined_summary
 
-daily_quants <- daily_summary$combined_summary %>%
-  filter(scenario != "low-virulence/6-days-preclinical")
-```
-
-Compare percentiles across all scenarios and prepare to calculate wave velocity
-```{r}
-my_summary_compare <- daily_quants %>%
-  mutate(
-    scenario_type = str_to_title(word(scenario, 1, sep = "/")),
-    preclinical = word(scenario, 2, sep = "/") %>% 
-      str_replace_all("-days?-preclinical", "") %>% 
-      str_trim() %>% 
-      paste("Days Preclinical", .) %>% 
-      str_to_title()
-  )
-
+## Compare scenarios
 all_summary_compare <- daily_all %>%
   mutate(
     scenario_type = str_to_title(word(scenario, 1, sep = "/")),
@@ -593,6 +581,9 @@ Fit a linear model with an interaction term to quantify the influence of preclin
 ::: panel-tabset
 ## Central U.S.
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
+# Load function
+source(here("R/iteration_metrics.R"))
+
 ## Calculate daily iteration metrics
 iteration_metrics_central <- iteration_metrics(daily_summary_central$daily_distances) %>%
   select(-c(scenario))
