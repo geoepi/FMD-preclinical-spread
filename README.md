@@ -1,7 +1,7 @@
 # FMD Preclinical Spread
 
 ## Supporting Information
-This site provides supplemental materials and a demonstrative workflow of the statistical analyses presented in the manuscript:
+This site provides a demonstrative workflow of the statistical analyses presented in the manuscript:
 
 **Modeling Incubation Phase Transmission of Foot-and-Mouth Disease Virus in Cattle** [*in review*]
 
