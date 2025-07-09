@@ -79,6 +79,9 @@ infect_summary_select <- infect_summary %>%
 ## Select and order columns to display
 infect_summary_select <- infect_summary_select[c("iteration", "farms_infected", "cattle_infected", "first_infect", "last_infect")]
 
+infect_summary_select <- infect_summary_select %>%
+    mutate(across(c("iteration", "farms_infected", "cattle_infected", "first_infect", "last_infect"), comma))
+
 ## Check data
 head(infect_summary_select)
 ```
@@ -102,27 +105,35 @@ The number of infected farms
 
 ::: panel-tabset
 ## Central U.S.
-```{r}
+```{r, warning=FALSE, message=FALSE}
 ## Filter to central region
 farms_central_summary <- farms_inf_summary %>%
   filter(region == "central")
 
 ## Select and order columns
-farms_central_summary <- farms_central_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+farms_central_select <- farms_central_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
 
-farms_central_summary
+farms_central_select <- farms_central_select %>%
+  mutate_if(is.numeric, round, digits = 2) %>%
+  mutate_if(is.numeric, ~format(.x, nsmall = 2, big.mark = ","))
+
+farms_central_select
 ```
 
 ## Eastern U.S.
-```{r}
+```{r, warning=FALSE, message=FALSE}
 ## Filter to eastern region
 farms_eastern_summary <- farms_inf_summary %>%
   filter(region == "eastern")
 
 ## Select and order columns
-farms_eastern_summary <- farms_eastern_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+farms_eastern_select <- farms_eastern_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
 
-farms_eastern_summary
+farms_eastern_select <- farms_eastern_select %>%
+  mutate_if(is.numeric, round, digits = 2) %>%
+  mutate_if(is.numeric, ~format(.x, nsmall = 2, big.mark = ","))
+
+farms_eastern_select
 ```
 
 :::

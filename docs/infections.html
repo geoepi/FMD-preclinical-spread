@@ -240,63 +240,66 @@ pre {
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Select and order columns to display</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>infect_summary_select <span class="ot">&lt;-</span> infect_summary_select[<span class="fu">c</span>(<span class="st">"iteration"</span>, <span class="st">"farms_infected"</span>, <span class="st">"cattle_infected"</span>, <span class="st">"first_infect"</span>, <span class="st">"last_infect"</span>)]</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Check data</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(infect_summary_select)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>infect_summary_select <span class="ot">&lt;-</span> infect_summary_select <span class="sc">%&gt;%</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="st">"iteration"</span>, <span class="st">"farms_infected"</span>, <span class="st">"cattle_infected"</span>, <span class="st">"first_infect"</span>, <span class="st">"last_infect"</span>), comma))</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="do">## Check data</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(infect_summary_select)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th style="text-align: right;">iteration</th>
-<th style="text-align: right;">farms_infected</th>
-<th style="text-align: right;">cattle_infected</th>
-<th style="text-align: right;">first_infect</th>
-<th style="text-align: right;">last_infect</th>
+<th style="text-align: left;">iteration</th>
+<th style="text-align: left;">farms_infected</th>
+<th style="text-align: left;">cattle_infected</th>
+<th style="text-align: left;">first_infect</th>
+<th style="text-align: left;">last_infect</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">82</td>
-<td style="text-align: right;">18980</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">54</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">82</td>
+<td style="text-align: left;">18,980</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">54</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">13</td>
-<td style="text-align: right;">4893</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">27</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">13</td>
+<td style="text-align: left;">4,893</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">27</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">179</td>
-<td style="text-align: right;">51364</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">85</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">179</td>
+<td style="text-align: left;">51,364</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">85</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">2271</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">36</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">2,271</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">36</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">20</td>
-<td style="text-align: right;">6115</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">42</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">20</td>
+<td style="text-align: left;">6,115</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">42</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">116</td>
-<td style="text-align: right;">54607</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">111</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">116</td>
+<td style="text-align: left;">54,607</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">111</td>
 </tr>
 </tbody>
 </table>
@@ -337,125 +340,129 @@ pre {
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">==</span> <span class="st">"central"</span>)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Select and order columns</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>farms_central_summary <span class="ot">&lt;-</span> farms_central_summary[<span class="fu">c</span>(<span class="st">"scenario_type"</span>, <span class="st">"preclinical"</span>, <span class="st">"mean"</span>, <span class="st">"q05"</span>, <span class="st">"q25"</span>, <span class="st">"q50"</span>, <span class="st">"q75"</span>, <span class="st">"q95"</span>)]</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>farms_central_select <span class="ot">&lt;-</span> farms_central_summary[<span class="fu">c</span>(<span class="st">"scenario_type"</span>, <span class="st">"preclinical"</span>, <span class="st">"mean"</span>, <span class="st">"q05"</span>, <span class="st">"q25"</span>, <span class="st">"q50"</span>, <span class="st">"q75"</span>, <span class="st">"q95"</span>)]</span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>farms_central_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>farms_central_select <span class="ot">&lt;-</span> farms_central_select <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.numeric, round, <span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.numeric, <span class="sc">~</span><span class="fu">format</span>(.x, <span class="at">nsmall =</span> <span class="dv">2</span>, <span class="at">big.mark =</span> <span class="st">","</span>))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>farms_central_select</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 19%">
-<col style="width: 16%">
-<col style="width: 12%">
-<col style="width: 9%">
-<col style="width: 10%">
-<col style="width: 9%">
-<col style="width: 10%">
-<col style="width: 10%">
+<col style="width: 17%">
+<col style="width: 15%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
 </colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">scenario_type</th>
 <th style="text-align: left;">preclinical</th>
-<th style="text-align: right;">mean</th>
-<th style="text-align: right;">q05</th>
-<th style="text-align: right;">q25</th>
-<th style="text-align: right;">q50</th>
-<th style="text-align: right;">q75</th>
-<th style="text-align: right;">q95</th>
+<th style="text-align: left;">mean</th>
+<th style="text-align: left;">q05</th>
+<th style="text-align: left;">q25</th>
+<th style="text-align: left;">q50</th>
+<th style="text-align: left;">q75</th>
+<th style="text-align: left;">q95</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">0</td>
-<td style="text-align: right;">7.352</td>
-<td style="text-align: right;">2.0</td>
-<td style="text-align: right;">2.00</td>
-<td style="text-align: right;">3.0</td>
-<td style="text-align: right;">6.00</td>
-<td style="text-align: right;">20.05</td>
+<td style="text-align: left;">7.35</td>
+<td style="text-align: left;">2.00</td>
+<td style="text-align: left;">2.00</td>
+<td style="text-align: left;">3.00</td>
+<td style="text-align: left;">6.00</td>
+<td style="text-align: left;">20.05</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">1</td>
-<td style="text-align: right;">12.714</td>
-<td style="text-align: right;">2.0</td>
-<td style="text-align: right;">3.00</td>
-<td style="text-align: right;">5.0</td>
-<td style="text-align: right;">11.00</td>
-<td style="text-align: right;">56.00</td>
+<td style="text-align: left;">12.71</td>
+<td style="text-align: left;">2.00</td>
+<td style="text-align: left;">3.00</td>
+<td style="text-align: left;">5.00</td>
+<td style="text-align: left;">11.00</td>
+<td style="text-align: left;">56.00</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">2</td>
-<td style="text-align: right;">23.366</td>
-<td style="text-align: right;">2.0</td>
-<td style="text-align: right;">4.00</td>
-<td style="text-align: right;">9.0</td>
-<td style="text-align: right;">22.00</td>
-<td style="text-align: right;">94.00</td>
+<td style="text-align: left;">23.37</td>
+<td style="text-align: left;">2.00</td>
+<td style="text-align: left;">4.00</td>
+<td style="text-align: left;">9.00</td>
+<td style="text-align: left;">22.00</td>
+<td style="text-align: left;">94.00</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">3</td>
-<td style="text-align: right;">72.506</td>
-<td style="text-align: right;">3.0</td>
-<td style="text-align: right;">7.00</td>
-<td style="text-align: right;">15.5</td>
-<td style="text-align: right;">67.00</td>
-<td style="text-align: right;">372.35</td>
+<td style="text-align: left;">72.51</td>
+<td style="text-align: left;">3.00</td>
+<td style="text-align: left;">7.00</td>
+<td style="text-align: left;">15.50</td>
+<td style="text-align: left;">67.00</td>
+<td style="text-align: left;">372.35</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">0</td>
-<td style="text-align: right;">46.924</td>
-<td style="text-align: right;">4.0</td>
-<td style="text-align: right;">9.00</td>
-<td style="text-align: right;">22.0</td>
-<td style="text-align: right;">55.25</td>
-<td style="text-align: right;">176.05</td>
+<td style="text-align: left;">46.92</td>
+<td style="text-align: left;">4.00</td>
+<td style="text-align: left;">9.00</td>
+<td style="text-align: left;">22.00</td>
+<td style="text-align: left;">55.25</td>
+<td style="text-align: left;">176.05</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">1</td>
-<td style="text-align: right;">106.394</td>
-<td style="text-align: right;">6.0</td>
-<td style="text-align: right;">15.00</td>
-<td style="text-align: right;">41.0</td>
-<td style="text-align: right;">140.25</td>
-<td style="text-align: right;">408.15</td>
+<td style="text-align: left;">106.39</td>
+<td style="text-align: left;">6.00</td>
+<td style="text-align: left;">15.00</td>
+<td style="text-align: left;">41.00</td>
+<td style="text-align: left;">140.25</td>
+<td style="text-align: left;">408.15</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">2</td>
-<td style="text-align: right;">250.570</td>
-<td style="text-align: right;">7.0</td>
-<td style="text-align: right;">24.00</td>
-<td style="text-align: right;">81.0</td>
-<td style="text-align: right;">369.75</td>
-<td style="text-align: right;">939.20</td>
+<td style="text-align: left;">250.57</td>
+<td style="text-align: left;">7.00</td>
+<td style="text-align: left;">24.00</td>
+<td style="text-align: left;">81.00</td>
+<td style="text-align: left;">369.75</td>
+<td style="text-align: left;">939.20</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">3</td>
-<td style="text-align: right;">578.078</td>
-<td style="text-align: right;">9.0</td>
-<td style="text-align: right;">45.75</td>
-<td style="text-align: right;">312.5</td>
-<td style="text-align: right;">1008.25</td>
-<td style="text-align: right;">1729.50</td>
+<td style="text-align: left;">578.08</td>
+<td style="text-align: left;">9.00</td>
+<td style="text-align: left;">45.75</td>
+<td style="text-align: left;">312.50</td>
+<td style="text-align: left;">1,008.25</td>
+<td style="text-align: left;">1,729.50</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">low-virulence</td>
 <td style="text-align: left;">6</td>
-<td style="text-align: right;">3722.938</td>
-<td style="text-align: right;">1491.7</td>
-<td style="text-align: right;">3034.50</td>
-<td style="text-align: right;">3917.0</td>
-<td style="text-align: right;">4595.00</td>
-<td style="text-align: right;">5520.00</td>
+<td style="text-align: left;">3,722.94</td>
+<td style="text-align: left;">1,491.70</td>
+<td style="text-align: left;">3,034.50</td>
+<td style="text-align: left;">3,917.00</td>
+<td style="text-align: left;">4,595.00</td>
+<td style="text-align: left;">5,520.00</td>
 </tr>
 </tbody>
 </table>
@@ -472,20 +479,24 @@ pre {
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">==</span> <span class="st">"eastern"</span>)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Select and order columns</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>farms_eastern_summary <span class="ot">&lt;-</span> farms_eastern_summary[<span class="fu">c</span>(<span class="st">"scenario_type"</span>, <span class="st">"preclinical"</span>, <span class="st">"mean"</span>, <span class="st">"q05"</span>, <span class="st">"q25"</span>, <span class="st">"q50"</span>, <span class="st">"q75"</span>, <span class="st">"q95"</span>)]</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>farms_eastern_select <span class="ot">&lt;-</span> farms_eastern_summary[<span class="fu">c</span>(<span class="st">"scenario_type"</span>, <span class="st">"preclinical"</span>, <span class="st">"mean"</span>, <span class="st">"q05"</span>, <span class="st">"q25"</span>, <span class="st">"q50"</span>, <span class="st">"q75"</span>, <span class="st">"q95"</span>)]</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>farms_eastern_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>farms_eastern_select <span class="ot">&lt;-</span> farms_eastern_select <span class="sc">%&gt;%</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.numeric, round, <span class="at">digits =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.numeric, <span class="sc">~</span><span class="fu">format</span>(.x, <span class="at">nsmall =</span> <span class="dv">2</span>, <span class="at">big.mark =</span> <span class="st">","</span>))</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>farms_eastern_select</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 19%">
-<col style="width: 16%">
-<col style="width: 12%">
-<col style="width: 8%">
+<col style="width: 18%">
+<col style="width: 15%">
 <col style="width: 11%">
-<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 11%">
+<col style="width: 11%">
 <col style="width: 11%">
 <col style="width: 11%">
 </colgroup>
@@ -493,104 +504,104 @@ pre {
 <tr class="header">
 <th style="text-align: left;">scenario_type</th>
 <th style="text-align: left;">preclinical</th>
-<th style="text-align: right;">mean</th>
-<th style="text-align: right;">q05</th>
-<th style="text-align: right;">q25</th>
-<th style="text-align: right;">q50</th>
-<th style="text-align: right;">q75</th>
-<th style="text-align: right;">q95</th>
+<th style="text-align: left;">mean</th>
+<th style="text-align: left;">q05</th>
+<th style="text-align: left;">q25</th>
+<th style="text-align: left;">q50</th>
+<th style="text-align: left;">q75</th>
+<th style="text-align: left;">q95</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">0</td>
-<td style="text-align: right;">6.564</td>
-<td style="text-align: right;">2.00</td>
-<td style="text-align: right;">2.00</td>
-<td style="text-align: right;">4.0</td>
-<td style="text-align: right;">7.00</td>
-<td style="text-align: right;">20.05</td>
+<td style="text-align: left;">6.56</td>
+<td style="text-align: left;">2.00</td>
+<td style="text-align: left;">2.00</td>
+<td style="text-align: left;">4.00</td>
+<td style="text-align: left;">7.00</td>
+<td style="text-align: left;">20.05</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">1</td>
-<td style="text-align: right;">13.590</td>
-<td style="text-align: right;">2.00</td>
-<td style="text-align: right;">3.00</td>
-<td style="text-align: right;">6.0</td>
-<td style="text-align: right;">13.00</td>
-<td style="text-align: right;">57.05</td>
+<td style="text-align: left;">13.59</td>
+<td style="text-align: left;">2.00</td>
+<td style="text-align: left;">3.00</td>
+<td style="text-align: left;">6.00</td>
+<td style="text-align: left;">13.00</td>
+<td style="text-align: left;">57.05</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">2</td>
-<td style="text-align: right;">30.400</td>
-<td style="text-align: right;">2.00</td>
-<td style="text-align: right;">5.00</td>
-<td style="text-align: right;">10.0</td>
-<td style="text-align: right;">26.00</td>
-<td style="text-align: right;">124.05</td>
+<td style="text-align: left;">30.40</td>
+<td style="text-align: left;">2.00</td>
+<td style="text-align: left;">5.00</td>
+<td style="text-align: left;">10.00</td>
+<td style="text-align: left;">26.00</td>
+<td style="text-align: left;">124.05</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">3</td>
-<td style="text-align: right;">54.782</td>
-<td style="text-align: right;">2.00</td>
-<td style="text-align: right;">7.00</td>
-<td style="text-align: right;">15.0</td>
-<td style="text-align: right;">61.25</td>
-<td style="text-align: right;">237.10</td>
+<td style="text-align: left;">54.78</td>
+<td style="text-align: left;">2.00</td>
+<td style="text-align: left;">7.00</td>
+<td style="text-align: left;">15.00</td>
+<td style="text-align: left;">61.25</td>
+<td style="text-align: left;">237.10</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">0</td>
-<td style="text-align: right;">41.674</td>
-<td style="text-align: right;">4.00</td>
-<td style="text-align: right;">10.00</td>
-<td style="text-align: right;">21.0</td>
-<td style="text-align: right;">51.00</td>
-<td style="text-align: right;">134.05</td>
+<td style="text-align: left;">41.67</td>
+<td style="text-align: left;">4.00</td>
+<td style="text-align: left;">10.00</td>
+<td style="text-align: left;">21.00</td>
+<td style="text-align: left;">51.00</td>
+<td style="text-align: left;">134.05</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">1</td>
-<td style="text-align: right;">89.450</td>
-<td style="text-align: right;">5.00</td>
-<td style="text-align: right;">16.00</td>
-<td style="text-align: right;">41.0</td>
-<td style="text-align: right;">94.75</td>
-<td style="text-align: right;">330.70</td>
+<td style="text-align: left;">89.45</td>
+<td style="text-align: left;">5.00</td>
+<td style="text-align: left;">16.00</td>
+<td style="text-align: left;">41.00</td>
+<td style="text-align: left;">94.75</td>
+<td style="text-align: left;">330.70</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">2</td>
-<td style="text-align: right;">186.164</td>
-<td style="text-align: right;">6.00</td>
-<td style="text-align: right;">26.00</td>
-<td style="text-align: right;">74.0</td>
-<td style="text-align: right;">268.25</td>
-<td style="text-align: right;">684.10</td>
+<td style="text-align: left;">186.16</td>
+<td style="text-align: left;">6.00</td>
+<td style="text-align: left;">26.00</td>
+<td style="text-align: left;">74.00</td>
+<td style="text-align: left;">268.25</td>
+<td style="text-align: left;">684.10</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">3</td>
-<td style="text-align: right;">457.092</td>
-<td style="text-align: right;">9.00</td>
-<td style="text-align: right;">43.00</td>
-<td style="text-align: right;">250.5</td>
-<td style="text-align: right;">655.50</td>
-<td style="text-align: right;">1620.15</td>
+<td style="text-align: left;">457.09</td>
+<td style="text-align: left;">9.00</td>
+<td style="text-align: left;">43.00</td>
+<td style="text-align: left;">250.50</td>
+<td style="text-align: left;">655.50</td>
+<td style="text-align: left;">1,620.15</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">low-virulence</td>
 <td style="text-align: left;">6</td>
-<td style="text-align: right;">3101.590</td>
-<td style="text-align: right;">61.85</td>
-<td style="text-align: right;">2435.75</td>
-<td style="text-align: right;">3412.5</td>
-<td style="text-align: right;">4187.25</td>
-<td style="text-align: right;">4993.10</td>
+<td style="text-align: left;">3,101.59</td>
+<td style="text-align: left;">61.85</td>
+<td style="text-align: left;">2,435.75</td>
+<td style="text-align: left;">3,412.50</td>
+<td style="text-align: left;">4,187.25</td>
+<td style="text-align: left;">4,993.10</td>
 </tr>
 </tbody>
 </table>

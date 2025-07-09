@@ -334,9 +334,12 @@ pre {
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">==</span> <span class="st">"central"</span>)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Select and order columns</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>duration_central_summary <span class="ot">&lt;-</span> duration_central_summary[<span class="fu">c</span>(<span class="st">"scenario_type"</span>, <span class="st">"preclinical"</span>, <span class="st">"mean"</span>, <span class="st">"q05"</span>, <span class="st">"q25"</span>, <span class="st">"q50"</span>, <span class="st">"q75"</span>, <span class="st">"q95"</span>)]</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>duration_central_select <span class="ot">&lt;-</span> duration_central_summary[<span class="fu">c</span>(<span class="st">"scenario_type"</span>, <span class="st">"preclinical"</span>, <span class="st">"mean"</span>, <span class="st">"q05"</span>, <span class="st">"q25"</span>, <span class="st">"q50"</span>, <span class="st">"q75"</span>, <span class="st">"q95"</span>)]</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>duration_central_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>duration_central_select <span class="ot">&lt;-</span> duration_central_select <span class="sc">%&gt;%</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.numeric, round, <span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>duration_central_select</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -344,7 +347,7 @@ pre {
 <colgroup>
 <col style="width: 20%">
 <col style="width: 17%">
-<col style="width: 13%">
+<col style="width: 10%">
 <col style="width: 10%">
 <col style="width: 10%">
 <col style="width: 8%">
@@ -367,7 +370,7 @@ pre {
 <tr class="odd">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">0</td>
-<td style="text-align: right;">15.8400</td>
+<td style="text-align: right;">15.84</td>
 <td style="text-align: right;">2.00</td>
 <td style="text-align: right;">2.00</td>
 <td style="text-align: right;">13.0</td>
@@ -377,7 +380,7 @@ pre {
 <tr class="even">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">1</td>
-<td style="text-align: right;">21.9520</td>
+<td style="text-align: right;">21.95</td>
 <td style="text-align: right;">2.00</td>
 <td style="text-align: right;">8.00</td>
 <td style="text-align: right;">17.0</td>
@@ -387,7 +390,7 @@ pre {
 <tr class="odd">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">2</td>
-<td style="text-align: right;">28.7140</td>
+<td style="text-align: right;">28.71</td>
 <td style="text-align: right;">2.00</td>
 <td style="text-align: right;">12.00</td>
 <td style="text-align: right;">23.0</td>
@@ -397,7 +400,7 @@ pre {
 <tr class="even">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">3</td>
-<td style="text-align: right;">44.3140</td>
+<td style="text-align: right;">44.31</td>
 <td style="text-align: right;">6.00</td>
 <td style="text-align: right;">15.00</td>
 <td style="text-align: right;">28.0</td>
@@ -407,7 +410,7 @@ pre {
 <tr class="odd">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">0</td>
-<td style="text-align: right;">48.5040</td>
+<td style="text-align: right;">48.50</td>
 <td style="text-align: right;">10.00</td>
 <td style="text-align: right;">24.00</td>
 <td style="text-align: right;">38.0</td>
@@ -417,7 +420,7 @@ pre {
 <tr class="even">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">1</td>
-<td style="text-align: right;">67.6460</td>
+<td style="text-align: right;">67.65</td>
 <td style="text-align: right;">14.00</td>
 <td style="text-align: right;">28.00</td>
 <td style="text-align: right;">53.0</td>
@@ -427,7 +430,7 @@ pre {
 <tr class="odd">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">2</td>
-<td style="text-align: right;">90.3340</td>
+<td style="text-align: right;">90.33</td>
 <td style="text-align: right;">15.90</td>
 <td style="text-align: right;">34.50</td>
 <td style="text-align: right;">71.5</td>
@@ -437,7 +440,7 @@ pre {
 <tr class="even">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">3</td>
-<td style="text-align: right;">119.5380</td>
+<td style="text-align: right;">119.54</td>
 <td style="text-align: right;">17.95</td>
 <td style="text-align: right;">48.00</td>
 <td style="text-align: right;">108.0</td>
@@ -447,7 +450,7 @@ pre {
 <tr class="odd">
 <td style="text-align: left;">low-virulence</td>
 <td style="text-align: left;">6</td>
-<td style="text-align: right;">308.7667</td>
+<td style="text-align: right;">308.77</td>
 <td style="text-align: right;">212.45</td>
 <td style="text-align: right;">291.25</td>
 <td style="text-align: right;">340.0</td>
@@ -469,20 +472,23 @@ pre {
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">==</span> <span class="st">"eastern"</span>)</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Select and order columns</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>duration_eastern_summary <span class="ot">&lt;-</span> duration_eastern_summary[<span class="fu">c</span>(<span class="st">"scenario_type"</span>, <span class="st">"preclinical"</span>, <span class="st">"mean"</span>, <span class="st">"q05"</span>, <span class="st">"q25"</span>, <span class="st">"q50"</span>, <span class="st">"q75"</span>, <span class="st">"q95"</span>)]</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>duration_eastern_select <span class="ot">&lt;-</span> duration_eastern_summary[<span class="fu">c</span>(<span class="st">"scenario_type"</span>, <span class="st">"preclinical"</span>, <span class="st">"mean"</span>, <span class="st">"q05"</span>, <span class="st">"q25"</span>, <span class="st">"q50"</span>, <span class="st">"q75"</span>, <span class="st">"q95"</span>)]</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>duration_eastern_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>duration_eastern_select <span class="ot">&lt;-</span> duration_eastern_select <span class="sc">%&gt;%</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.numeric, round, <span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>duration_eastern_select</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 20%">
-<col style="width: 17%">
-<col style="width: 11%">
-<col style="width: 8%">
+<col style="width: 21%">
+<col style="width: 18%">
 <col style="width: 10%">
-<col style="width: 8%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 9%">
 <col style="width: 10%">
 <col style="width: 10%">
 </colgroup>
@@ -502,7 +508,7 @@ pre {
 <tr class="odd">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">0</td>
-<td style="text-align: right;">17.258</td>
+<td style="text-align: right;">17.26</td>
 <td style="text-align: right;">2.00</td>
 <td style="text-align: right;">2.00</td>
 <td style="text-align: right;">15.0</td>
@@ -512,7 +518,7 @@ pre {
 <tr class="even">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">1</td>
-<td style="text-align: right;">23.564</td>
+<td style="text-align: right;">23.56</td>
 <td style="text-align: right;">2.00</td>
 <td style="text-align: right;">9.75</td>
 <td style="text-align: right;">19.0</td>
@@ -522,7 +528,7 @@ pre {
 <tr class="odd">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">2</td>
-<td style="text-align: right;">32.520</td>
+<td style="text-align: right;">32.52</td>
 <td style="text-align: right;">2.00</td>
 <td style="text-align: right;">14.00</td>
 <td style="text-align: right;">24.0</td>
@@ -532,7 +538,7 @@ pre {
 <tr class="even">
 <td style="text-align: left;">optimal</td>
 <td style="text-align: left;">3</td>
-<td style="text-align: right;">39.916</td>
+<td style="text-align: right;">39.92</td>
 <td style="text-align: right;">2.00</td>
 <td style="text-align: right;">16.00</td>
 <td style="text-align: right;">29.5</td>
@@ -542,7 +548,7 @@ pre {
 <tr class="odd">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">0</td>
-<td style="text-align: right;">47.752</td>
+<td style="text-align: right;">47.75</td>
 <td style="text-align: right;">9.00</td>
 <td style="text-align: right;">23.00</td>
 <td style="text-align: right;">38.0</td>
@@ -552,7 +558,7 @@ pre {
 <tr class="even">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">1</td>
-<td style="text-align: right;">62.646</td>
+<td style="text-align: right;">62.65</td>
 <td style="text-align: right;">11.95</td>
 <td style="text-align: right;">28.00</td>
 <td style="text-align: right;">53.0</td>
@@ -562,7 +568,7 @@ pre {
 <tr class="odd">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">2</td>
-<td style="text-align: right;">81.336</td>
+<td style="text-align: right;">81.34</td>
 <td style="text-align: right;">13.95</td>
 <td style="text-align: right;">35.00</td>
 <td style="text-align: right;">64.0</td>
@@ -572,7 +578,7 @@ pre {
 <tr class="even">
 <td style="text-align: left;">suboptimal</td>
 <td style="text-align: left;">3</td>
-<td style="text-align: right;">107.550</td>
+<td style="text-align: right;">107.55</td>
 <td style="text-align: right;">17.95</td>
 <td style="text-align: right;">47.00</td>
 <td style="text-align: right;">95.0</td>
@@ -582,7 +588,7 @@ pre {
 <tr class="odd">
 <td style="text-align: left;">low-virulence</td>
 <td style="text-align: left;">6</td>
-<td style="text-align: right;">284.674</td>
+<td style="text-align: right;">284.67</td>
 <td style="text-align: right;">76.95</td>
 <td style="text-align: right;">259.75</td>
 <td style="text-align: right;">318.5</td>

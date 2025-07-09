@@ -96,27 +96,33 @@ duration_summary <- detect_config_summary %>%
 
 ::: panel-tabset
 ## Central U.S.
-```{r}
+```{r, warning=FALSE, message=FALSE}
 ## Filter to central region
 duration_central_summary <- duration_summary %>%
   filter(region == "central")
 
 ## Select and order columns
-duration_central_summary <- duration_central_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+duration_central_select <- duration_central_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
 
-duration_central_summary
+duration_central_select <- duration_central_select %>%
+  mutate_if(is.numeric, round, digits = 2)
+
+duration_central_select
 ```
 
 ## Eastern U.S.
-```{r}
+```{r, warning=FALSE, message=FALSE}
 ## Filter to eastern region
 duration_eastern_summary <- duration_summary %>%
   filter(region == "eastern")
 
 ## Select and order columns
-duration_eastern_summary <- duration_eastern_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+duration_eastern_select <- duration_eastern_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
 
-duration_eastern_summary
+duration_eastern_select <- duration_eastern_select %>%
+  mutate_if(is.numeric, round, digits = 2)
+
+duration_eastern_select
 ```
 
 :::
