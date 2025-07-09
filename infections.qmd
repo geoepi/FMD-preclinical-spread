@@ -138,9 +138,12 @@ cattle_central_summary <- cattle_inf_summary %>%
   filter(region == "central")
 
 ## Select and order columns
-cattle_central_summary <- cattle_central_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+cattle_central_select <- cattle_central_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
 
-cattle_central_summary
+cattle_central_select <- cattle_central_select %>%
+    mutate(across(c(mean, q05, q25, q50, q75, q95), comma))
+
+cattle_central_select
 ```
 
 ## Eastern U.S.
@@ -150,9 +153,12 @@ cattle_eastern_summary <- cattle_inf_summary %>%
   filter(region == "eastern")
 
 ## Select and order columns
-cattle_eastern_summary <- cattle_eastern_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+cattle_eastern_select <- cattle_eastern_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
 
-cattle_eastern_summary
+cattle_eastern_select <- cattle_eastern_select %>%
+    mutate(across(c(mean, q05, q25, q50, q75, q95), comma))
+
+cattle_eastern_select
 ```
 
 :::
