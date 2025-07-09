@@ -80,8 +80,8 @@ reference <- reference %>%
   select(-c(weight, cattle, x, y, geo_region))
 ```
 
-## Create Raster Grids
-Prepare to plot outbreak maps. First, get shapefile and set region boundaries. Then, create a raster grid version. Code demonstrates the workflow for the Eastern U.S. region. Outbreak maps for the Central U.S. are included below.
+## Central U.S. Maps
+Prepare to plot outbreak maps  for the central region. First, get shapefile for the conterminous U.S. and set state boundaries for regional scenario. Then, create a raster grid version.
 
 ### Region Boundaries
 Get shapefile and subset to region
@@ -89,15 +89,77 @@ Get shapefile and subset to region
 ## Get shapefile for conterminous U.S.
 whole_us <- vect(here("script-inputs/shapefile/Contiguous_USA_for Regional_Model.shp")) 
 
-## Boundaries for eastern U.S.
-eastern_us <- subset(whole_us, whole_us$SUB_REGION %in% 
-                       c("East North Central", "East North Central", 
-                         "East South Central", "east South Central",
-                         "New England", "Middle Atlantic", "South Atlantic"))
+## Boundaries for Central U.S.
+central_states <- c("Alabama", "Arkansas", "Illinois", "Indiana", "Iowa",         "Kansas", "Kentucky", "Louisiana", "Michigan", "Minnesota", "Mississippi", "Missouri", "Nebraska", "New York", "North Dakota", "Ohio", "Oklahoma", "Pennsylvania", "South Dakota", "Tennessee", "Texas", "West Virginia", "Wisconsin")
+
+central_us <- subset(whole_us, whole_us$STATE_NAME %in% central_states)
 ```
 
 ### Create Raster Grid
-Create a raster grid version for each region
+Create a raster grid version for the central region
+```{r}
+tmp_r <- rast(ext(central_us), 
+              resolution = 25000, # 25km grid
+              crs = crs(central_us))
+
+central_r  <- rasterize(central_us, tmp_r)
+
+central_r[central_r == 1] <- 0 # set land areas to 0
+```
+
+### Count Cumulative Case Detections
+`raster_point_counts()` will count the number of detection events in each 25km cell. Smoothing the raster will improve the appearance by making the cells smaller and finding averages of surrounding cells.
+```{r}
+## Extract file paths
+central_path <- sprintf("%s/outputs_%s", generic_path, "central")
+
+central_detect_paths <- list.files(path = here(central_path),
+                            recursive = T, pattern= "Outputs_Detection", full.names=TRUE)
+
+## Count events
+count_events <- raster_point_counts(central_detect_paths, # paths to files
+                                    reference, # coordinate references
+                                    central_r) # raster defining grid
+
+## Smooth raster
+count_events <- smooth_raster(count_events)
+```
+
+### Central U.S. Outbreak Maps
+`plot_raster_stack()` will plot the rasters for comparison. Plot cumulative case detections across optimal and suboptimal detection scenarios.
+```{r fig.width=18, fig.height=10, warning=FALSE, message=FALSE}
+no_low_virulence <- subset(count_events, 
+                           !(names(count_events) %in% "low-virulence/6-days-preclinical"))
+
+stack_set <- plot_raster_stack(no_low_virulence, central_us)
+
+stack_set
+```
+
+Plot cumulative case detections for low-virulence scenario
+```{r fig.width=8, fig.height=8, warning=FALSE, message=FALSE}
+only_low_virulence <- subset(count_events, 
+                            names(count_events) %in% "low-virulence/6-days-preclinical")
+
+lv_set <- plot_raster_stack(only_low_virulence, central_us)
+
+lv_set
+```
+
+## Eastern U.S. Maps
+Prepare to plot outbreak maps for the eastern region. First, set state boundaries for regional scenario. Then, create a raster grid version.
+
+### Region Boundaries
+Subset to region
+```{r}
+## Boundaries for Eastern U.S.
+eastern_states <- c("Alabama", "Arkansas", "Connecticut", "Delaware", "Florida", "Georgia", "Illinois", "Indiana", "Iowa", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "New Hampshire", "New Jersey", "New York", "North Carolina", "Ohio", "Pennsylvania", "Rhode Island", "South Carolina", "Tennessee", "vermont", "Virginia", "West Virginia", "Wisconsin")
+
+eastern_us <- subset(whole_us, whole_us$STATE_NAME %in% eastern_states)
+```
+
+### Create Raster Grid
+Create a raster grid version for the eastern region
 ```{r}
 tmp_r <- rast(ext(eastern_us), 
               resolution = 25000, # 25km grid
@@ -108,36 +170,17 @@ east_r  <- rasterize(eastern_us, tmp_r)
 east_r[east_r == 1] <- 0 # set land areas to 0
 ```
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-## Boundaries for Central U.S.
-central_us <- subset(whole_us, whole_us$SUB_REGION %in% 
-                       c("West North Central", "East North Central", 
-                         "East South Central", "West South Central",
-                         "New England", "Middle Atlantic", "South Atlantic"))
-
-## Create raster grid
-tmp_r <- rast(ext(central_us), 
-              resolution = 25000, # 25km grid
-              crs = crs(central_us))
-
-central_r  <- rasterize(central_us, tmp_r)
-
-central_r[central_r == 1] <- 0 # set land areas to 0
-```
-
-## Cumulative Cases
-
 ### Count Cumulative Case Detections
 `raster_point_counts()` will count the number of detection events in each 25km cell. Smoothing the raster will improve the appearance by making the cells smaller and finding averages of surrounding cells.
 ```{r}
 ## Extract file paths to data
-regional_path <- sprintf("%s/outputs_%s", generic_path, "eastern")
+eastern_path <- sprintf("%s/outputs_%s", generic_path, "eastern")
 
-region_paths <- list.files(path = here(regional_path),
+eastern_detect_paths <- list.files(path = here(eastern_path),
                             recursive = T, pattern= "Outputs_Detection", full.names=TRUE)
 
 ## Count events
-count_events <- raster_point_counts(region_paths, # paths to files
+count_events <- raster_point_counts(eastern_detect_paths, # paths to files
                                     reference, # coordinate references
                                     east_r) # raster defining grid
 
@@ -145,65 +188,23 @@ count_events <- raster_point_counts(region_paths, # paths to files
 count_events <- smooth_raster(count_events)
 ```
 
-### Plot Cumulative Case Detections
-`plot_raster_stack()` will plot the rasters for comparison.
-```{r}
+### Eastern U.S. Outbreak Maps
+`plot_raster_stack()` will plot the rasters for comparison. Plot cumulative case detections across optimal and suboptimal detection scenarios.
+```{r fig.width=12, fig.height=10, warning=FALSE, message=FALSE}
 no_low_virulence <- subset(count_events, 
                            !(names(count_events) %in% "low-virulence/6-days-preclinical"))
 
-only_low_virulence <- subset(count_events, 
-                            names(count_events) %in% "low-virulence/6-days-preclinical")
-```
-
-## Eastern U.S. Maps
-Compare outbreak maps across optimal and suboptimal detection scenarios
-```{r fig.width=12, fig.height=12, warning=FALSE, message=FALSE}
 stack_set <- plot_raster_stack(no_low_virulence, eastern_us)
 
 stack_set
 ```
 
-View map of cumulative cases for low-virulence scenario
+Plot cumulative case detections for low-virulence scenario
 ```{r fig.width=8, fig.height=8, warning=FALSE, message=FALSE}
-lv_set <- plot_raster_stack(only_low_virulence, eastern_us)
-
-lv_set
-```
-
-## Central U.S. Maps
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-## Extract file paths
-regional_path <- sprintf("%s/outputs_%s", generic_path, "central")
-
-region_paths <- list.files(path = here(regional_path),
-                            recursive = T, pattern= "Outputs_Detection", full.names=TRUE)
-
-## Count events
-count_events <- raster_point_counts(region_paths, # paths to files
-                                    reference, # coordinate references
-                                    central_r) # raster defining grid
-
-## Smooth raster
-count_events <- smooth_raster(count_events)
-
-## Create subsets
-no_low_virulence <- subset(count_events, 
-                           !(names(count_events) %in% "low-virulence/6-days-preclinical"))
-
 only_low_virulence <- subset(count_events, 
                             names(count_events) %in% "low-virulence/6-days-preclinical")
-```
 
-Compare outbreak maps across optimal and suboptimal detection scenarios
-```{r fig.width=18, fig.height=12, warning=FALSE, message=FALSE}
-stack_set <- plot_raster_stack(no_low_virulence, central_us)
-
-stack_set
-```
-
-View map of cumulative cases for low-virulence scenario
-```{r fig.width=8, fig.height=8, warning=FALSE, message=FALSE}
-lv_set <- plot_raster_stack(only_low_virulence, central_us)
+lv_set <- plot_raster_stack(only_low_virulence, eastern_us)
 
 lv_set
 ```
