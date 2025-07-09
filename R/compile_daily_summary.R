@@ -94,7 +94,7 @@ compile_daily_summary <- function(scenarios_df, reference, impute_zero = TRUE) {
   if(impute_zero) {
     combined_summary <- combined_summary %>%
       group_by(scenario) %>%
-      complete(infect_day = 1:365, 
+      complete(infect_day = 10:365, 
                fill = list(mean = 0, q05 = 0, q25 = 0, q50 = 0,
                            q75 = 0, q95 = 0, min_spread = 0, max_spread = 0)) %>%
       ungroup()

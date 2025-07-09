@@ -20,7 +20,7 @@ require(patchwork)
   
   # suboptimal
   subopt_set <- summary %>%
-    filter(scenario_type == "suboptimal" & preclinical != "6")
+    filter(scenario_type == "suboptimal")
   
   # low-virulence
   lowV_set <- summary %>%

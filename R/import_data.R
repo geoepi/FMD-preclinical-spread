@@ -37,7 +37,7 @@ import_infection_data <- function(file_path) {
   infect_columns <- c("iteration",
                       "infect_day",
                       "premises",
-                      "source",
+                      "source_farm",
                       "pathway",
                       "x",
                       "y",
