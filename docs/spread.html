@@ -472,10 +472,7 @@ pre {
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Select and order columns to display</span></span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>iteration_metrics_central_select <span class="ot">&lt;-</span> iteration_metrics_central_select[<span class="fu">c</span>(<span class="st">"iteration"</span>, <span class="st">"auc_log"</span>, <span class="st">"peak_spread"</span>, <span class="st">"peak_day"</span>)]</span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>iteration_metrics_central_select <span class="ot">&lt;-</span> iteration_metrics_central_select <span class="sc">%&gt;%</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_if</span>(is.numeric, round, <span class="at">digits =</span> <span class="dv">3</span>)</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iteration_metrics_central_select)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iteration_metrics_central_select)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="kable-table">
@@ -491,38 +488,38 @@ pre {
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">770.648</td>
-<td style="text-align: right;">6.177</td>
+<td style="text-align: right;">770.6477</td>
+<td style="text-align: right;">6.177126</td>
 <td style="text-align: right;">64</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">502.766</td>
-<td style="text-align: right;">5.571</td>
+<td style="text-align: right;">502.7660</td>
+<td style="text-align: right;">5.571266</td>
 <td style="text-align: right;">49</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">3</td>
-<td style="text-align: right;">100.898</td>
-<td style="text-align: right;">4.881</td>
+<td style="text-align: right;">100.8983</td>
+<td style="text-align: right;">4.881051</td>
 <td style="text-align: right;">17</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4</td>
-<td style="text-align: right;">355.165</td>
-<td style="text-align: right;">6.657</td>
+<td style="text-align: right;">355.1653</td>
+<td style="text-align: right;">6.656522</td>
 <td style="text-align: right;">62</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">5</td>
-<td style="text-align: right;">726.018</td>
-<td style="text-align: right;">6.112</td>
+<td style="text-align: right;">726.0179</td>
+<td style="text-align: right;">6.111867</td>
 <td style="text-align: right;">18</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">6</td>
-<td style="text-align: right;">182.375</td>
-<td style="text-align: right;">5.376</td>
+<td style="text-align: right;">182.3753</td>
+<td style="text-align: right;">5.375928</td>
 <td style="text-align: right;">43</td>
 </tr>
 </tbody>
