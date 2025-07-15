@@ -67,3 +67,7 @@ FMDV-spread was simulated throughout the Central U.S. region.
 FMDV-spread was simulated throughout the Eastern U.S. region.
 
 :::
+
+## External Resources  
+Archives of versioned code are available on the Open Science Framework (OSF):   
+[FMD Preclinical Spread Modeling (DOI 10.17605/OSF.IO/NGZ45)](https://osf.io/ngz45/) 
