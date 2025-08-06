@@ -64,7 +64,7 @@ infection <- import_infection_data(file_path)
 infection$scenario_type <- ordered(factor(infection$scenario_type), c("optimal", "suboptimal", "low-virulence"))
 
 ## Order regions
-infection$region <- ordered(factor(infection$region), c("central", "eastern"))
+infection$region <- ordered(factor(infection$region), c("western", "central", "eastern"))
 
 ## Read farm reference file
 reference <- read.csv2(here("script-inputs/reference-files/FMD_Reference_File.csv"), header=TRUE, sep=",")
@@ -104,6 +104,9 @@ iteration_Re <- transmissions %>%
   summarize(num_transmissions = n(), .groups = "drop") 
 
 ## Filter to regions
+iteration_Re_western <- iteration_Re %>%
+  filter(region == "western")
+
 iteration_Re_central <- iteration_Re %>%
   filter(region == "central")
 
@@ -125,14 +128,75 @@ head(iteration_Re_central_select)
 ```
 
 ### Daily Summaries
-Calculate daily summaries for each region and prepare to plot Re.
+Calculate daily summaries for each region.
 ```{r}
+## Western U.S.
+daily_Re_western <- calculate_daily_Re(iteration_Re_western)
+
 ## Central U.S.
 daily_Re_central <- calculate_daily_Re(iteration_Re_central)
 
 ## Eastern U.S.
 daily_Re_eastern <- calculate_daily_Re(iteration_Re_eastern)
 ```
+
+### Significance Testing 
+Perform significance testing on `optimal` and `suboptimal` detection scenarios.
+
+#### Linear Model
+
+::: panel-tabset
+## Western U.S.
+```{r}
+no_LV_western_Re <-daily_Re_western %>%
+  filter(scenario_type != "low-virulence")
+
+model_western_Re <- lm(q50 ~ preclinical * scenario_type, data = no_LV_western_Re)
+
+summary(model_western_Re)
+```
+
+## Central U.S.
+```{r}
+no_LV_central_Re <-daily_Re_central %>%
+  filter(scenario_type != "low-virulence")
+
+model_central_Re <- lm(q50 ~ preclinical * scenario_type, data = no_LV_central_Re)
+
+summary(model_central_Re)
+```
+
+## Eastern U.S.
+```{r}
+no_LV_eastern_Re <-daily_Re_eastern %>%
+  filter(scenario_type != "low-virulence")
+
+model_eastern_Re <- lm(q50 ~ preclinical * scenario_type, data = no_LV_eastern_Re)
+
+summary(model_eastern_Re)
+```
+
+:::
+
+#### ANOVA
+
+::: panel-tabset
+## Western U.S.
+```{r}
+anova(model_western_Re)
+```
+
+## Central U.S.
+```{r}
+anova(model_central_Re)
+```
+
+## Eastern U.S.
+```{r}
+anova(model_eastern_Re)
+```
+
+:::
 
 ### Plot Effective Reproduction
 The dashed line is at Re = 1
@@ -160,6 +224,12 @@ The epidemic velocity is the distance (km) of spread per day. The epidemic veloc
 ### Calculate Daily Distances
 `compile_daily_summary()` calculates distances (km) between source farms and those infected for each iteration, then calculates the percentiles by day across all iterations to get the average statistics.
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
+## Western U.S.
+western_path <- sprintf("%s/outputs_%s", file_path, "western")
+
+western_paths <- list.files(path = here(western_path),
+                            recursive = T, pattern= "Outputs_Infection", full.names=TRUE) 
+
 ## Central U.S.
 central_path <- sprintf("%s/outputs_%s", file_path, "central")
 
@@ -174,6 +244,8 @@ eastern_paths <- list.files(path = here(eastern_path),
 ```
 
 ```{r}
+daily_summary_western <- compile_daily_summary(western_paths, reference)
+
 daily_summary_central <- compile_daily_summary(central_paths, reference)
 
 daily_summary_eastern <- compile_daily_summary(eastern_paths, reference)
@@ -225,6 +297,9 @@ peak_day
 
 ```{r}
 ## Calculate daily iteration metrics
+iteration_metrics_western <- iteration_metrics(daily_summary_western$daily_distances) %>%
+  select(-c(scenario))
+
 iteration_metrics_central <- iteration_metrics(daily_summary_central$daily_distances) %>%
   select(-c(scenario))
 
@@ -234,6 +309,13 @@ iteration_metrics_eastern <- iteration_metrics(daily_summary_eastern$daily_dista
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 ## Capitalize scenario labels
+iteration_metrics_western <- iteration_metrics_western %>%
+    mutate(
+      scenario_type = recode(scenario_type,
+                             "optimal" = "Optimal Detection",
+                             "suboptimal" = "Suboptimal Detection",
+                             "low-virulence" = "Low-Virulence"))
+
 iteration_metrics_central <- iteration_metrics_central %>%
     mutate(
       scenario_type = recode(scenario_type,
@@ -250,6 +332,9 @@ iteration_metrics_eastern <- iteration_metrics_eastern %>%
                              "low-virulence" = "Low-Virulence"))  
 
 ## Order scenario levels
+iteration_metrics_western$scenario_type <- ordered(factor(iteration_metrics_western$scenario_type), 
+                                      c("Optimal Detection","Suboptimal Detection", "Low-virulence"))
+
 iteration_metrics_central$scenario_type <- ordered(factor(iteration_metrics_central$scenario_type), 
                                       c("Optimal Detection","Suboptimal Detection", "Low-virulence"))
 
@@ -274,6 +359,38 @@ head(iteration_metrics_central_select)
 Drop the low-virulence scenarios to compare optimal and suboptimal detection scenarios. `auc_log` represents the total cumulative spread distance, for each scenario by iteration, on a log scale.
 
 ::: panel-tabset
+## Western U.S.
+```{r fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
+## Drop the low-virulence scenario
+iteration_metrics_no_low_western <- iteration_metrics_western %>%
+  filter(scenario_type != "Low-Virulence")
+
+## Plot AUC
+ggplot(iteration_metrics_no_low_western, 
+       aes(x = preclinical, y = auc_log, color = scenario_type)) +
+  geom_point(shape=1, alpha = 0.3, size = 2) + # individual iterations
+  geom_smooth(method = "lm", se = FALSE, linewidth=1.2) + # trend
+  ylim(0, 1500) +
+  facet_grid(. ~ scenario_type) +
+  scale_color_manual(values = c("Suboptimal Detection" = "#74add1", "Optimal Detection" = "orange2")) +
+  labs(
+    x = "Preclinical Infectious Duration (days)",
+    y = "Cumulative Spread (log AUC)",
+    title = " "
+  ) +
+  theme_minimal() +
+  theme(
+    plot.margin    = unit(c(0.25, 0.25, 0.25, 0.25), "cm"),
+    legend.position = "none",
+    strip.text     = element_text(size = 18, face = "bold", color = "gray40"),
+    axis.title.x   = element_text(size = 22, face = "bold"),
+    axis.title.y   = element_text(size = 22, face = "bold"),
+    axis.text.x    = element_text(size = 18, face = "bold"),
+    axis.text.y    = element_text(size = 18, face = "bold"),
+    plot.title     = element_text(size = 22, face = "bold", hjust = 0.5)
+  )
+```
+
 ## Central U.S.
 ```{r fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
 ## Drop the low-virulence scenario
@@ -346,6 +463,13 @@ Fit a linear model with an interaction term to quantify the influence of preclin
 #### Linear Model
 
 ::: panel-tabset
+## Western U.S.
+```{r}
+model_auc_western <- lm(auc_log ~ preclinical * scenario_type, data = iteration_metrics_no_low_western)
+
+summary(model_auc_western)
+```
+
 ## Central U.S.
 ```{r}
 model_auc_central <- lm(auc_log ~ preclinical * scenario_type, data = iteration_metrics_no_low_central)
@@ -365,6 +489,11 @@ summary(model_auc_eastern)
 #### ANOVA
 
 ::: panel-tabset
+## Western U.S.
+```{r}
+anova(model_auc_western)
+```
+
 ## Central U.S.
 ```{r}
 anova(model_auc_central)
@@ -381,6 +510,32 @@ anova(model_auc_eastern)
 As with cumulative spread above, comparisons can be made using the peak spread rates.
 
 ::: panel-tabset
+## Western U.S.
+```{r fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
+ggplot(iteration_metrics_no_low_western, aes(x = preclinical, y = peak_day, color = scenario_type)) +
+  geom_point(shape=1, alpha = 0.3, size = 2) + # individual iterations
+  geom_smooth(method = "lm", se = FALSE, linewidth=1.2) +
+  ylim(0, 365) +
+  facet_grid(. ~ scenario_type) +
+  scale_color_manual(values = c("Suboptimal Detection" = "#74add1", "Optimal Detection" = "orange2")) +
+  labs(
+    x = "Preclinical Infectious Duration (days)",
+    y = "Day of Peak Transmission",
+    title = " "
+  ) +
+  theme_minimal() +
+  theme(
+    plot.margin    = unit(c(0.25, 0.25, 0.25, 0.25), "cm"),
+    legend.position = "none",
+    strip.text     = element_text(size = 18, face = "bold", color = "gray40"),
+    axis.title.x   = element_text(size = 22, face = "bold"),
+    axis.title.y   = element_text(size = 22, face = "bold"),
+    axis.text.x    = element_text(size = 18, face = "bold"),
+    axis.text.y    = element_text(size = 18, face = "bold"),
+    plot.title     = element_text(size = 22, face = "bold", hjust = 0.5)
+  )
+```
+
 ## Central U.S.
 ```{r fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
 ggplot(iteration_metrics_no_low_central, aes(x = preclinical, y = peak_day, color = scenario_type)) +
@@ -441,6 +596,13 @@ Fit a linear model with an interaction term to quantify the influence of `precli
 #### Linear Model
 
 ::: panel-tabset
+## Western U.S.
+```{r}
+model_peak_western <- lm(peak_day ~ preclinical * scenario_type, data = iteration_metrics_no_low_western)
+
+summary(model_peak_western)
+```
+
 ## Central U.S.
 ```{r}
 model_peak_central <- lm(peak_day ~ preclinical * scenario_type, data = iteration_metrics_no_low_central)
@@ -460,6 +622,11 @@ summary(model_peak_eastern)
 #### ANOVA
 
 ::: panel-tabset
+## Western U.S.
+```{r}
+anova(model_peak_western)
+```
+
 ## Central U.S.
 ```{r}
 anova(model_peak_central)

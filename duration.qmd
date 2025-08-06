@@ -57,7 +57,7 @@ detection <- import_detection_data(file_path)
 detection$scenario_type <- ordered(factor(detection$scenario_type), c("optimal", "suboptimal", "low-virulence"))
 
 ## Order regions
-detection$region <- ordered(factor(detection$region), c("central", "eastern"))
+detection$region <- ordered(factor(detection$region), c("western", "central", "eastern"))
 ```
 
 ## Detection Summary
@@ -95,6 +95,21 @@ duration_summary <- detect_config_summary %>%
 ```
 
 ::: panel-tabset
+## Western U.S.
+```{r, warning=FALSE, message=FALSE}
+## Filter to western region
+duration_western_summary <- duration_summary %>%
+  filter(region == "western")
+
+## Select and order columns
+duration_western_select <- duration_western_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+
+duration_western_select <- duration_western_select %>%
+  mutate_if(is.numeric, round, digits = 2)
+
+duration_western_select
+```
+
 ## Central U.S.
 ```{r, warning=FALSE, message=FALSE}
 ## Filter to central region
@@ -140,6 +155,18 @@ no_LV_detect_summary <- summarize_detections(no_LV_detect)
 ### Linear Model
 
 ::: panel-tabset
+## Western U.S.
+```{r}
+## Filter to western region
+no_LV_detect_western_summary <- no_LV_detect_summary %>%
+  filter(region == "western")
+
+model_western_duration <- lm(duration ~ preclinical * scenario_type, 
+                       data = no_LV_detect_western_summary)
+
+summary(model_western_duration)
+```
+
 ## Central U.S.
 ```{r}
 ## Filter to central region
@@ -169,6 +196,11 @@ summary(model_eastern_duration)
 ### ANOVA
 
 ::: panel-tabset
+## Western U.S.
+```{r message=FALSE, warning=FALSE}
+anova(model_western_duration)
+```
+
 ## Central U.S.
 ```{r message=FALSE, warning=FALSE}
 anova(model_central_duration)

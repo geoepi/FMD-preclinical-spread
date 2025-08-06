@@ -58,7 +58,7 @@ infection <- import_infection_data(file_path)
 infection$scenario_type <- ordered(factor(infection$scenario_type), c("optimal", "suboptimal", "low-virulence"))
 
 ## Order regions
-infection$region <- ordered(factor(infection$region), c("central", "eastern"))
+infection$region <- ordered(factor(infection$region), c("western", "central", "eastern"))
 ```
 
 ## Infection Summary
@@ -104,9 +104,25 @@ cattle_inf_summary <- infect_config_summary %>%
 The number of infected farms
 
 ::: panel-tabset
+## Western U.S.
+```{r, warning=FALSE, message=FALSE}
+## Filter to western region
+farms_western_summary <- farms_inf_summary %>%
+  filter(region == "western")
+
+## Select and order columns
+farms_western_select <- farms_western_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+
+farms_western_select <- farms_western_select %>%
+  mutate_if(is.numeric, round, digits = 2) %>%
+  mutate_if(is.numeric, ~format(.x, nsmall = 2, big.mark = ","))
+
+farms_western_select
+```
+
 ## Central U.S.
 ```{r, warning=FALSE, message=FALSE}
-## Filter to central region
+## Filter to western region
 farms_central_summary <- farms_inf_summary %>%
   filter(region == "central")
 
@@ -142,6 +158,21 @@ farms_eastern_select
 The total number of cattle on infected farms
 
 ::: panel-tabset
+## Western U.S.
+```{r}
+## Filter to western region
+cattle_western_summary <- cattle_inf_summary %>%
+  filter(region == "western")
+
+## Select and order columns
+cattle_western_select <- cattle_western_summary[c("scenario_type", "preclinical", "mean", "q05", "q25", "q50", "q75", "q95")]
+
+cattle_western_select <- cattle_western_select %>%
+    mutate(across(c(mean, q05, q25, q50, q75, q95), comma))
+
+cattle_western_select
+```
+
 ## Central U.S.
 ```{r}
 ## Filter to central region
@@ -188,6 +219,18 @@ no_LV_summary <- summarize_infections(no_LV)
 ### Linear Model
 
 ::: panel-tabset
+## Western U.S.
+```{r}
+## Filter to western region
+no_LV_western_summary <- no_LV_summary %>%
+  filter(region == "western")
+
+model_western_cattle <- lm(log(cattle_infected) ~ preclinical * scenario_type, 
+                       data = no_LV_western_summary)
+
+summary(model_western_cattle)
+```
+
 ## Central U.S.
 ```{r}
 ## Filter to central region
@@ -217,6 +260,11 @@ summary(model_eastern_cattle)
 ### ANOVA
 
 ::: panel-tabset
+## Western U.S.
+```{r message=FALSE, warning=FALSE}
+anova(model_western_cattle)
+```
+
 ## Central U.S.
 ```{r message=FALSE, warning=FALSE}
 anova(model_central_cattle)
