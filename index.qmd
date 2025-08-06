@@ -60,11 +60,14 @@ Select the tabs to view comparisons between regional scenarios.
 :::
 
 ::: panel-tabset
+## Western U.S.
+FMDV-spread was simulated across 17 states in the Western United States.
+
 ## Central U.S.
-FMDV-spread was simulated throughout the Central U.S. region.
+FMDV-spread was simulated across 23 states in the Central United States.
 
 ## Eastern U.S.
-FMDV-spread was simulated throughout the Eastern U.S. region.
+FMDV-spread was simulated across 31 states in the Eastern United States.
 
 :::
 

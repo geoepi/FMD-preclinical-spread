@@ -88,6 +88,27 @@ infection %>%
     max = max(infect_day))
 ```
 
+## Western U.S.
+Check the number of infection events
+```{r}
+## Filter to western region
+infection_western <- infection %>%
+  filter(region == "western")
+
+## Check data frame dimensions
+nrow(infection_western)
+```
+
+Check `infect_day` statistics
+```{r}
+infection_western %>%
+  summarize(
+    mean = mean(infect_day),
+    min = min(infect_day),
+    median = median(infect_day),
+    max = max(infect_day))
+```
+
 ## Central U.S.
 Check the number of infection events
 ```{r}
@@ -148,6 +169,26 @@ nrow(detection)
 Check `detect_day` statistics
 ```{r}
 detection %>%
+  summarize(
+    mean = mean(detect_day),
+    min = min(detect_day),
+    median = median(detect_day),
+    max = max(detect_day))
+```
+
+## Western U.S.
+Check the number of detection events
+```{r}
+## Filter to central region
+detection_western <- detection %>%
+  filter(region == "western")
+
+nrow(detection_western)
+```
+
+Check `detect_day` statistics
+```{r}
+detection_western %>%
   summarize(
     mean = mean(detect_day),
     min = min(detect_day),
@@ -227,3 +268,9 @@ nrow(reference)
 #### What does this mean?
 
 Each row in `reference` contains data for a unique, theoretical cattle premises. This data is used to simulate FMDV-spread between cattle farms throughout the United States.
+
+## Merge data
+```{r}
+## Merge infection data with reference file
+merge <- left_join(infection, reference, by = join_by(premises))
+```
