@@ -35,15 +35,16 @@ pre {
 ```
 
 ::: {.callout-important icon="true"}
-#### Under Peer Review
+#### Supporting Information
 
-This site provides supporting information for the manuscript:
+This site provides supporting information for the publication:
 
-**Modeling Incubation Phase Transmission of Foot-and-Mouth Disease Virus in Cattle** [*in review*]
+[**Epidemiologic consequences of preclinical transmission of foot-and-mouth disease virus in cattle**](https://www.frontiersin.org/journals/veterinary-science/articles/10.3389/fvets.2025.1651091)
 
 Scharzenberger, Humphreys, Rigney, Freifeld, Stenfeldt, and Arzt
 
-*This work is currently under peer review and is subject to change.*
+**Front. Vet. Sci.** 2025 vol. 12. doi: 10.3389/fvets.2025.1651091
+
 :::
 
 ## About
