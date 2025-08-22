@@ -72,6 +72,11 @@ FMDV-spread was simulated across 31 states in the Eastern United States.
 
 :::
 
-## External Resources  
-Archives of versioned code are available on the Open Science Framework (OSF):   
-[FMD Preclinical Spread Modeling (DOI 10.17605/OSF.IO/NGZ45)](https://osf.io/ngz45/) 
+## External Resources
+All analyses, functions, and source code for this site are available for download:
+
+[FMD-preclinical-spread](https://github.com/geoepi/fmd-preclinical-spread)  
+
+Archives of code and supporting documents are available on the Open Science Framework:   
+
+[FMD Preclinical Spread Modeling (DOI 10.17605/OSF.IO/NGZ45)](https://osf.io/ngz45/)
