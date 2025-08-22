@@ -39,7 +39,7 @@ plot_daily_Re <- function(summary) {
     labs(
       x = "Simulation Day",
       y = "Effective Reproduction (Re)",
-      col = "Duration of Incubation Phase Transmission",
+      col = "Preclinical Infectious Duration",
       title = " "
     ) +
     theme_minimal() +
